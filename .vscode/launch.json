@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch EmployeeManagementApplication",
+            "request": "launch",
+            "mainClass": "com.innovaturelabs.training.employee.management.EmployeeManagementApplication"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EmployeeManagementApplication<employee.management>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.innovaturelabs.training.employee.management.EmployeeManagementApplication",
+            "projectName": "employee.management",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EmployeeManagementApplication<empServer>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.innovaturelabs.training.employee.management.EmployeeManagementApplication",
+            "projectName": "empServer",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
