@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,7 @@ public class JobServiceImpl implements JobService {
     private JobRepository jobRepository;
 
     @Override
-    public JobView add(JobForm form) {
+    public JobView add(JobForm form ) {
 
         return new JobView(jobRepository.save(new Job(form.getTitle(),
                 form.getDescription(),
@@ -34,6 +30,8 @@ public class JobServiceImpl implements JobService {
                 form.getOpenings(),
                 SecurityUtil.getCurrentUserId(),
                 Job.Status.PENDING.value)));
+
+
 
     }
 

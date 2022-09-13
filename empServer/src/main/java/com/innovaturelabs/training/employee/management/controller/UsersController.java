@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.controller;
 
 import javax.validation.Valid;
@@ -39,9 +35,10 @@ public class UsersController {
         return userService.currentUser();
     }
 
-    @GetMapping("/page/{page}")
-    public Page<UserView> list(@PathVariable("page") Integer page) {
-        return userService.list(page);
+
+    @GetMapping("/page={page}/{sortBy}")
+    public Page<UserView> list(@PathVariable Integer page, @PathVariable("sortBy") String sortBy) {
+        return userService.list(page, sortBy);
     }
 
     // @PutMapping()
@@ -63,8 +60,8 @@ public class UsersController {
     // return userService.update(userId, form);
     // }
 
-    // @DeleteMapping("/{UserId}")
-    // public void delete(@PathVariable("UserId") Integer userId) {
-    // userService.delete(userId);
-    // }
+    @PutMapping("/delete/{UserId}")
+    public void delete(@PathVariable("UserId") Integer userId) {
+    userService.delete(userId);
+    }
 }

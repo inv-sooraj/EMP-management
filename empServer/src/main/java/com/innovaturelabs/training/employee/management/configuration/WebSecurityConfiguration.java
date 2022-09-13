@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.configuration;
 
 import com.innovaturelabs.training.employee.management.security.AccessTokenProcessingFilter;
@@ -15,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpMethod.GET;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -24,10 +21,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 
-/**
- *
- * @author nirmal
- */
+
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -52,6 +46,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(OPTIONS, "/login").anonymous()
                 .antMatchers(POST, "/login").anonymous()
                 .antMatchers(PUT, "/login").anonymous()
+                .antMatchers(GET, "/users/**").hasAnyRole("EMPLOYER","ADMIN")    
                 .antMatchers(OPTIONS, "/**").permitAll()    
                 .anyRequest().authenticated();
     }

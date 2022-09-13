@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.service;
 
 import org.springframework.data.domain.Page;
@@ -23,7 +19,7 @@ public interface UserService {
 
     UserView updateUserName(Integer userId, String name) throws NotFoundException;
 
-    // void delete(Integer userId) throws NotFoundException;
+    void delete(Integer userId);
 
     UserView currentUser();
 
@@ -31,7 +27,7 @@ public interface UserService {
 
     LoginView refresh(String refreshToken) throws BadRequestException;
 
-    Page<UserView> list(Integer page);
+    Page<UserView> list(Integer page,String sortBy);
 
     // Collection<String> listEmails();
 

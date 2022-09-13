@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.security;
 
 import com.innovaturelabs.training.employee.management.security.util.InvalidTokenException;
@@ -16,10 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
-/**
- *
- * @author nirmal
- */
 public class AccessTokenUserDetailsService
         implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
@@ -43,6 +35,6 @@ public class AccessTokenUserDetailsService
             throw new UsernameNotFoundException("Access token expired", e);
         }
 
-        return new AccessTokenUserDetails(Integer.parseInt(status.data));
+        return new AccessTokenUserDetails(Integer.parseInt(status.data), Byte.parseByte(status.role));
     }
 }

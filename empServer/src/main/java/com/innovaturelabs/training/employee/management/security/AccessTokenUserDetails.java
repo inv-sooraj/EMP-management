@@ -1,34 +1,56 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-/**
- *
- * @author nirmal
- */
 public class AccessTokenUserDetails implements UserDetails {
 
-    private static final List<GrantedAuthority> ROLES = AuthorityUtils.createAuthorityList("ROLE_USER");
+    // private static final List<GrantedAuthority> ROLES = AuthorityUtils.createAuthorityList("ROLE_USER");
 
+    public String userRole;
     public final int userId;
 
-    public AccessTokenUserDetails(int userId) {
+    public AccessTokenUserDetails(int userId, byte role) {
         this.userId = userId;
+
+        switch (role) {
+            case 0:
+                userRole = "ADMIN";
+                break;
+            case 1:
+                userRole = "EMPLOYER";
+                break;
+            case 2:
+                userRole = "EMPLOYEE";
+                break;
+            default:
+                break;
+        }
     }
+
+    // public AccessTokenUserDetails(int userId) {
+    // this.userId = userId;
+    // }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        String ROLE_PREFIX = "ROLE_";
+        List<GrantedAuthority> ROLES = new ArrayList<>();
+        ROLES.add(new SimpleGrantedAuthority(ROLE_PREFIX + userRole));
         return ROLES;
     }
+
+    // @Override
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    // return ROLES;
+    // }
 
     @Override
     public String getPassword() {

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.security;
 
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
@@ -11,10 +7,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
-/**
- *
- * @author nirmal
- */
+
 public class AccessTokenProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
 
     private static final Pattern AUTH_PATTERN = Pattern.compile("Emp ([0-9a-f]+)");

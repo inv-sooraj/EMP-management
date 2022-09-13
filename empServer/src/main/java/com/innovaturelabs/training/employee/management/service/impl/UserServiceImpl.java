@@ -3,9 +3,13 @@ package com.innovaturelabs.training.employee.management.service.impl;
 
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -87,9 +91,10 @@ public class UserServiceImpl implements UserService {
         }
 
         String id = String.format("%010d", user.getUserId());
-        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry());
+        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry(),
+                String.valueOf(user.getRole()));
         Token refreshToken = tokenGenerator.create(PURPOSE_REFRESH_TOKEN, id + user.getPassword(),
-                securityConfig.getRefreshTokenExpiry());
+                securityConfig.getRefreshTokenExpiry(), String.valueOf(user.getRole()));
         return new LoginView(user, accessToken, refreshToken);
     }
 
@@ -126,7 +131,8 @@ public class UserServiceImpl implements UserService {
         // }
 
         String id = String.format("%010d", user.getUserId());
-        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry());
+        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry(),
+                String.valueOf(user.getRole()));
         return new LoginView(
                 user,
                 new LoginView.TokenView(accessToken.value, accessToken.expiry),
@@ -142,9 +148,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserView> list(Integer page) {
-        // return userRepository.findAll();
-        return userRepository.findAllByStatus(User.Status.ACTIVE.value, PageRequest.of(page, 1));
+    public Page<UserView> list(Integer page, String sortBy) {
+
+        return userRepository.findAllByStatus(User.Status.ACTIVE.value,
+                PageRequest.of(page, 2, Sort.by(Sort.Direction.ASC, sortBy)));
 
     }
 
@@ -164,6 +171,16 @@ public class UserServiceImpl implements UserService {
         user.setUserName(name);
 
         return new UserView(userRepository.save(user));
+
+    }
+
+    @Override
+    public void delete(Integer userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
+        user.setStatus(User.Status.INACTIVE.value);
+        user.setUpdateDate(new Date());
+        userRepository.save(user);
 
     }
 

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.innovaturelabs.training.employee.management.controller;
 
 import java.io.ByteArrayInputStream;
@@ -30,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.innovaturelabs.training.employee.management.entity.Job;
@@ -52,8 +49,8 @@ public class JobController {
         return jobService.add(form);
     }
 
-    @GetMapping("/page/{page}/{sortBy}")
-    public Page<JobView> list(@PathVariable Integer page, @PathVariable("sortBy") String sortBy) {
+    @GetMapping("/page")
+    public Page<JobView> list(@RequestParam Integer page, @RequestParam String sortBy) {
         return jobService.list(page, sortBy);
     }
 
