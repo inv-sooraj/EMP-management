@@ -1,0 +1,23 @@
+<div class="wrapper login_body">
+    <div class="login-box">
+      <h2>Login</h2>
+      <form [formGroup]="loginForm" >
+        <div class="user-box">
+          <input type="text" name="" formControlName="userName" required="">
+          <label>Username</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="" formControlName="password" required="">
+          <label>Password</label>
+        </div>
+        <a (click)="login()">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          Submit
+        </a>
+        
+      </form>
+    </div>
+    </div>

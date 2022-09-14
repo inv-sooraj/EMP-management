@@ -11,6 +11,8 @@ import com.project.employee.view.JobView;
 public interface JobRepository  extends Repository<Job, Integer>{
 	Collection<JobView> findAll();
 	
+	Collection<JobView>findAllByStatus(byte status);
+	
 	Optional<JobView> findByJobId(Integer jobId);
 
 	Optional<Job> findByJobIdAndStatus(Integer jobId,byte status);

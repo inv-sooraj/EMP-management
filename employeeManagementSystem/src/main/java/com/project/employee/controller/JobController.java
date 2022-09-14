@@ -2,6 +2,7 @@ package com.project.employee.controller;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.employee.exception.NotFoundException;
 import com.project.employee.form.JobForm;
 import com.project.employee.service.JobService;
 import com.project.employee.view.JobView;
@@ -36,16 +36,22 @@ public class JobController {
 		return jobService.list();
 	}
 
+//	api for downloading csv file of jobs
+	@GetMapping("/download")
+	public void csvJob(HttpServletResponse httpServletResponse) {
+		jobService.csvJob(httpServletResponse);
+	}
+
 //	api for logicaly deleting a job
 	@PutMapping("/{jobId}")
 	public JobView update(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobForm form) {
 		return jobService.update(jobId, form);
 	}
-	
+
 //	api for logically deleting a job 
-@PutMapping("/delete/{jobId}")
-public void delete(@PathVariable("jobId") Integer jobId) {
-	jobService.delete(jobId);
-}
+	@PutMapping("/delete/{jobId}")
+	public void delete(@PathVariable("jobId") Integer jobId) {
+		jobService.delete(jobId);
+	}
 
 }

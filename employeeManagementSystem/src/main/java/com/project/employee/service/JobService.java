@@ -2,6 +2,7 @@ package com.project.employee.service;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ public interface JobService {
 	JobView add(@Valid JobForm form);
 	
 	JobView update(Integer jobId, JobForm form);
+	
+	void csvJob(HttpServletResponse httpServletResponse);
 	
 	void delete(Integer jobId) throws NotFoundException;
 }
