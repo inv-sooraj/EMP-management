@@ -6,13 +6,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class AccessTokenUserDetails implements UserDetails {
 
-    // private static final List<GrantedAuthority> ROLES = AuthorityUtils.createAuthorityList("ROLE_USER");
+    // private static final List<GrantedAuthority> ROLES =
+    // AuthorityUtils.createAuthorityList("ROLE_USER");
 
     public String userRole;
     public final int userId;
@@ -43,6 +43,7 @@ public class AccessTokenUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String ROLE_PREFIX = "ROLE_";
         List<GrantedAuthority> ROLES = new ArrayList<>();
+
         ROLES.add(new SimpleGrantedAuthority(ROLE_PREFIX + userRole));
         return ROLES;
     }

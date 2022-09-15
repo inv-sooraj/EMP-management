@@ -35,6 +35,6 @@ public class AccessTokenUserDetailsService
             throw new UsernameNotFoundException("Access token expired", e);
         }
 
-        return new AccessTokenUserDetails(Integer.parseInt(status.data), Byte.parseByte(status.role));
+        return new AccessTokenUserDetails(Integer.parseInt(status.data.substring(0, 10)), Byte.parseByte(status.data.substring(10)));
     }
 }

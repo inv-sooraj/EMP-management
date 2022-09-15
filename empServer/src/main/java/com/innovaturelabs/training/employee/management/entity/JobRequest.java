@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
 
 import com.innovaturelabs.training.employee.management.form.JobRequestForm;
 
-@Entity
+@Entity(name = "jobrequest_tbl")
 public class JobRequest {
 
     public enum Status {

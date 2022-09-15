@@ -51,10 +51,7 @@ public class TokenGenerator {
          * The data embedded in the token.
          */
         public final String data;
-        /**
-         * The role embedded in the token.
-         */
-        public final String role;
+
         /**
          * The time stamp in milliseconds used in the token.
          */
@@ -64,11 +61,10 @@ public class TokenGenerator {
          */
         public final long expiry;
 
-        private Status(String data, long time, long expiry, String role) {
+        private Status(String data, long time, long expiry) {
             this.data = data;
             this.time = time;
             this.expiry = expiry;
-            this.role = role;
         }
     }
 
@@ -131,14 +127,15 @@ public class TokenGenerator {
      * @throws IllegalArgumentException if there is a problem with the given
      *                                  purpose or data
      */
-    public Token create(String purpose, String data, Duration expiry, String role) throws IllegalArgumentException {
+    public Token create(String purpose, String data, Duration expiry) throws IllegalArgumentException {
         Assert.notNull(purpose, "purpose cannot be null");
         Assert.isTrue(PURPOSE_PATTERN.matcher(purpose).matches(),
                 "purpose should only contain the characters 'a-Z', 'A-Z', '0-9' and '_'");
         Assert.notNull(data, "data cannot be null");
 
         int r;
-        long t, e;
+        long t;
+        long e;
 
         if (expiry != null && expiry.toMillis() > 0) {
             t = System.currentTimeMillis();
@@ -150,10 +147,7 @@ public class TokenGenerator {
             r = 0;
         }
 
-        String token = purpose + SEPARATOR + encode(data) + SEPARATOR + t + SEPARATOR + e + SEPARATOR + r + SEPARATOR
-                + encode(role);
-
-        
+        String token = purpose + SEPARATOR + encode(data) + SEPARATOR + t + SEPARATOR + e + SEPARATOR + r;
 
         return new Token(textEncryptor.encrypt(token), t, t + e);
     }
@@ -200,7 +194,7 @@ public class TokenGenerator {
         }
 
         String[] parts = value.split(SEPARATOR);
-        if (parts.length != 6 || !parts[0].equals(purpose)) {
+        if (parts.length != 5 || !parts[0].equals(purpose)) {
             throw new InvalidTokenException("Token content is invalid");
         }
 
@@ -228,12 +222,8 @@ public class TokenGenerator {
             throw new InvalidTokenException("Token content is invalid", e);
         }
 
-        try {
-            decode(parts[5]);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidTokenException("Token role is invalid", e);
-        }
+       
 
-        return new Status(decode(parts[1]), keyTime, keyTime + expiry, decode(parts[5]));
+        return new Status(decode(parts[1]), keyTime, keyTime + expiry);
     }
 }

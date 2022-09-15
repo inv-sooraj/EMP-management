@@ -3,16 +3,24 @@ package com.innovaturelabs.training.employee.management.service.impl;
 
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import com.innovaturelabs.training.employee.management.entity.User;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
@@ -28,6 +36,7 @@ import com.innovaturelabs.training.employee.management.security.util.TokenGenera
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Status;
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 import com.innovaturelabs.training.employee.management.service.UserService;
+import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
@@ -91,10 +100,11 @@ public class UserServiceImpl implements UserService {
         }
 
         String id = String.format("%010d", user.getUserId());
-        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry(),
-                String.valueOf(user.getRole()));
+        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id + String.valueOf(user.getRole()),
+                securityConfig.getAccessTokenExpiry());
+
         Token refreshToken = tokenGenerator.create(PURPOSE_REFRESH_TOKEN, id + user.getPassword(),
-                securityConfig.getRefreshTokenExpiry(), String.valueOf(user.getRole()));
+                securityConfig.getRefreshTokenExpiry());
         return new LoginView(user, accessToken, refreshToken);
     }
 
@@ -126,13 +136,8 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid User");
         }
 
-        // if(!logoutRepository.findAllByUserUserId(user.getUserId()).isEmpty()){
-        // throw new BadRequestException("Invalid Credentials");
-        // }
-
         String id = String.format("%010d", user.getUserId());
-        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry(),
-                String.valueOf(user.getRole()));
+        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry());
         return new LoginView(
                 user,
                 new LoginView.TokenView(accessToken.value, accessToken.expiry),
@@ -148,10 +153,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserView> list(Integer page, String sortBy) {
+    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search) {
 
-        return userRepository.findAllByStatus(User.Status.ACTIVE.value,
-                PageRequest.of(page, 2, Sort.by(Sort.Direction.ASC, sortBy)));
+        if (!userRepository.findColumns().contains(sortBy)) {
+            sortBy = "user_id";
+        }
+
+        if (page <= 0) {
+            page = 1;
+
+        }
+
+        Page<User> users = userRepository.findAllByStatus(User.Status.ACTIVE.value, search,
+                PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+
+        Pager<UserView> userViews = new Pager<UserView>(limit, (int) users.getTotalElements(), page);
+
+        // Pager<JobView> userViews = new
+        // Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
+        // search).intValue(),page);
+
+        userViews.setResult(users.getContent().stream().map(user -> new UserView(user)).collect(Collectors.toList()));
+
+        return userViews;
 
     }
 
@@ -181,6 +205,42 @@ public class UserServiceImpl implements UserService {
         user.setStatus(User.Status.INACTIVE.value);
         user.setUpdateDate(new Date());
         userRepository.save(user);
+
+    }
+
+    @Override
+    public void jobCsv(HttpServletResponse httpServletResponse) {
+        Collection<User> exportlist = userRepository.findAll();
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=emailList" + sdf.format(dt) + ".csv";
+        httpServletResponse.setHeader(headerKey, headerValue);
+        httpServletResponse.setContentType("text/csv;");
+        httpServletResponse.setCharacterEncoding("shift-jis");
+        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+
+        try {
+
+            ICsvBeanWriter csvWriter = new CsvBeanWriter(httpServletResponse.getWriter(),
+                    CsvPreference.STANDARD_PREFERENCE);
+            String[] csvHeader = { "User Id", "Name", "UserName", "Email", "Status", "Role", "Qualification", "Address",
+                    "Phone",
+                    "Create Date", "Update Date" };
+            String[] nameMapping = { "userId", "name", "userName", "email", "status", "role", "qualification",
+                    "address", "phone",
+                    "createDate", "updateDate" };
+
+            csvWriter.writeHeader(csvHeader);
+            for (User reservation : exportlist) {
+                csvWriter.write(reservation, nameMapping);
+            }
+
+            csvWriter.close();
+        } catch (IOException e) {
+            throw new BadRequestException("Exception while exporting csv");
+        }
 
     }
 

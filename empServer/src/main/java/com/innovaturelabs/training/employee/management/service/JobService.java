@@ -1,9 +1,10 @@
 
 package com.innovaturelabs.training.employee.management.service;
 
-import org.springframework.data.domain.Page;
+import javax.servlet.http.HttpServletResponse;
 
 import com.innovaturelabs.training.employee.management.form.JobForm;
+import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.JobView;
 
 public interface JobService {
@@ -14,7 +15,9 @@ public interface JobService {
 
     void delete(Integer jobId);
 
-    Page<JobView> list(Integer page,String sortBy);
+    Pager<JobView> list(Integer page,Integer limit,String sortBy,String search);
+
+    void jobCsv(HttpServletResponse httpServletResponse);
 
     
 

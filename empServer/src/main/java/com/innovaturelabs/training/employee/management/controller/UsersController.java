@@ -1,21 +1,23 @@
 
 package com.innovaturelabs.training.employee.management.controller;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.innovaturelabs.training.employee.management.form.UserForm;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.UserService;
+import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
 @RestController
@@ -36,9 +38,18 @@ public class UsersController {
     }
 
 
-    @GetMapping("/page={page}/{sortBy}")
-    public Page<UserView> list(@PathVariable Integer page, @PathVariable("sortBy") String sortBy) {
-        return userService.list(page, sortBy);
+    // @GetMapping("/page/{page}/{sortBy}")
+    // public Page<UserView> list(@PathVariable Integer page, @PathVariable("sortBy") String sortBy) {
+    //     return userService.list(page, sortBy);
+    // }
+
+    @GetMapping("/page")
+    public Pager<UserView> list(
+            @RequestParam(name = "page", defaultValue = "1") Integer page,
+            @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(name = "sortBy", defaultValue = "user_id") String sortBy,
+            @RequestParam(name = "search", defaultValue = "") String search) {
+        return userService.list(page, limit, sortBy, search);
     }
 
     // @PutMapping()
@@ -63,5 +74,10 @@ public class UsersController {
     @PutMapping("/delete/{UserId}")
     public void delete(@PathVariable("UserId") Integer userId) {
     userService.delete(userId);
+    }
+
+    @GetMapping("/download")
+    public void jobCsv(HttpServletResponse httpServletResponse) {
+        userService.jobCsv(httpServletResponse);
     }
 }
