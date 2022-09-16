@@ -1,9 +1,3 @@
-// package com.project.EmployeeManagement.security;
-
-// public class AccessTokenUserDetailsService {
-    
-// }
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,21 +5,19 @@
  */
 package com.project.EmployeeManagement.security;
 
-import com.project.EmployeeManagement.security.util.InvalidTokenException;
-import com.project.EmployeeManagement.security.util.TokenExpiredException;
-import com.project.EmployeeManagement.security.util.TokenGenerator;
-import com.project.EmployeeManagement.security.util.TokenGenerator.Status;
-import java.util.Collection;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
-public class AccessTokenUserDetailsService implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
+import com.project.EmployeeManagement.security.util.InvalidTokenException;
+import com.project.EmployeeManagement.security.util.TokenExpiredException;
+import com.project.EmployeeManagement.security.util.TokenGenerator;
+import com.project.EmployeeManagement.security.util.TokenGenerator.Status;
+
+public class AccessTokenUserDetailsService
+        implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     public static final String PURPOSE_ACCESS_TOKEN = "ACCESS_TOKEN";
 
@@ -50,4 +42,3 @@ public class AccessTokenUserDetailsService implements AuthenticationUserDetailsS
         return new AccessTokenUserDetails(Integer.parseInt(status.data));
     }
 }
-

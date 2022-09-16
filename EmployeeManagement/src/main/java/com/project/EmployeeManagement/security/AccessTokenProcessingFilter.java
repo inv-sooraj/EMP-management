@@ -1,9 +1,3 @@
-// package com.project.EmployeeManagement.security;
-
-// public class AccessTokenProcessingFilter {
-    
-// }
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,9 +6,12 @@
 package com.project.EmployeeManagement.security;
 
 import static com.project.EmployeeManagement.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 /**
@@ -45,4 +42,3 @@ public class AccessTokenProcessingFilter extends AbstractPreAuthenticatedProcess
         return PURPOSE_ACCESS_TOKEN;
     }
 }
-

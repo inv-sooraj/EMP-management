@@ -68,34 +68,34 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
-    public User(){}
+    public User() {
+    }
 
     public User(Integer userId) {
         this.userId = userId;
     }
 
-
     public User(String userName, String name, String email, String password) {
         this.userName = userName;
-        this.name=name;
+        this.name = name;
         this.email = email;
         this.password = password;
 
         this.status = Status.ACTIVE.value;
-        this.role=Role.USER.value;
+        this.role = Role.USER.value;
         Date dt = new Date();
         this.createDate = dt;
         this.updateDate = dt;
     }
 
-    public User(String userName, String name, String email, String password,Byte role) {
+    public User(String userName, String name, String email, String password, Byte role) {
         this.userName = userName;
-        this.name=name;
+        this.name = name;
         this.email = email;
         this.password = password;
 
         this.status = Status.ACTIVE.value;
-        this.role=role;
+        this.role = role;
         Date dt = new Date();
         this.createDate = dt;
         this.updateDate = dt;
@@ -196,7 +196,5 @@ public class User {
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
-    
-    
 
 }

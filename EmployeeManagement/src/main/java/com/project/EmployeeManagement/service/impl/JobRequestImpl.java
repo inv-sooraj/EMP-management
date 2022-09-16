@@ -1,12 +1,10 @@
 package com.project.EmployeeManagement.service.impl;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.EmployeeManagement.entity.Job;
 import com.project.EmployeeManagement.entity.JobRequest;
+import com.project.EmployeeManagement.entity.User;
 import com.project.EmployeeManagement.exception.BadRequestException;
 import com.project.EmployeeManagement.form.JobRequestForm;
 import com.project.EmployeeManagement.repository.JobRequestRepository;
@@ -26,14 +24,14 @@ public class JobRequestImpl implements JobRequestService {
     private UserRepository userRepository;
 
     @Override
-    public JobRequestView addJobRequest(JobRequestForm form) {
+    public JobRequestView addJobRequest(Integer jobId, JobRequestForm form) {
         Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
 
-        if (userRole == 0) {
+        if (userRole.equals(User.Role.USER.value)) {
 
             return new JobRequestView(
                     jobRequestRepository
-                            .save(new JobRequest(form, userRepository.findByUserId(SecurityUtil.getCurrentUserId()))));
+                            .save(new JobRequest(form, jobId, SecurityUtil.getCurrentUserId())));
         } else
             throw new BadRequestException("Illegal Access");
     }

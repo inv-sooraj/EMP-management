@@ -1,10 +1,20 @@
 package com.project.EmployeeManagement.service.impl;
 
+import static com.project.EmployeeManagement.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
+
 import com.project.EmployeeManagement.entity.User;
 import com.project.EmployeeManagement.exception.BadRequestException;
 import com.project.EmployeeManagement.exception.NotFoundException;
@@ -17,14 +27,12 @@ import com.project.EmployeeManagement.security.util.InvalidTokenException;
 import com.project.EmployeeManagement.security.util.SecurityUtil;
 import com.project.EmployeeManagement.security.util.TokenExpiredException;
 import com.project.EmployeeManagement.security.util.TokenGenerator;
+import com.project.EmployeeManagement.security.util.TokenGenerator.Status;
 import com.project.EmployeeManagement.security.util.TokenGenerator.Token;
 import com.project.EmployeeManagement.service.UserService;
+import com.project.EmployeeManagement.util.Pager;
 import com.project.EmployeeManagement.view.LoginView;
 import com.project.EmployeeManagement.view.UserView;
-import static com.project.EmployeeManagement.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
-import java.util.Collection;
-import java.util.Date;
-import com.project.EmployeeManagement.security.util.TokenGenerator.Status;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,6 +74,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserView edit(Integer userId, UserDetailForm form) throws NotFoundException {
+
+        if (!userId.equals(SecurityUtil.getCurrentUserId())
+                && userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new)
+                        .getRole() != User.Role.ADMIN.value) {
+            throw new BadRequestException("Permission Denied");
+        }
+
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
 
         user.setAddress(form.getAddress());
@@ -133,7 +148,50 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<User> list() {
-        return userRepository.findAll();
+
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        if (userRole.equals(User.Role.ADMIN.value)) {
+            return userRepository.findByStatus(User.Status.ACTIVE.value);
+        } else
+            throw new BadRequestException("illegal Access");
     }
+
+    // ................................pagination...............................
+    @Override
+    public Pager<UserView> listItem(String search, String limit, String sort, String page) {
+
+        Page<User> users = userRepository.find(User.Status.ACTIVE.value, search,
+                PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit), Sort.by(sort).ascending()));
+
+        Pager<UserView> userViews = new Pager<UserView>(Integer.parseInt(limit),
+                (int) users.getTotalElements(),
+                Integer.parseInt(page));
+
+        userViews.setResult(users.getContent().stream().map(user -> new UserView(user)).collect(Collectors.toList()));
+
+        return userViews;
+    }
+
+    // ................................pagination...............................
+
+    // @Override
+    // @Transactional
+    // public UserView update(Integer userId,UserForm form)throws NotFoundException{
+
+    // User user =
+    // userRepository.findById(userId).orElseThrow(NotFoundException::new);
+
+    // // System.out.println(user);
+
+    // user.setName(form.getName());
+    // user.setEmail(form.getEmail());
+    // user.setPassword(passwordEncoder.encode(form.getPassword()));
+
+    // user.setUpdateDate(new Date());
+
+    // userRepository.save(user);
+
+    // return new UserView(user);
+    // }
 
 }

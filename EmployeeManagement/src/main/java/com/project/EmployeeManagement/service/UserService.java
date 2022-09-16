@@ -2,6 +2,8 @@ package com.project.EmployeeManagement.service;
 
 import java.util.Collection;
 
+import javax.validation.Valid;
+
 import org.springframework.validation.Errors;
 
 import com.project.EmployeeManagement.entity.User;
@@ -10,6 +12,7 @@ import com.project.EmployeeManagement.exception.NotFoundException;
 import com.project.EmployeeManagement.form.LoginForm;
 import com.project.EmployeeManagement.form.UserDetailForm;
 import com.project.EmployeeManagement.form.UserForm;
+import com.project.EmployeeManagement.util.Pager;
 import com.project.EmployeeManagement.view.LoginView;
 import com.project.EmployeeManagement.view.UserView;
 
@@ -26,5 +29,7 @@ public interface UserService {
 
     UserView edit(Integer userId,UserDetailForm form)throws NotFoundException;
 
+    public Pager<UserView> listItem(String search, String limit, String sort, String page);
 
+    // UserView update(Integer userId, @Valid UserDetailForm form);
 }

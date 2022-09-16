@@ -1,10 +1,3 @@
-// package com.project.EmployeeManagement.configuration;
-
-// public class HibernateConfiguration {
-    
-// }
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates

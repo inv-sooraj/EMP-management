@@ -3,7 +3,7 @@ package com.project.EmployeeManagement.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +20,12 @@ public class JobRequestController {
     @Autowired
     private JobRequestService jobRequestService;
 
-    @PostMapping
-    public JobRequestView addJobRequest(@Valid @RequestBody JobRequestForm form, Errors errors) {
-        return jobRequestService.addJobRequest(form);
+    @PostMapping("/{jobId}")
+    public JobRequestView addJobRequest(
+            @PathVariable("jobId") Integer jobId,
+            @Valid @RequestBody JobRequestForm form
+    ) {
+        return jobRequestService.addJobRequest(jobId,form);
     }
 
 }

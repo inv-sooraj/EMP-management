@@ -31,7 +31,8 @@ public class Job {
     public static enum Status {
         DELETED((byte) 0),
         ACTIVE((byte) 1),
-        REJECT((byte) 2);
+        PENDING((byte)2),
+        REJECT((byte) 3);
 
         public final byte value;
 
@@ -87,7 +88,7 @@ public class Job {
         this.jobDescription = form.getJobDescription();
         this.openings = form.getOpenings();
         this.qualification = Job.Qualification.HIGHER.value;
-        this.status = Status.ACTIVE.value;
+        this.status = Status.PENDING.value;
         Date dt = new Date();
 
         this.createDate = dt;

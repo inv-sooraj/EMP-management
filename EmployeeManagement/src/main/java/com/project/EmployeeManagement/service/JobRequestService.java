@@ -4,7 +4,9 @@ import com.project.EmployeeManagement.form.JobRequestForm;
 import com.project.EmployeeManagement.view.JobRequestView;
 
 public interface JobRequestService {
-    
-    JobRequestView addJobRequest(JobRequestForm form);
-    
+
+    JobRequestView addJobRequest(Integer jobId, JobRequestForm form);
+
+    // Collection<User> list();
+
 }

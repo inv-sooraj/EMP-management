@@ -61,19 +61,18 @@ public class JobRequest {
         this.updateDate = updateDate;
     }
 
-    public JobRequest(JobRequestForm form, User userId) {
+    public JobRequest(JobRequestForm form, Integer jobId, Integer userId) {
 
+        this.user = new User(userId);
+        this.job = new Job(jobId);
+        this.remarks = form.getRemarks();
+        this.status = Status.PENDING.value;
+        Date dt = new Date();
 
-            this.user = userId;
-            // this.job=jobId;
-            this.remarks = form.getRemarks();
-            this.status = Status.PENDING.value;
-            Date dt = new Date();
-    
-            this.createDate = dt;
-            this.updateDate = dt;
-    
-        }
+        this.createDate = dt;
+        this.updateDate = dt;
+
+    }
 
     public Integer getJobReqId() {
         return jobReqId;
