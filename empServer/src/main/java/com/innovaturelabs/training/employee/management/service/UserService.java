@@ -8,9 +8,11 @@ import org.springframework.validation.Errors;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.exception.NotFoundException;
 import com.innovaturelabs.training.employee.management.form.LoginForm;
+import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
+import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
 public interface UserService {
@@ -32,8 +34,9 @@ public interface UserService {
     Pager<UserView> list(Integer page,Integer limit,String sortBy,String search);
 
 
+    UserDetailView updateUserDetails(UserDetailForm form);
 
-    void jobCsv(HttpServletResponse httpServletResponse);
+    void userCsv(HttpServletResponse httpServletResponse);
 
 
 }

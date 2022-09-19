@@ -23,4 +23,8 @@ public interface JobRequestRepository extends Repository<JobRequest, Integer> {
     @Query(value = "SELECT `COLUMN_NAME`  FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='jobrequest_tbl'", nativeQuery = true)
     ArrayList<String> findColumns();
 
+
+    Collection<JobRequest> findAllByUserUserId(Integer userId);
+
+
 }

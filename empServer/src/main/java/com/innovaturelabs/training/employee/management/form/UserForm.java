@@ -6,21 +6,37 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
 public class UserForm {
 
     @NotBlank
     @Size(max = 50)
     private String name;
 
+    @NotBlank
     @Size(max = 50)
     private String userName;
+
     @NotBlank
     @Size(max = 255)
     @Email
     private String email;
+
     @Password
     private String password;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Byte getRole() {
+        return role;
+    }
+
+    public void setRole(Byte role) {
+        this.role = role;
+    }
+
+    private Byte role;
 
     public String getName() {
         return name;

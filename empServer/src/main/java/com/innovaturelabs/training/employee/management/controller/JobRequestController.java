@@ -40,8 +40,8 @@ public class JobRequestController {
     }
 
     @GetMapping("/download")
-    public void jobCsv(HttpServletResponse httpServletResponse) {
-        jobRequestService.jobCsv(httpServletResponse);
+    public void jobRequestCsv(HttpServletResponse httpServletResponse) {
+        jobRequestService.jobRequestCsv(httpServletResponse);
     }
 
 }

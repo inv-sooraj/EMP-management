@@ -14,7 +14,9 @@ public class AccessTokenUserDetails implements UserDetails {
     // private static final List<GrantedAuthority> ROLES =
     // AuthorityUtils.createAuthorityList("ROLE_USER");
 
-    public String userRole;
+    private static final List<GrantedAuthority> ROLES = new ArrayList<>();
+
+    public final String userRole;
     public final int userId;
 
     public AccessTokenUserDetails(int userId, byte role) {
@@ -31,8 +33,12 @@ public class AccessTokenUserDetails implements UserDetails {
                 userRole = "EMPLOYEE";
                 break;
             default:
+                userRole = null;
                 break;
         }
+
+        ROLES.add(new SimpleGrantedAuthority("ROLE_" + userRole));
+
     }
 
     // public AccessTokenUserDetails(int userId) {
@@ -41,17 +47,8 @@ public class AccessTokenUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String ROLE_PREFIX = "ROLE_";
-        List<GrantedAuthority> ROLES = new ArrayList<>();
-
-        ROLES.add(new SimpleGrantedAuthority(ROLE_PREFIX + userRole));
         return ROLES;
     }
-
-    // @Override
-    // public Collection<? extends GrantedAuthority> getAuthorities() {
-    // return ROLES;
-    // }
 
     @Override
     public String getPassword() {

@@ -3,8 +3,6 @@ package com.innovaturelabs.training.employee.management.service.impl;
 
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -18,14 +16,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
-import org.supercsv.io.CsvBeanWriter;
-import org.supercsv.io.ICsvBeanWriter;
-import org.supercsv.prefs.CsvPreference;
 
 import com.innovaturelabs.training.employee.management.entity.User;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.exception.NotFoundException;
 import com.innovaturelabs.training.employee.management.form.LoginForm;
+import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
 import com.innovaturelabs.training.employee.management.repository.UserRepository;
 import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
@@ -36,8 +32,10 @@ import com.innovaturelabs.training.employee.management.security.util.TokenGenera
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Status;
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 import com.innovaturelabs.training.employee.management.service.UserService;
+import com.innovaturelabs.training.employee.management.util.CsvDownload;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
+import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
 @Service
@@ -68,35 +66,42 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Email Already Exists");
         }
 
+        Byte role = User.Role.EMPLOYEE.value;
+
+        if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+            role = form.getRole();
+        }
+
         return new UserView(userRepository.save(new User(
                 form.getName(),
                 form.getUserName(),
                 form.getEmail(),
-                passwordEncoder.encode(form.getPassword()))));
+                passwordEncoder.encode(form.getPassword()),
+                role)));
     }
 
     @Override
     public UserView currentUser() {
         return new UserView(
-                userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new));
+                userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+                        .orElseThrow(NotFoundException::new));
     }
 
     @Override
     public LoginView login(LoginForm form, Errors errors) throws BadRequestException {
+
         if (errors.hasErrors()) {
             throw badRequestException();
-
         }
 
-        // System.err.println();
         User user = userRepository.findByUserName(form.getUserName()).orElseThrow(UserServiceImpl::invalidUsername);
 
         if (user.getStatus() == User.Status.INACTIVE.value) {
-            throw badRequestException();
+            throw new BadRequestException("User Inactive");
         }
 
         if (!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
-            throw badRequestException();
+            throw new BadRequestException("Invalid Password");
         }
 
         String id = String.format("%010d", user.getUserId());
@@ -161,28 +166,27 @@ public class UserServiceImpl implements UserService {
 
         if (page <= 0) {
             page = 1;
-
         }
 
         Page<User> users = userRepository.findAllByStatus(User.Status.ACTIVE.value, search,
                 PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
 
-        Pager<UserView> userViews = new Pager<UserView>(limit, (int) users.getTotalElements(), page);
+        Pager<UserView> userViews = new Pager<>(limit, (int) users.getTotalElements(), page);
 
         // Pager<JobView> userViews = new
         // Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
         // search).intValue(),page);
 
-        userViews.setResult(users.getContent().stream().map(user -> new UserView(user)).collect(Collectors.toList()));
+        userViews.setResult(users.getContent().stream().map(UserView::new).collect(Collectors.toList()));
 
         return userViews;
-
     }
 
     @Override
     public UserView updateUserName(Integer userId, String name) {
 
-        User user = userRepository.findById(userId).orElseThrow(UserServiceImpl::badRequestException);
+        User user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
+                .orElseThrow(UserServiceImpl::badRequestException);
 
         if (user.getUserName().equals(name)) {
             throw new BadRequestException("Same Username");
@@ -201,7 +205,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
+        User user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
+                .orElseThrow(NotFoundException::new);
         user.setStatus(User.Status.INACTIVE.value);
         user.setUpdateDate(new Date());
         userRepository.save(user);
@@ -209,39 +214,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void jobCsv(HttpServletResponse httpServletResponse) {
-        Collection<User> exportlist = userRepository.findAll();
-        Date dt = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    public void userCsv(HttpServletResponse httpServletResponse) {
 
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=emailList" + sdf.format(dt) + ".csv";
-        httpServletResponse.setHeader(headerKey, headerValue);
-        httpServletResponse.setContentType("text/csv;");
-        httpServletResponse.setCharacterEncoding("shift-jis");
-        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-
-        try {
-
-            ICsvBeanWriter csvWriter = new CsvBeanWriter(httpServletResponse.getWriter(),
-                    CsvPreference.STANDARD_PREFERENCE);
-            String[] csvHeader = { "User Id", "Name", "UserName", "Email", "Status", "Role", "Qualification", "Address",
-                    "Phone",
-                    "Create Date", "Update Date" };
-            String[] nameMapping = { "userId", "name", "userName", "email", "status", "role", "qualification",
-                    "address", "phone",
-                    "createDate", "updateDate" };
-
-            csvWriter.writeHeader(csvHeader);
-            for (User reservation : exportlist) {
-                csvWriter.write(reservation, nameMapping);
-            }
-
-            csvWriter.close();
-        } catch (IOException e) {
-            throw new BadRequestException("Exception while exporting csv");
+        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+            throw new BadRequestException("permission Denied");
         }
 
+        Collection<User> exportlist = userRepository.findAll();
+
+        CsvDownload.download(httpServletResponse, exportlist, "Users");
+
+    }
+
+    @Override
+    public UserDetailView updateUserDetails(UserDetailForm form) {
+        User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+                .orElseThrow(NotFoundException::new);
+
+        user.updateDetails(form);
+
+        return new UserDetailView(userRepository.save(user));
     }
 
 }

@@ -37,10 +37,10 @@ public class UsersController {
         return userService.currentUser();
     }
 
-
     // @GetMapping("/page/{page}/{sortBy}")
-    // public Page<UserView> list(@PathVariable Integer page, @PathVariable("sortBy") String sortBy) {
-    //     return userService.list(page, sortBy);
+    // public Page<UserView> list(@PathVariable Integer page,
+    // @PathVariable("sortBy") String sortBy) {
+    // return userService.list(page, sortBy);
     // }
 
     @GetMapping("/page")
@@ -64,6 +64,12 @@ public class UsersController {
         return userService.updateUserName(SecurityUtil.getCurrentUserId(), name);
     }
 
+    @PutMapping("/details")
+    public UserView updateUserDetails(
+            @RequestBody String name) {
+        return userService.updateUserName(SecurityUtil.getCurrentUserId(), name);
+    }
+
     // @PutMapping("/{UserId}")
     // public UserView update(
     // @PathVariable("UserId") Integer userId,
@@ -73,11 +79,11 @@ public class UsersController {
 
     @PutMapping("/delete/{UserId}")
     public void delete(@PathVariable("UserId") Integer userId) {
-    userService.delete(userId);
+        userService.delete(userId);
     }
 
     @GetMapping("/download")
-    public void jobCsv(HttpServletResponse httpServletResponse) {
-        userService.jobCsv(httpServletResponse);
+    public void userCsv(HttpServletResponse httpServletResponse) {
+        userService.userCsv(httpServletResponse);
     }
 }

@@ -15,6 +15,6 @@ public interface JobRequestService {
 
     Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search);
 
-    void jobCsv(HttpServletResponse httpServletResponse);
+    void jobRequestCsv(HttpServletResponse httpServletResponse);
 
 }

@@ -15,7 +15,7 @@ import com.innovaturelabs.training.employee.management.entity.User;
 
 public interface UserRepository extends Repository<User, Integer> {
 
-    Optional<User> findById(Integer userId);
+    Optional<User> findByUserIdAndStatus(Integer userId,Byte status);
 
     @Query(value = "SELECT * FROM user_tbl  WHERE status = ?1 AND (name LIKE %?2% OR email LIKE %?2% OR address LIKE %?2% )", nativeQuery = true)
     Page<User> findAllByStatus(byte status,String search, Pageable page);

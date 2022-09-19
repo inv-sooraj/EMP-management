@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 
 @Entity(name = "user_tbl")
 public class User {
@@ -27,9 +28,9 @@ public class User {
     }
 
     public enum Role {
-        ADMIN((byte) 0),
+        EMPLOYEE((byte) 1),
         EMPLOYER((byte) 1),
-        EMPLOYEE((byte) 2);
+        ADMIN((byte) 2);
 
         public final byte value;
 
@@ -58,7 +59,7 @@ public class User {
     @Column(length = 50)
     private String name;
 
-    @Column(length = 50,unique = true)
+    @Column(length = 50, unique = true)
     private String userName;
 
     @Column(length = 50, unique = true)
@@ -86,15 +87,17 @@ public class User {
         this.userId = userId;
     }
 
+    public User() {
+    }
 
-    public User(){}
-
-    public User(String name, String userName, String email, String password) {
+    public User(String name, String userName, String email, String password, byte role) {
         this.name = name;
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.status = Status.ACTIVE.value;
+
+        this.role = role;
 
         Date date = new Date();
         this.createDate = date;
@@ -116,6 +119,17 @@ public class User {
         Date date = new Date();
         this.createDate = date;
         this.updateDate = date;
+    }
+
+    public User updateDetails(UserDetailForm form) {
+
+        setQualification(form.getQualification());
+
+        this.address = form.getAddress();
+
+        this.phone = form.getAddress();
+
+        return this;
     }
 
     public Integer getUserId() {

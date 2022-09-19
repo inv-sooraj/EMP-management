@@ -5,13 +5,13 @@ import com.innovaturelabs.training.employee.management.security.AccessTokenUserD
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
 public final class SecurityUtil {
 
     private SecurityUtil() {
     }
 
-    public static Integer getCurrentUserId() {
+    private static AccessTokenUserDetails getToken() {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             return null;
@@ -22,6 +22,21 @@ public final class SecurityUtil {
             return null;
         }
 
-        return ((AccessTokenUserDetails) principal).userId;
+        return ((AccessTokenUserDetails) principal);
+    }
+
+    public static Integer getCurrentUserId() {
+
+        AccessTokenUserDetails principal = getToken();
+
+        return principal != null ? principal.userId : null;
+
+    }
+
+    public static String getCurrentUserRole() {
+
+        AccessTokenUserDetails principal = getToken();
+
+        return principal != null ? principal.userRole : null;
     }
 }
