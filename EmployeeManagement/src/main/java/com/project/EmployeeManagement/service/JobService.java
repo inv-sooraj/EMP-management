@@ -2,6 +2,8 @@ package com.project.EmployeeManagement.service;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.project.EmployeeManagement.exception.NotFoundException;
 import com.project.EmployeeManagement.form.JobForm;
 import com.project.EmployeeManagement.util.Pager;
@@ -19,6 +21,11 @@ public interface JobService {
      JobDetailView update(Integer jobId,JobForm form)throws NotFoundException;
 
     public Pager<JobDetailView> listItem(String search, String limit, String sort, String page);
-             
+
+    void jobCsv(HttpServletResponse httpServletResponse);
+
+    JobDetailView get(Integer jobId);
+        
+    
     
 }

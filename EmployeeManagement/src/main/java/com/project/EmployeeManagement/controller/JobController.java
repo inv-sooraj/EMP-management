@@ -2,7 +2,6 @@ package com.project.EmployeeManagement.controller;
 
 import java.security.Principal;
 import java.util.Collection;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +13,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-// import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.project.EmployeeManagement.form.JobForm;
-// import com.project.EmployeeManagement.security.util.Pager;
 import com.project.EmployeeManagement.service.JobService;
 import com.project.EmployeeManagement.util.Pager;
 import com.project.EmployeeManagement.view.JobDetailView;
 import com.project.EmployeeManagement.view.JobView;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/jobs")
@@ -39,20 +36,23 @@ public class JobController {
     @GetMapping
     public Collection<JobView> list(Principal p) {
         return jobService.list();
-    } 
+    }
 
+    @GetMapping("/{jobId}")
+    public JobDetailView get(@PathVariable("jobId") Integer jobId) {
+        return jobService.get(jobId);
+    }
 
     @PutMapping("/delete/{jobId}")
-    public void delete(@PathVariable("jobId")Integer jobId) {
+    public void delete(@PathVariable("jobId") Integer jobId) {
         jobService.delete(jobId);
     }
 
     @PutMapping("/{jobId}")
     public JobDetailView update(
             @PathVariable("jobId") Integer jobId,
-            @Valid @RequestBody JobForm form
-    ) {
-        return jobService.update(jobId,form);
+            @Valid @RequestBody JobForm form) {
+        return jobService.update(jobId, form);
     }
 
     // for pagination.................
@@ -63,7 +63,8 @@ public class JobController {
             @RequestParam(value = "page", required = false, defaultValue = "1") String page,
             @RequestParam(value = "limit", required = false, defaultValue = "16") String limit,
             @RequestParam(value = "sort", required = false, defaultValue = "updateDate") String sort
-            // @RequestParam(value = "type", required = false, defaultValue = "false") boolean type
+    // @RequestParam(value = "type", required = false, defaultValue = "false")
+    // boolean type
     ) {
 
         return jobService.listItem(search, limit, sort, page);
@@ -71,5 +72,9 @@ public class JobController {
 
     // ...............................................................
 
+    @GetMapping("/download")
+    public void jobCsv(HttpServletResponse httpServletResponse) {
+        jobService.jobCsv(httpServletResponse);
+    }
 
 }

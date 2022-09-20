@@ -2,9 +2,13 @@ package com.project.EmployeeManagement.service.impl;
 
 import static com.project.EmployeeManagement.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import com.project.EmployeeManagement.entity.User;
 import com.project.EmployeeManagement.exception.BadRequestException;
@@ -72,6 +79,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserView get(Integer userId) {
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+
+        if (userRole.equals(User.Role.ADMIN.value)) {
+            return userRepository.findById(userId)
+                    .map((user) -> {
+                        return new UserView(user);
+                    }).orElseThrow(NotFoundException::new);
+        } else
+            throw new BadRequestException("Illegal Access");
+
+    }
+
+    @Override
     @Transactional
     public UserView edit(Integer userId, UserDetailForm form) throws NotFoundException {
 
@@ -82,7 +103,9 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
-
+        user.setUserName(form.getUserName());
+        user.setName(form.getName());
+        user.setEmail(form.getEmail());
         user.setAddress(form.getAddress());
         user.setPhone(form.getPhone());
 
@@ -156,7 +179,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("illegal Access");
     }
 
-    // ................................pagination...............................
+    // ###################################pagination################################################
     @Override
     public Pager<UserView> listItem(String search, String limit, String sort, String page) {
 
@@ -172,26 +195,60 @@ public class UserServiceImpl implements UserService {
         return userViews;
     }
 
-    // ................................pagination...............................
 
-    // @Override
-    // @Transactional
-    // public UserView update(Integer userId,UserForm form)throws NotFoundException{
+    // ################################CSVDownload########################################
+    @Override
+    @Transactional
+    public void jobCsv(HttpServletResponse httpServletResponse) {
+        Collection<UserView> exportlist = userRepository.findAll().stream().map(job -> new UserView(job))
+                .collect(Collectors.toList());
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-    // User user =
-    // userRepository.findById(userId).orElseThrow(NotFoundException::new);
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=emailList" + sdf.format(dt) + ".csv";
+        httpServletResponse.setHeader(headerKey, headerValue);
+        httpServletResponse.setContentType("text/csv;");
+        httpServletResponse.setCharacterEncoding("shift-jis");
+        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 
-    // // System.out.println(user);
+        try {
 
-    // user.setName(form.getName());
-    // user.setEmail(form.getEmail());
-    // user.setPassword(passwordEncoder.encode(form.getPassword()));
+            ICsvBeanWriter csvWriter = new CsvBeanWriter(httpServletResponse.getWriter(),
+                    CsvPreference.STANDARD_PREFERENCE);
+            String[] csvHeader = { "UserId", "UserName", "Status", "Email", "Name", "Address", "Phone", "Role",
+                    "Qualification",
+                    "Create Date", "Update Date" };
+            String[] nameMapping = { "userId", "userName", "status", "email", "name", "address", "phone", "role",
+                    "qualification", "createDate", "updateDate" };
 
-    // user.setUpdateDate(new Date());
+            csvWriter.writeHeader(csvHeader);
+            for (UserView reservation : exportlist) {
+                csvWriter.write(reservation, nameMapping);
+            }
 
-    // userRepository.save(user);
+            csvWriter.close();
+        } catch (IOException e) {
+            throw new BadRequestException("Exception while exporting csv");
+        }
 
-    // return new UserView(user);
-    // }
+    }
+    // ....................................................................................................
+
+    @Override
+    public void delete(Integer userId) {
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+
+        if (userRole.equals(User.Role.ADMIN.value)) {
+            User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
+
+            user.setStatus(User.Status.DELETED.value);
+
+            user.setUpdateDate(new Date());
+
+            userRepository.save(user);
+        } else
+            throw new BadRequestException("illegal access");
+    }
 
 }

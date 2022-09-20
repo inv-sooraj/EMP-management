@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.project.EmployeeManagement.exception.BadRequestException;
 import com.project.EmployeeManagement.form.JobForm;
 
 @Entity
@@ -31,7 +32,7 @@ public class Job {
     public static enum Status {
         DELETED((byte) 0),
         ACTIVE((byte) 1),
-        PENDING((byte)2),
+        PENDING((byte) 2),
         REJECT((byte) 3);
 
         public final byte value;
@@ -66,28 +67,34 @@ public class Job {
 
     }
 
-    
-
-    public Job(Integer jobId, String jobTitle, String jobDescription, byte qualification, byte status, Integer openings,
-            User user, Date createDate, Date updateDate) {
-        this.jobId = jobId;
-        this.jobTitle = jobTitle;
-        this.jobDescription = jobDescription;
-        this.qualification = qualification;
-        this.status = status;
-        this.openings = openings;
-        this.user = user;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
-    }
+    // public Job(Integer jobId, String jobTitle, String jobDescription, byte qualification, byte status, Integer openings,
+    //         User user, Date createDate, Date updateDate) {
+    //     this.jobId = jobId;
+    //     this.jobTitle = jobTitle;
+    //     this.jobDescription = jobDescription;
+    //     this.qualification = qualification;
+    //     this.status = status;
+    //     this.openings = openings;
+    //     this.user = user;
+    //     this.createDate = createDate;
+    //     this.updateDate = updateDate;
+    // }
 
     public Job(JobForm form, User userId) {
 
         this.user = userId;
         this.jobTitle = form.getJobTitle();
         this.jobDescription = form.getJobDescription();
+
         this.openings = form.getOpenings();
-        this.qualification = Job.Qualification.HIGHER.value;
+
+        // if ((form.getQualification() < Qualification.values().length) &&
+        // (form.getQualification() >= 0)) {
+        this.setQualification(form.getQualification());
+        // } else {
+        // throw new BadRequestException("invalid qualification");
+        // }
+
         this.status = Status.PENDING.value;
         Date dt = new Date();
 
@@ -125,6 +132,11 @@ public class Job {
     }
 
     public void setQualification(byte qualification) {
+
+        if ((qualification >= Qualification.values().length) || (qualification < 0)) {
+            throw new BadRequestException("Invalid Value");
+        }
+
         this.qualification = qualification;
     }
 
@@ -172,9 +184,11 @@ public class Job {
         this.jobTitle = form.getJobTitle();
         this.jobDescription = form.getJobDescription();
         this.openings = form.getOpenings();
+        this.setQualification(form.getQualification());
         Date dt = new Date();
         this.updateDate = dt;
         return this;
+
     }
 
 }

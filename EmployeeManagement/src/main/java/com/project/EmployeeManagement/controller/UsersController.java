@@ -2,6 +2,7 @@ package com.project.EmployeeManagement.controller;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ import com.project.EmployeeManagement.service.UserService;
 import com.project.EmployeeManagement.util.Pager;
 import com.project.EmployeeManagement.view.UserView;
 
+
+// @CrossOrigin("http://localhost:4200")
+
 @RestController
 @RequestMapping("/users")
 public class UsersController {
@@ -41,6 +45,12 @@ public class UsersController {
         return userService.list();
     }
 
+    @GetMapping("/{userId}")
+    public UserView get(@PathVariable("userId") Integer userId) {
+        return userService.get(userId);
+    }
+
+
     @PutMapping
     public UserView edit(@Valid @RequestBody UserDetailForm form) {
         return userService.edit(SecurityUtil.getCurrentUserId(), form);
@@ -54,9 +64,14 @@ public class UsersController {
         return userService.edit(userId, form);
     }
 
+    @PutMapping("/delete/{userId}")
+    public void delete(@PathVariable("userId") Integer userId) {
+        userService.delete(userId);
+    }
+
 
     
-    // ..................................pagination.....................
+    // ..................................pagination.................................
 
     @GetMapping("/list")
     public Pager<UserView> list(
@@ -70,7 +85,13 @@ public class UsersController {
     }
 
 
-    // ..................................pagination.....................
+    // ................................CSV Download..................................
+
+
+    @GetMapping("/download")
+    public void jobCsv(HttpServletResponse httpServletResponse) {
+        userService.jobCsv(httpServletResponse);
+    }
 
     
 }

@@ -5,26 +5,28 @@
  */
 package com.project.EmployeeManagement.configuration;
 
-import com.project.EmployeeManagement.security.AccessTokenProcessingFilter;
-import com.project.EmployeeManagement.security.AccessTokenUserDetailsService;
-import com.project.EmployeeManagement.security.config.SecurityConfig;
-import com.project.EmployeeManagement.security.util.TokenGenerator;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import org.aspectj.weaver.loadtime.Options;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.project.EmployeeManagement.security.AccessTokenProcessingFilter;
+import com.project.EmployeeManagement.security.AccessTokenUserDetailsService;
+import com.project.EmployeeManagement.security.config.SecurityConfig;
+import com.project.EmployeeManagement.security.util.TokenGenerator;
 
 /**
  *
@@ -56,6 +58,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(PUT, "/login").anonymous()
                 .antMatchers(OPTIONS, "/**").anonymous()
                 .anyRequest().authenticated();
+    }
+
+
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedMethods("*")
+                        .allowedOrigins("*")
+                        .allowCredentials(true);
+            }
+        };
     }
 
     @Bean

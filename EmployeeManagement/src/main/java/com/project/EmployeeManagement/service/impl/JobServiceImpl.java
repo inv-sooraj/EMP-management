@@ -1,8 +1,16 @@
 package com.project.EmployeeManagement.service.impl;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -82,12 +90,14 @@ public class JobServiceImpl implements JobService {
     public JobDetailView update(Integer jobId, JobForm form) throws NotFoundException {
         Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
 
-        if (userRole.equals(User.Role.ADMIN.value)) {
-        return new JobDetailView(jobRepository.save(
-                jobRepository.findByJobIdAndUserUserId(jobId, SecurityUtil.getCurrentUserId())
-                        .orElseThrow(NotFoundException::new).update(form)));
-        }else
-        throw new BadRequestException("illegal access");
+        // if (userRole.equals(User.Role.ADMIN.value)) {
+        if (!userRole.equals(User.Role.USER.value)) {
+
+            return new JobDetailView(jobRepository.save(
+                    jobRepository.findByJobIdAndStatus(jobId, Job.Status.ACTIVE.value)
+                            .orElseThrow(NotFoundException::new).update(form)));
+        } else
+            throw new BadRequestException("illegal access");
     }
 
     // ...........................pagination.........................
@@ -108,6 +118,54 @@ public class JobServiceImpl implements JobService {
         return jobDetailViews;
     }
 
-    // ...........................pagination.........................
+    // .......................................................
+
+    // ...........................CSV Download.....................
+    @Override
+    @Transactional
+    public void jobCsv(HttpServletResponse httpServletResponse) {
+        Collection<JobView> exportlist = jobRepository.findAll().stream().map(job -> new JobView(job))
+                .collect(Collectors.toList());
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=emailList" + sdf.format(dt) + ".csv";
+        httpServletResponse.setHeader(headerKey, headerValue);
+        httpServletResponse.setContentType("text/csv;");
+        httpServletResponse.setCharacterEncoding("shift-jis");
+        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+
+        try {
+
+            ICsvBeanWriter csvWriter = new CsvBeanWriter(httpServletResponse.getWriter(),
+                    CsvPreference.STANDARD_PREFERENCE);
+            String[] csvHeader = { "Job Id", "Title", "Description", "Status", "Qualification", "Openings", "UserId",
+                    "Create Date", "Update Date" };
+            String[] nameMapping = { "jobId", "jobTitle", "jobDescription", "status", "qualification", "openings",
+                    "userId", "createDate", "updateDate" };
+
+            csvWriter.writeHeader(csvHeader);
+            for (JobView reservation : exportlist) {
+                csvWriter.write(reservation, nameMapping);
+            }
+
+            csvWriter.close();
+        } catch (IOException e) {
+            throw new BadRequestException("Exception while exporting csv");
+        }
+
+    }
+    // ................................................................................
+
+    @Override
+    public JobDetailView get(Integer jobId) {
+
+        return jobRepository.findByJobId(jobId)
+                .map((job) -> {
+                    return new JobDetailView(job);
+                }).orElseThrow(NotFoundException::new);
+
+    }
 
 }

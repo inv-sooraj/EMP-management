@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,9 +24,13 @@ public class JobRequestController {
     @PostMapping("/{jobId}")
     public JobRequestView addJobRequest(
             @PathVariable("jobId") Integer jobId,
-            @Valid @RequestBody JobRequestForm form
-    ) {
-        return jobRequestService.addJobRequest(jobId,form);
+            @Valid @RequestBody JobRequestForm form) {
+        return jobRequestService.addJobRequest(jobId, form);
+    }
+
+    @PutMapping("/delete/{jobId}")
+    public void delete(@PathVariable("jobId") Integer jobId) {
+        jobRequestService.delete(jobId);
     }
 
 }

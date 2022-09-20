@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.util.Streamable;
 
 import com.project.EmployeeManagement.entity.Job;
 import com.project.EmployeeManagement.view.JobView;
@@ -16,6 +18,8 @@ public interface JobRepository extends Repository<Job, Integer> {
     Collection<Job> findAll();
 
     Optional<Job> findById(Integer userId);
+    Optional<Job> findByJobIdAndStatus(Integer jobId,Byte status);
+
 
     Job save(Job job);
 
@@ -42,6 +46,9 @@ public interface JobRepository extends Repository<Job, Integer> {
     Page<Job> find(Byte status, String search, Pageable pageable);
 
     Optional<Job> findByJobId(Long jobId);
+
+    // Streamable<Order> findByJobId(Integer jobId);
+    Optional<Job> findByJobId(Integer jobId);
 
     // ..................................................!
 

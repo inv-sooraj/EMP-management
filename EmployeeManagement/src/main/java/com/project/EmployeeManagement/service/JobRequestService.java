@@ -7,6 +7,8 @@ public interface JobRequestService {
 
     JobRequestView addJobRequest(Integer jobId, JobRequestForm form);
 
+    void delete(Integer jobId);
+
     // Collection<User> list();
 
 }
