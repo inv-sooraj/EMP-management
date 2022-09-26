@@ -1,23 +1,53 @@
-<div class="wrapper login_body">
-    <div class="login-box">
-      <h2>Login</h2>
-      <form [formGroup]="loginForm" >
-        <div class="user-box">
-          <input type="text" name="" formControlName="userName" required="">
-          <label>Username</label>
+<section class="vh-100 bg-image"
+  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Login</h2>
+
+              <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example3cg">User Name</label>
+                  <input type="text" id="form3Example3cg" class="form-control form-control-lg" formControlName="userName" required [ngClass]="{'is-invalid': loginForm.controls['userName'].touched&& loginForm.controls['userName'].errors}"/>                
+                  <div *ngIf="loginForm.controls['userName'].touched">
+                    <div *ngIf="loginForm.controls['userName']?.errors?.['required']" class="error"> UserName is Required</div>
+                    <!-- <div *ngIf="loginForm.controls['userName']?.errors?.['email']" class="error"> Invalid Email Format</div> -->
+                </div>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example4cg">Password</label>
+                  <input type="text" id="form3Example4cg" class="form-control form-control-lg" formControlName="password"required [ngClass]="{'is-invalid': loginForm.controls['password'].touched&& loginForm.controls['password'].errors}"/>
+                  <div *ngIf="loginForm.controls['password'].touched">
+                    <div *ngIf="loginForm.controls['password']?.errors?.['required']" class="error"> Password Required</div>
+                    <div *ngIf="loginForm.controls['password']?.errors?.['minlength']" class="error"> Minimum 8 characters required</div>
+                    <div *ngIf="loginForm.controls['password']?.errors?.['pattern']" class="error">Password should contain atleast<br>
+                     one uppercase,special character,number</div><br>
+                </div>
+                  
+                </div>
+
+                
+                <div class="d-flex justify-content-center">
+                  <button type="submit"
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" >Login</button>
+                </div>
+                <p class="text-center text-muted mt-5 mb-0"> Don't have an account? 
+                  <button type="button" (click)="register()"class="btn btn-link"><u>Register here</u></button></p>
+
+               
+                
+
+              </form>
+
+            </div>
+          </div>
         </div>
-        <div class="user-box">
-          <input type="password" name="" formControlName="password" required="">
-          <label>Password</label>
-        </div>
-        <a (click)="login()">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          Submit
-        </a>
-        
-      </form>
+      </div>
     </div>
-    </div>
+  </div>
+</section>

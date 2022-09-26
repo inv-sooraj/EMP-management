@@ -2,18 +2,32 @@ package com.project.employee.service.impl;
 
 import static com.project.employee.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import com.project.employee.entity.User;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
 import com.project.employee.exception.UserNotFoundException;
+import com.project.employee.features.Pager;
 import com.project.employee.form.LoginForm;
 import com.project.employee.form.UserDetailForm;
 import com.project.employee.form.UserRegistrationForm;
@@ -27,6 +41,7 @@ import com.project.employee.security.util.TokenGenerator.Status;
 import com.project.employee.security.util.TokenGenerator.Token;
 import com.project.employee.service.UserService;
 import com.project.employee.view.LoginView;
+import com.project.employee.view.UserDetailView;
 import com.project.employee.view.UserView;
 
 @Service
@@ -41,11 +56,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private SecurityConfig securityConfig;
-
-	@Override
-	public Collection<User> list() {
-		return userRepository.findAllByStatus(User.Status.ACTIVE.value);
-	}
 
 	@Override
 	public UserView add(UserRegistrationForm form) {
@@ -72,7 +82,6 @@ public class UserServiceImpl implements UserService {
 		return new LoginView(user, accessToken, refreshToken);
 	}
 
-	
 	@Override
 	public LoginView refresh(String refreshToken) throws BadRequestException {
 		Status status;
@@ -93,8 +102,7 @@ public class UserServiceImpl implements UserService {
 
 		String password = status.data.substring(10);
 
-		User user = userRepository
-				.findByUserIdAndPasswordAndStatus(userId, password,User.Status.ACTIVE.value)
+		User user = userRepository.findByUserIdAndPasswordAndStatus(userId, password, User.Status.ACTIVE.value)
 				.orElseThrow(UserServiceImpl::badRequestException);
 
 		String id = String.format("%010d", user.getUserId());
@@ -102,14 +110,14 @@ public class UserServiceImpl implements UserService {
 		return new LoginView(user, new LoginView.TokenView(accessToken.value, accessToken.expiry),
 				new LoginView.TokenView(refreshToken, status.expiry));
 	}
-	
 
 	private static BadRequestException badRequestException() {
 		return new BadRequestException("Invalid credentials");
 	}
+
 	private static UserNotFoundException userNotFoundException() {
 		return new UserNotFoundException("User not Found");
-	}	
+	}
 
 	@Override
 	public UserView currentUser() {
@@ -136,6 +144,87 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 
 		return;
+	}
+	
+	@Override
+    public void deleteSelected(Collection<Integer> userIds) {
+
+        for (Integer userId : userIds) {
+            
+            Optional<User> user = userRepository.findById(userId);
+
+            if (user.isPresent()) {
+                userRepository.save(user.get().delete());
+            }
+
+        }
+
+    }
+
+	@Override
+	public long userCount() {
+		return userRepository.countUsers(User.Status.ACTIVE.value);
+	}
+
+	@Override
+	public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search) {
+		if (!userRepository.findColumns().contains(sortBy)) {
+			sortBy = "user_id";
+		}
+
+		if (page <= 0) {
+			page = 1;
+		}
+
+		Page<User> users = userRepository.findAllByStatus(User.Status.ACTIVE.value, search,
+				PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+		Pager<UserView> userViews = new Pager<UserView>(limit, (int) users.getTotalElements(), page, limit);
+
+		userViews.setResult(users.getContent().stream().map(UserView::new).collect(Collectors.toList()));
+
+		return userViews;
+
+	}
+
+	@Override
+	@Transactional
+	public void csvUser(HttpServletResponse httpServletResponse) {
+		Collection<UserView> exportlist = userRepository.findAllByStatus(User.Status.ACTIVE.value).stream()
+				.map(UserView::new).collect(Collectors.toList());
+		Date dt = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+		String headerKey = "Content-Disposition";
+		String headerValue = "userlist" + sdf.format(dt) + ".csv";
+		httpServletResponse.setHeader(headerKey, headerValue);
+		httpServletResponse.setContentType("text/csv;");
+		httpServletResponse.setCharacterEncoding("shift-jis");
+		httpServletResponse.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+
+		try {
+
+			ICsvBeanWriter csvWriter = new CsvBeanWriter(httpServletResponse.getWriter(),
+					CsvPreference.STANDARD_PREFERENCE);
+			String[] csvHeader = { "User Id", "User Name", "Email", "Role", "Create Date", "Update Date" };
+			String[] nameMapping = { "userId", "userName", "email", "role", "createDate", "updateDate" };
+
+			csvWriter.writeHeader(csvHeader);
+			for (UserView reservation : exportlist) {
+				csvWriter.write(reservation, nameMapping);
+			}
+
+			csvWriter.close();
+		} catch (IOException e) {
+			throw new BadRequestException("Exception while exporting csv");
+		}
+
+	}
+
+	@Override
+	public UserDetailView detailView() {
+		return new UserDetailView(
+				userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+						.orElseThrow(NotFoundException::new));
 	}
 
 }

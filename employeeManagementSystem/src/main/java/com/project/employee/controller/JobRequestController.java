@@ -1,8 +1,8 @@
 package com.project.employee.controller;
 
-import java.security.Principal;
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,18 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.employee.features.Pager;
 import com.project.employee.form.JobRequestForm;
 import com.project.employee.service.JobRequestService;
-import com.project.employee.service.JobService;
 import com.project.employee.view.JobRequestView;
 
 @RestController
 @RequestMapping("/jobrequest")
 public class JobRequestController {
-	@Autowired
-	private JobService jobService;
 
 	@Autowired
 	private JobRequestService jobRequestService;
@@ -42,8 +41,16 @@ public class JobRequestController {
 
 //		api for listing  job requests of current logged in user	
 	@GetMapping
-	public Collection<JobRequestView> list(Principal p) {
-		return jobRequestService.list();
+	public Pager<JobRequestView> list(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+			@RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
+			@RequestParam(name = "sortBy", required = false, defaultValue = "job_id") String sortBy,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
+		return jobRequestService.list(page, limit, sortBy, search);
+	}
+
+	@GetMapping("/count")
+	public long jobRequestCount() {
+		return jobRequestService.jobRequestCount();
 	}
 
 //	api for listing  job requests of current logged in user	
@@ -52,10 +59,20 @@ public class JobRequestController {
 		return jobRequestService.listById(jobId);
 	}
 
+	@GetMapping("/download")
+	public void csvReq(HttpServletResponse httpServletResponse) {
+		jobRequestService.csvReq(httpServletResponse);
+	}
+
 //		api for logically deleting a job request
-	@PutMapping("/delete/{reqId}")
-	public void delete(@PathVariable("reqId") Integer reqId) {
+	@PutMapping("/delete")
+	public void delete(@RequestBody Integer reqId) {
 		jobRequestService.delete(reqId);
 	}
+	
+	@PutMapping("/delete/selected")
+    public void deleteSelected(@RequestBody Collection<Integer> reqIds) {
+        jobRequestService.deleteSelected(reqIds);
+    }
 
 }

@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.employee.features.Pager;
 import com.project.employee.form.JobForm;
 import com.project.employee.service.JobService;
 import com.project.employee.view.JobView;
@@ -31,9 +33,16 @@ public class JobController {
 	}
 
 //	api for listing  all jobs
+
+//	public Collection<JobView> list() {
+//		return jobService.list();
+//	}
 	@GetMapping
-	public Collection<JobView> list() {
-		return jobService.list();
+	public Pager<JobView> list(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+			@RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
+			@RequestParam(name = "sortBy", required = false, defaultValue = "job_id") String sortBy,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
+		return jobService.list(page, limit, sortBy, search);
 	}
 
 //	api for downloading csv file of jobs
@@ -42,15 +51,29 @@ public class JobController {
 		jobService.csvJob(httpServletResponse);
 	}
 
+	@GetMapping("/count")
+	public long jobCount() {
+		return jobService.jobCount();
+	}
+
+	@GetMapping("/{jobId}")
+	public JobView getJob(@PathVariable("jobId") Integer jobId) {
+		return jobService.getJob(jobId);
+	}
+
 //	api for logicaly deleting a job
 	@PutMapping("/{jobId}")
 	public JobView update(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobForm form) {
 		return jobService.update(jobId, form);
 	}
+	@PutMapping("/delete/selected")
+    public void deleteSelected(@RequestBody Collection<Integer> jobIds) {
+        jobService.deleteSelected(jobIds);
+    }
 
 //	api for logically deleting a job 
-	@PutMapping("/delete/{jobId}")
-	public void delete(@PathVariable("jobId") Integer jobId) {
+	@PutMapping("/delete")
+	public void delete(@RequestBody Integer jobId) {
 		jobService.delete(jobId);
 	}
 

@@ -8,9 +8,11 @@ import com.project.employee.json.Json;
 public class JobRequestView {
 	private final Integer reqId;
 	private final String remark;
-	private final Integer jobId;
-	private final Integer userId;
+	private final String jobId;
+	private final String userId;
 	private final short status;
+	private final short requestStatus;
+
 	@Json.DateTimeFormat
 	private final Date createDate;
 	@Json.DateTimeFormat
@@ -19,28 +21,26 @@ public class JobRequestView {
 	public JobRequestView(JobRequest jobRequest) {
 		this.reqId = jobRequest.getReqId();
 		this.remark = jobRequest.getRemark();
-		this.jobId = jobRequest.getJob().getJobId();
-		this.userId = jobRequest.getUserId().getUserId();
+		this.jobId = jobRequest.getJob().getTitle();
+		this.userId = jobRequest.getUserId().getName();
 		this.status = jobRequest.getStatus();
+		this.requestStatus = jobRequest.getRequestStatus();
 		this.createDate = jobRequest.getCreateDate();
 		this.updateDate = jobRequest.getUpdateDate();
 	}
-	
-	
 
-	public JobRequestView(Integer reqId, String remark, Integer jobId, Integer userId, short status, Date createDate,
-			Date updateDate) {
-		
+	public JobRequestView(Integer reqId, String remark, String jobId, String userId, short status,
+			short requestStatus, Date createDate, Date updateDate) {
+
 		this.reqId = reqId;
 		this.remark = remark;
 		this.jobId = jobId;
 		this.userId = userId;
 		this.status = status;
+		this.requestStatus = requestStatus;
 		this.createDate = createDate;
 		this.updateDate = updateDate;
 	}
-
-
 
 	public Integer getReqId() {
 		return reqId;
@@ -50,16 +50,20 @@ public class JobRequestView {
 		return remark;
 	}
 
-	public Integer getJobId() {
+	public String getJobId() {
 		return jobId;
 	}
 
-	public Integer getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	public short getStatus() {
 		return status;
+	}
+
+	public short getRequestStatus() {
+		return requestStatus;
 	}
 
 	public Date getCreateDate() {
@@ -69,6 +73,5 @@ public class JobRequestView {
 	public Date getUpdateDate() {
 		return updateDate;
 	}
-	
 
 }

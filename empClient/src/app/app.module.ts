@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserLoginComponent } from './core/components/user-login/user-login.component';
 import { UserRegistrationComponent } from './core/components/user-registration/user-registration.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthGuard } from './core/auth-guard/auth.guard';
 import { AuthInterceptor } from './core/interceptor/auth.interceptor';
@@ -14,6 +14,13 @@ import { AdminComponent } from './components/user-management/admin/admin.compone
 import { EmployerComponent } from './components/user-management/employer/employer.component';
 import { EmployeeComponent } from './components/user-management/employee/employee.component';
 import { HeaderComponent } from './components/header/header.component';
+import { JoblistComponent } from './components/job-Management/joblist/joblist.component';
+import { UserListComponent } from './components/user-management/user-list/user-list.component';
+import { GaugeModule } from 'angular-gauge';
+import { JobAddComponent } from './components/job-Management/job-add/job-add.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ListJobRequestComponent } from './components/job-Request-Management/list-job-request/list-job-request.component';
+import { UpdateUserComponent } from './components/user-management/update-User-Details/update-user/update-user.component';
 
 @NgModule({
   declarations: [
@@ -23,14 +30,22 @@ import { HeaderComponent } from './components/header/header.component';
     AdminComponent,
     EmployerComponent,
     EmployeeComponent,
-    HeaderComponent
+    HeaderComponent,
+    JoblistComponent,
+    UserListComponent,
+    JobAddComponent,
+    ListJobRequestComponent,
+    UpdateUserComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    GaugeModule.forRoot(),
+    BrowserAnimationsModule
     
   ],
   providers: [AuthGuard,

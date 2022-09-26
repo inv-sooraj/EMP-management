@@ -4,10 +4,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvBeanWriter;
@@ -17,6 +22,7 @@ import org.supercsv.prefs.CsvPreference;
 import com.project.employee.entity.Job;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
+import com.project.employee.features.Pager;
 import com.project.employee.form.JobForm;
 import com.project.employee.repository.JobRepository;
 import com.project.employee.repository.UserRepository;
@@ -34,7 +40,32 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public Collection<JobView> list() {
-		return jobRepository.findAll();
+		return jobRepository.findAll().stream().map((job) -> new JobView(job)).collect(Collectors.toList());
+	}
+
+	public Pager<JobView> list(Integer page, Integer limit, String sortBy, String search) {
+
+		if (!jobRepository.findColumns().contains(sortBy)) {
+			sortBy = "job_id";
+		}
+		
+		System.out.println("aaaaaaaaaaaaaaaaaaaa"+sortBy);
+
+		if (page <= 0) {
+			page = 1;
+		}
+
+		Page<Job> jobs = jobRepository.findAllByStatus(Job.Status.ACTIVE.value, search,
+				PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+		Pager<JobView> jobViews = new Pager<JobView>(limit, (int) jobs.getTotalElements(), page , limit);
+
+		// Pager<JobView> jobViews = new
+		// Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
+		// search).intValue(),page);
+
+		jobViews.setResult(jobs.getContent().stream().map(JobView::new).collect(Collectors.toList()));
+
+		return jobViews;
 	}
 
 	@Override
@@ -61,7 +92,7 @@ public class JobServiceImpl implements JobService {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=emailList" + sdf.format(dt) + ".csv";
+		String headerValue = "joblist" + sdf.format(dt) + ".csv";
 		httpServletResponse.setHeader(headerKey, headerValue);
 		httpServletResponse.setContentType("text/csv;");
 		httpServletResponse.setCharacterEncoding("shift-jis");
@@ -99,5 +130,32 @@ public class JobServiceImpl implements JobService {
 		jobRepository.save(job);
 
 		return;
+	}
+
+	@Override
+    public void deleteSelected(Collection<Integer> jobIds) {
+
+        for (Integer jobId : jobIds) {
+            
+            Optional<Job> job = jobRepository.findById(jobId);
+
+            if (job.isPresent()) {
+                jobRepository.save(job.get().delete());
+            }
+
+        }
+
+    }
+	
+	@Override
+	public long jobCount() {
+		return jobRepository.countJobs(Job.Status.ACTIVE.value);
+	}
+
+	@Override
+	public JobView getJob(Integer jobId) {
+
+		return new JobView(
+				jobRepository.findByJobIdAndStatus(jobId, Job.Status.ACTIVE.value).orElseThrow(NotFoundException::new));
 	}
 }

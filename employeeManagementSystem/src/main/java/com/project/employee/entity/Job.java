@@ -25,7 +25,7 @@ public class Job {
 
         private JobStatus(byte value) {
             this.value = value;
-        }
+        }	
     }
 	public static enum Qualification {
         TENTH((byte) 0),
@@ -93,6 +93,13 @@ public class Job {
     	this.qualification=form.getQualification();
     	Date dt = new Date();
         this.updateDate = dt;
+        return this;
+    }
+    public Job delete() {
+
+        this.status = Job.Status.INACTIVE.value;
+
+        this.updateDate = new Date();
         return this;
     }
 

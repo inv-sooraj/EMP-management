@@ -9,7 +9,6 @@ import com.project.employee.json.Json;
 public class UserView {
 	private final int userId;
     private final String userName;
-    private final String password;
     private final String email;
     private final short role;
     private final short status;
@@ -21,7 +20,6 @@ public class UserView {
     public UserView(User user) {
         this.userId = user.getUserId();
         this.userName = user.getUserName();
-        this.password=user.getPassword();
         this.email = user.getEmail();
         this.role=user.getRole();
         this.status = user.getStatus();
@@ -37,9 +35,6 @@ public class UserView {
 		return userName;
 	}
 
-	public String getPassword() {
-		return password;
-	}
 
 	public String getEmail() {
 		return email;

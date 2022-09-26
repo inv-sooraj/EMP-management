@@ -65,7 +65,7 @@ public class JobRequest {
     	Date dt = new Date();
         this.createDate = dt;
         this.updateDate = dt;	
-    }
+    }				
     
     public  JobRequest update(Integer status) {
 		
@@ -81,6 +81,13 @@ public class JobRequest {
 		return this;
 	}
     
+    public JobRequest delete() {
+
+        this.status = JobRequest.Status.INACTIVE.value;
+
+        this.updateDate = new Date();
+        return this;
+    }
 	public Integer getReqId() {
 		return reqId;
 	}
@@ -139,6 +146,4 @@ public class JobRequest {
 	}
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
-	}
-	
-}
+	}	}

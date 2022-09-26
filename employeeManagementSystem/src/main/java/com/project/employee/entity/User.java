@@ -77,7 +77,7 @@ public class User {
         this.email =email;
         this.role=role;
         this.status = Status.ACTIVE.value;
-        Date dt = new Date();
+        Date dt = new Date();	
         this.createDate = dt;
         this.updateDate = dt;
     }
@@ -91,6 +91,14 @@ public class User {
         this.qualification=form.getQualification();
         Date dt = new Date();
         this.updateDate = dt;
+        return this;
+    }
+    
+    public User delete() {
+
+        this.status = User.Status.INACTIVE.value;
+
+        this.updateDate = new Date();
         return this;
     }
 

@@ -1,13 +1,77 @@
 /* You can add global styles to this file, and also import other style files */
-html {
-    height: 100%;
-  }
-  body {
-    margin:0;
-    padding:0;
-    font-family: sans-serif;
-    background: linear-gradient(#000000, #1eb1d2) !important;
-  }
+@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css");
+@import "~bootstrap/dist/css/bootstrap.css";
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@300;378&family=Source+Sans+Pro:ital@1&family=Zen+Antique&display=swap');
 
+
+mwl-gauge {
+  width: 230px;
+  height: 230px;
+  display: block;
+  padding: 10px;
+}
+mwl-gauge > .gauge > .dial {
+  stroke: #eee;
+  stroke-width: 2;
+  fill: rgba(0, 0, 0, 0);
+}
+mwl-gauge > .gauge > .value {
+  stroke: rgb(47, 227, 255);
+  stroke-width: 2;
+  fill: rgba(0, 0, 0, 0);
+}
+mwl-gauge > .gauge > .value-text {
+  fill: rgb(47, 227, 255);
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+
+.gauges-container {
+  display: flex;
+}
+/* ------ Default Style ---------- */
+mwl-gauge {
+  flex: 1;
+  display: block;
+  padding: 10px;
+  background-color: #222;
+  margin: 7px;
+  border-radius: 3px;
+}
+mwl-gauge > .gauge > .dial {
+  stroke: #334455;
+  stroke-width: 2;
+  fill: rgba(0, 0, 0, 0);
+}
+mwl-gauge > .gauge > .value {
+  stroke: rgb(47, 227, 255);
+  stroke-width: 2;
+  fill: rgba(0, 0, 0, 0);
+}
+mwl-gauge > .gauge > .value-text {
+  fill: rgb(47, 227, 255);
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+mwl-gauge.three {
+}
+mwl-gauge.three > .gauge > .dial {
+  stroke: #334455;
+  stroke-width: 2;
+}
+mwl-gauge.three > .gauge > .value {
+  stroke: #d0142a;
+  stroke-width: 5;
+}
+mwl-gauge.three > .gauge > .value-text {
+  fill: #c9de3c;
+}
+* {
+  overflow: visible;
   
-  
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
