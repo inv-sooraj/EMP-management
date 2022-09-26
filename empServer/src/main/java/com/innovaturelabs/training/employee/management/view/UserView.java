@@ -13,21 +13,11 @@ public class UserView {
     private final String userName;
     private final String email;
     private final short status;
+    private final short role;
     @Json.DateTimeFormat
     private final Date createDate;
     @Json.DateTimeFormat
     private final Date updateDate;
-
-    public UserView(int userId, String name, String userName, String email, short status, Date createDate,
-            Date updateDate) {
-        this.userId = userId;
-        this.name = name;
-        this.userName = userName;
-        this.email = email;
-        this.status = status;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
-    }
 
     public UserView(User user) {
         this.userId = user.getUserId();
@@ -35,6 +25,7 @@ public class UserView {
         this.userName = user.getUserName();
         this.email = user.getEmail();
         this.status = user.getStatus();
+        this.role = user.getRole();
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();
     }
@@ -65,6 +56,10 @@ public class UserView {
 
     public String getUserName() {
         return userName;
+    }
+
+    public short getRole() {
+        return role;
     }
 
 }

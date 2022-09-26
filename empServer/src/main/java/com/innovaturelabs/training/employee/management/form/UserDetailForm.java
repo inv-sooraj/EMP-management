@@ -4,7 +4,7 @@ import javax.validation.constraints.Size;
 
 public class UserDetailForm {
 
-    @Size(min = 10, max = 12)
+    @Size(min = 10, max = 13)
     private String phone;
 
     @Size(max = 255)

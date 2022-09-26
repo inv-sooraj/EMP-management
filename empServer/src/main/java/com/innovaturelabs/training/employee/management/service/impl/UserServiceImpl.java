@@ -5,6 +5,7 @@ import static com.innovaturelabs.training.employee.management.security.AccessTok
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -68,8 +69,13 @@ public class UserServiceImpl implements UserService {
 
         Byte role = User.Role.EMPLOYEE.value;
 
-        if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
-            role = form.getRole();
+        if (form.getRole() == User.Role.EMPLOYER.value) {
+            role = User.Role.EMPLOYER.value;
+        }
+
+        if (SecurityUtil.getCurrentUserRole() != null && SecurityUtil.getCurrentUserRole().equals("ADMIN")
+                && form.getRole() == User.Role.ADMIN.value) {
+            role = User.Role.ADMIN.value;
         }
 
         return new UserView(userRepository.save(new User(
@@ -210,6 +216,21 @@ public class UserServiceImpl implements UserService {
         user.setStatus(User.Status.INACTIVE.value);
         user.setUpdateDate(new Date());
         userRepository.save(user);
+
+    }
+
+    @Override
+    public void deleteSelected(Collection<Integer> userIds) {
+
+        for (Integer userId : userIds) {
+
+            Optional<User> user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value);
+
+            if (user.isPresent()) {
+                userRepository.save(user.get().delete());
+            }
+
+        }
 
     }
 

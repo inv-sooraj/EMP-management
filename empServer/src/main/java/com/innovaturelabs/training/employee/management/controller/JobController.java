@@ -1,6 +1,8 @@
 
 package com.innovaturelabs.training.employee.management.controller;
 
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -40,6 +42,11 @@ public class JobController {
         return jobService.list(page, limit, sortBy, search);
     }
 
+    @GetMapping("/{jobId}")
+    public JobView getJob(@PathVariable("jobId") Integer jobId) {
+        return jobService.getJob(jobId);
+    }
+
     @PutMapping("/{jobId}")
     public JobView update(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobForm form) {
         return jobService.update(form, jobId);
@@ -48,6 +55,11 @@ public class JobController {
     @PutMapping("/delete/{jobId}")
     public void delete(@PathVariable("jobId") Integer jobId) {
         jobService.delete(jobId);
+    }
+
+    @PutMapping("/delete/selected")
+    public void deleteSelected(@RequestBody Collection<Integer> jobIds) {
+        jobService.deleteSelected(jobIds);
     }
 
     @GetMapping("/download")

@@ -1,26 +1,27 @@
-
 package com.innovaturelabs.training.employee.management.configuration;
 
-import com.innovaturelabs.training.employee.management.security.AccessTokenProcessingFilter;
-import com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService;
-import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
-import com.innovaturelabs.training.employee.management.security.util.TokenGenerator;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.innovaturelabs.training.employee.management.security.AccessTokenProcessingFilter;
+import com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService;
+import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
+import com.innovaturelabs.training.employee.management.security.util.TokenGenerator;
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -46,9 +47,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(OPTIONS, "/login").anonymous()
                 .antMatchers(POST, "/login").anonymous()
                 .antMatchers(PUT, "/login").anonymous()
-                .antMatchers(GET, "/users/**").hasAnyRole("EMPLOYER","ADMIN")    
-                .antMatchers(OPTIONS, "/**").permitAll()    
+                // .antMatchers(GET, "/users/**").hasAnyRole("EMPLOYER", "ADMIN")
+                .antMatchers(OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
+    }
+
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedMethods("*")
+                        .allowedOrigins("*")
+                        .allowCredentials(true);
+            }
+        };
     }
 
     @Bean

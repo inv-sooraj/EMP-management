@@ -21,18 +21,6 @@ public class JobRequestView {
     @Json.DateTimeFormat
     private final Date updateDate;
 
-    public JobRequestView(int jobRequestId, Integer userId, Integer jobId, Byte status, String feedback, String remark,
-            Date createDate, Date updateDate) {
-        this.jobRequestId = jobRequestId;
-        this.userId = userId;
-        this.jobId = jobId;
-        this.status = status;
-        this.feedback = feedback;
-        this.remark = remark;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
-    }
-
     public JobRequestView(JobRequest jobRequest) {
         this.jobRequestId = jobRequest.getJobRequestId();
         this.userId = jobRequest.getUser().getUserId();
@@ -52,7 +40,7 @@ public class JobRequestView {
         return userId;
     }
 
-    public Integer   getJobId() {
+    public Integer getJobId() {
         return jobId;
     }
 

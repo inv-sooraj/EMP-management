@@ -1,6 +1,8 @@
 package com.innovaturelabs.training.employee.management.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 
 @Entity(name = "user_tbl")
@@ -28,7 +31,7 @@ public class User {
     }
 
     public enum Role {
-        EMPLOYEE((byte) 1),
+        EMPLOYEE((byte) 0),
         EMPLOYER((byte) 1),
         ADMIN((byte) 2);
 
@@ -132,6 +135,15 @@ public class User {
         return this;
     }
 
+    public User delete() {
+
+        this.status = User.Status.INACTIVE.value;
+
+        this.updateDate = new Date();
+
+        return this;
+    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -193,7 +205,14 @@ public class User {
     }
 
     public void setQualification(byte qualification) {
-        this.qualification = qualification;
+
+        if (Arrays.asList(Qualification.values()).stream().map(q -> q.value).collect(Collectors.toList())
+                .contains(qualification)) {
+            this.qualification = qualification;
+        } else {
+            throw new BadRequestException("Qualification : " + qualification + " Not Allowed");
+        }
+
     }
 
     public String getAddress() {

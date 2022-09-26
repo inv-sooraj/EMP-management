@@ -2,7 +2,9 @@
 package com.innovaturelabs.training.employee.management.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.innovaturelabs.training.employee.management.entity.Job;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
+import com.innovaturelabs.training.employee.management.exception.NotFoundException;
 import com.innovaturelabs.training.employee.management.form.JobForm;
 import com.innovaturelabs.training.employee.management.repository.JobRepository;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
@@ -39,6 +42,11 @@ public class JobServiceImpl implements JobService {
                 SecurityUtil.getCurrentUserId(),
                 Job.Status.PENDING.value)));
 
+    }
+
+    @Override
+    public JobView getJob(Integer jobId) {
+        return new JobView(jobRepository.findByjobId(jobId).orElseThrow(NotFoundException::new));
     }
 
     @Override
@@ -79,7 +87,23 @@ public class JobServiceImpl implements JobService {
 
         Job job = jobRepository.findByjobId(jobId).orElseThrow(BadRequestException::new);
         job.setStatus(Job.Status.DELETED.value);
+        job.setUpdateDate(new Date());
         jobRepository.save(job);
+
+    }
+
+    @Override
+    public void deleteSelected(Collection<Integer> jobIds) {
+
+        for (Integer jobId : jobIds) {
+            
+            Optional<Job> job = jobRepository.findByjobId(jobId);
+
+            if (job.isPresent()) {
+                jobRepository.save(job.get().delete());
+            }
+
+        }
 
     }
 

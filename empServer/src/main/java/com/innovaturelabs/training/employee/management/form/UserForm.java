@@ -1,10 +1,11 @@
 
 package com.innovaturelabs.training.employee.management.form;
 
-import com.innovaturelabs.training.employee.management.form.validaton.Password;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.innovaturelabs.training.employee.management.form.validaton.Password;
 
 public class UserForm {
 
@@ -23,7 +24,10 @@ public class UserForm {
 
     @Password
     private String password;
+    
+    private Byte role;
 
+    
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -36,7 +40,6 @@ public class UserForm {
         this.role = role;
     }
 
-    private Byte role;
 
     public String getName() {
         return name;

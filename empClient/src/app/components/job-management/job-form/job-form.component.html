@@ -1,0 +1,92 @@
+<!-- <div class="container pt-1 pb-1 text-center">
+    <h1>{{title}}</h1>
+</div> -->
+
+<div class="card m-auto">
+
+    <div class="card-body">
+
+        <div class="container pt-2">
+
+            <form [formGroup]="jobForm" class="row g-3">
+
+                <div class="col-12">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" id="title" formControlName="title" class="form-control"
+                        [ngClass]="{'is-invalid':(jobForm.controls['title'].touched||jobForm.controls['title'].dirty) && jobForm.controls['title'].errors}">
+
+                    <div *ngIf="(jobForm.controls['title'].touched||jobForm.controls['title'].dirty)"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="jobForm.controls['title'].errors?.['required']">
+                            Title is required.
+                        </div>
+
+                    </div>
+                    <label for="title" class="text-danger pt-1"></label>
+                </div>
+
+
+                <div class="col-12">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" id="description" formControlName="description" class="form-control"
+                        [ngClass]="{'is-invalid':(jobForm.controls['description'].touched||jobForm.controls['description'].dirty) && jobForm.controls['description'].errors}">
+
+                    <div *ngIf="(jobForm.controls['description'].touched||jobForm.controls['description'].dirty)"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="jobForm.controls['description'].errors?.['required']">
+                            Description is required.
+                        </div>
+
+                    </div>
+                    <label for="description" class="text-danger pt-1"></label>
+                </div>
+
+                <div class="col-12">
+                    <label for="qualification" class="form-label">Qualification</label>
+
+                    <select type="text" id="qualification" formControlName="qualification" class="form-control"
+                        [ngClass]="{'is-invalid':(jobForm.controls['qualification'].touched||jobForm.controls['qualification'].dirty) && jobForm.controls['qualification'].errors}">
+
+                        <option value="" disabled selected>Select your Qualification</option>
+
+                        <option *ngFor="let qualification of qualifications | keyvalue" value="{{qualification.key}}">
+                            {{qualification.value}}</option>
+                    </select>
+
+
+                    <div *ngIf="(jobForm.controls['qualification'].touched||jobForm.controls['qualification'].dirty)"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="jobForm.controls['qualification'].errors?.['required']">
+                            Qualification is required.
+                        </div>
+
+                    </div>
+                    <label for="qualification" class="text-danger pt-1"></label>
+                </div>
+
+                <div class="col-12">
+                    <label for="openings" class="form-label">Openings</label>
+                    <input type="number" id="openings" formControlName="openings" class="form-control"
+                        [ngClass]="{'is-invalid':(jobForm.controls['openings'].touched||jobForm.controls['openings'].dirty) && jobForm.controls['openings'].errors}">
+
+                    <div *ngIf="(jobForm.controls['openings'].touched||jobForm.controls['openings'].dirty)"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="jobForm.controls['openings'].errors?.['required']">
+                            Openings is required.
+                        </div>
+
+                    </div>
+                    <label for="openings" class="text-danger pt-1"></label>
+                </div>
+
+                <!-- <div class="col-12">
+                    <button type="submit" class="btn btn-primary">{{button}}</button>
+                </div> -->
+            </form>
+        </div>
+    </div>
+</div>

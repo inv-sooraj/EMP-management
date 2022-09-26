@@ -1,6 +1,8 @@
 
 package com.innovaturelabs.training.employee.management.service;
 
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.validation.Errors;
@@ -24,6 +26,9 @@ public interface UserService {
     UserView updateUserName(Integer userId, String name) throws NotFoundException;
 
     void delete(Integer userId);
+
+    void deleteSelected(Collection<Integer> userIds);
+
 
     UserView currentUser();
 

@@ -1,6 +1,8 @@
 package com.innovaturelabs.training.employee.management.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.form.JobForm;
 
 @Entity(name = "job_tbl")
@@ -81,7 +84,7 @@ public class Job {
         this.description = description;
 
         this.status = status;
-        this.qualification = qualification;
+        this.setQualification(qualification);
         this.openings = openings;
         this.user = new User(userId);
 
@@ -95,8 +98,17 @@ public class Job {
         this.title = form.getTitle();
         this.description = form.getDescription();
 
-        this.qualification = form.getQualification();
+        this.setQualification(form.getQualification());
         this.openings = form.getOpenings();
+
+        this.updateDate = new Date();
+
+        return this;
+    }
+
+    public Job delete() {
+
+        this.status = Job.Status.DELETED.value;
 
         this.updateDate = new Date();
 
@@ -140,7 +152,14 @@ public class Job {
     }
 
     public void setQualification(Byte qualification) {
-        this.qualification = qualification;
+
+        if (Arrays.asList(Qualification.values()).stream().map(q -> q.value).collect(Collectors.toList())
+                .contains(qualification)) {
+            this.qualification = qualification;
+        } else {
+            throw new BadRequestException("Qualification : " + qualification + " Not Allowed");
+        }
+
     }
 
     public Integer getOpenings() {

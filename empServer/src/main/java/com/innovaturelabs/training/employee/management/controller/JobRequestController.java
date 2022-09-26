@@ -27,6 +27,7 @@ public class JobRequestController {
 
     @PostMapping("/{jobId}")
     public JobRequestView add(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobRequestForm form) {
+
         return jobRequestService.add(form, jobId);
     }
 
@@ -36,11 +37,13 @@ public class JobRequestController {
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
             @RequestParam(name = "sortBy", defaultValue = "job_request_id") String sortBy,
             @RequestParam(name = "search", defaultValue = "") String search) {
+
         return jobRequestService.list(page, limit, sortBy, search);
     }
 
     @GetMapping("/download")
     public void jobRequestCsv(HttpServletResponse httpServletResponse) {
+
         jobRequestService.jobRequestCsv(httpServletResponse);
     }
 

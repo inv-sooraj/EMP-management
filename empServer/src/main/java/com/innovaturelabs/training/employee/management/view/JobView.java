@@ -15,7 +15,7 @@ public class JobView {
 
     private final Integer openings;
 
-    private final Integer userId;
+    private final String userId;
 
     private final Byte status;
 
@@ -30,23 +30,10 @@ public class JobView {
         this.description = job.getDescription();
         this.qualification = job.getQualification();
         this.openings = job.getOpenings();
-        this.userId = job.getUser().getUserId();
+        this.userId = job.getUser().getUserName();
         this.status = job.getStatus();
         this.createDate = job.getCreateDate();
         this.updateDate = job.getUpdateDate();
-    }
-
-    public JobView(int jobId, String title, String description, Byte qualification, Integer openings, Integer userId,
-            Byte status, Date createDate, Date updateDate) {
-        this.jobId = jobId;
-        this.title = title;
-        this.description = description;
-        this.qualification = qualification;
-        this.openings = openings;
-        this.userId = userId;
-        this.status = status;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
     }
 
     public int getJobId() {
@@ -69,7 +56,7 @@ public class JobView {
         return openings;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
