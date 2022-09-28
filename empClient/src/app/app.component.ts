@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'empClient';
+  roles=localStorage.getItem('role')
+localStorage: any;
+  
 }

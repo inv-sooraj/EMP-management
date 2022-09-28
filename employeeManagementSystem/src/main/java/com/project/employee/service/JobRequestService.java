@@ -16,7 +16,7 @@ import com.project.employee.view.JobRequestView;
 public interface JobRequestService {
 	Collection<JobRequestView> list();
 
-	Collection<JobRequestView> listById(Integer jobId);
+	Collection<JobRequestView> listByUserId();
 
 	Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search);
 

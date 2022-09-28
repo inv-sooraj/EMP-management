@@ -21,6 +21,8 @@ public interface JobRepository extends Repository<Job, Integer> {
 
 	Optional<Job> findById(Integer jobId);
 
+	Collection<Job> findByUserUserIdAndStatus(Integer userId, Byte JobStatus);
+
 	Optional<Job> findByJobIdAndStatus(Integer jobId, byte status);
 
 	Optional<Job> findByJobIdAndUserUserIdAndStatus(Integer jobId, Integer userId, byte status);

@@ -1,15 +1,15 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobService } from 'src/app/services/job-services/job.service';
 
 @Component({
-  selector: 'app-joblist',
-  templateUrl: './joblist.component.html',
-  styleUrls: ['./joblist.component.css']
+  selector: 'app-joblist-emplyr',
+  templateUrl: './joblist-emplyr.component.html',
+  styleUrls: ['./joblist-emplyr.component.css']
 })
-export class JoblistComponent implements OnInit {
+export class JoblistEmplyrComponent implements OnInit {
   jobs: any
   jobsData:any
   count: any
@@ -126,40 +126,45 @@ export class JoblistComponent implements OnInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
 
   checked: Array<number> = [];
 
   checkedUser(event: any) {
-    console.log(event.target.checked);
-    console.log(event.target.attributes.value.value);
-
     if (event.target.checked) {
-      this.checked.push(event.target.attributes.value.value);
+      this.checked.push(Number(event.target.attributes.value.value));
+
+      if (this.jobs.result.length == this.checked.length) {
+        (document.getElementById('selectAll') as HTMLInputElement).checked =
+          true;
+      }
     } else {
       this.checked.splice(
-        this.checked.indexOf(event.target.attributes.value.value),
+        this.checked.indexOf(Number(event.target.attributes.value.value)),
         1
       );
+      (document.getElementById('selectAll') as HTMLInputElement).checked =
+        false;
     }
 
-    console.log(this.checked.indexOf(5));
+    console.log(this.checked);
+  }
 
+  checkAll(event: any) {
+    this.jobs.result.forEach((element: any) => {
+      (
+        document.getElementById('checkbox' + element.jobId) as HTMLInputElement
+      ).checked = event.target.checked;
+
+      if (event.target.checked) {
+        if (!this.checked.includes(element.jobId)) {
+          this.checked.push(element.jobId);
+        }
+      } else {
+        this.checked.splice(this.checked.indexOf(element.jobId), 1);
+      }
+    });
     console.log(this.checked);
   }
 
@@ -177,18 +182,6 @@ export class JoblistComponent implements OnInit {
       },
     });
 
-    document.getElementById('selectAll')?.click();
-  }
-
-  abcd(event: any) {
-    console.log(event);
-
-    this.jobs.result.forEach((element: any) => {
-      console.log(element.jobId);
-
-      document.getElementById('checkbox' + element.jobId)?.click();
-    });
+    (document.getElementById('selectAll') as HTMLInputElement).checked = false;
   }
 }
-
-

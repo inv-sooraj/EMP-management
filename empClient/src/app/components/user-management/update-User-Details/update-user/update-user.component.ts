@@ -63,6 +63,12 @@ export class UpdateUserComponent implements OnInit {
       })
     }
   }
+  qualifications: { [key: number]: string } = {
+    0: 'SSLC ',
+    1: 'PLUS TWO',
+    2: 'UG ',
+    3: 'PG ',
+  };
 }
 
 

@@ -12,36 +12,38 @@
 
                 <div class="form-outline mb-4">
                   <label class="form-label" for="form3Example3cg">User Name</label>
-                  <input type="text" id="form3Example3cg" class="form-control form-control-lg" formControlName="userName" required [ngClass]="{'is-invalid': loginForm.controls['userName'].touched&& loginForm.controls['userName'].errors}"/>                
+                  <input type="text" id="form3Example3cg" class="form-control form-control-lg"
+                    formControlName="userName" required
+                    [ngClass]="{'is-invalid': loginForm.controls['userName'].touched&& loginForm.controls['userName'].errors}" />
                   <div *ngIf="loginForm.controls['userName'].touched">
-                    <div *ngIf="loginForm.controls['userName']?.errors?.['required']" class="error"> UserName is Required</div>
-                    <!-- <div *ngIf="loginForm.controls['userName']?.errors?.['email']" class="error"> Invalid Email Format</div> -->
-                </div>
+                    <div *ngIf="loginForm.controls['userName']?.errors?.['required']" class="text-danger"> UserName
+                      Required</div>
+                  </div>
                 </div>
 
                 <div class="form-outline mb-4">
                   <label class="form-label" for="form3Example4cg">Password</label>
-                  <input type="text" id="form3Example4cg" class="form-control form-control-lg" formControlName="password"required [ngClass]="{'is-invalid': loginForm.controls['password'].touched&& loginForm.controls['password'].errors}"/>
+                  <input type="text" id="form3Example4cg" class="form-control form-control-lg"
+                    formControlName="password" required
+                    [ngClass]="{'is-invalid': loginForm.controls['password'].touched&& loginForm.controls['password'].errors}" />
                   <div *ngIf="loginForm.controls['password'].touched">
-                    <div *ngIf="loginForm.controls['password']?.errors?.['required']" class="error"> Password Required</div>
-                    <div *ngIf="loginForm.controls['password']?.errors?.['minlength']" class="error"> Minimum 8 characters required</div>
-                    <div *ngIf="loginForm.controls['password']?.errors?.['pattern']" class="error">Password should contain atleast<br>
-                     one uppercase,special character,number</div><br>
-                </div>
-                  
+                    <div *ngIf="loginForm.controls['password']?.errors?.['required']" class="text-danger"> Password
+                      Required</div>
+                    <div *ngIf="loginForm.controls['password']?.errors?.['minlength']" class="text-danger"> Minimum 8
+                      characters required</div>
+                    <div *ngIf="loginForm.controls['password']?.errors?.['pattern']" class="text-danger">Password should
+                      contain atleast<br>
+                      one uppercase,special character,number</div><br>
+                  </div>
                 </div>
 
-                
                 <div class="d-flex justify-content-center">
                   <button type="submit"
-                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" >Login</button>
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Login</button>
                 </div>
-                <p class="text-center text-muted mt-5 mb-0"> Don't have an account? 
-                  <button type="button" (click)="register()"class="btn btn-link"><u>Register here</u></button></p>
-
-               
-                
-
+                <p class="text-center text-muted mt-5 mb-0"> Don't have an account?
+                  <button type="button" (click)="register()" class="btn btn-link"><u>Register here</u></button>
+                </p>
               </form>
 
             </div>

@@ -1,52 +1,57 @@
 <div *ngIf="status == 0">
   <form [formGroup]="jobAddForm" (ngSubmit)="jobAdd()">
     <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>Title</h2> </label>
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>Title</h2>
+      </label>
       <div class="col-sm-8">
-        <input type="text" formControlName="title" class="form-control form-control-lg"
-        /><br />
+        <input type="text" formControlName="title" class="form-control form-control-lg" /><br />
       </div>
     </div>
     <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>Description</h2> </label>
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>Description</h2>
+      </label>
       <div class="col-sm-8">
-        <input type="text" formControlName="description" class="form-control form-control-lg"
-        /><br />
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>No Of Openings</h2> </label>
-      <div class="col-sm-8">
-        <input type="text" formControlName="noOfOpenings" class="form-control form-control-lg"
-        /><br />
+        <input type="text" formControlName="description" class="form-control form-control-lg" /><br />
       </div>
     </div>
 
     <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>Qualification</h2> </label>
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>No Of Openings</h2>
+      </label>
+      <div class="col-sm-8">
+        <input type="text" formControlName="noOfOpenings" class="form-control form-control-lg" /><br />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>Qualification</h2>
+      </label>
       <div class="col-sm-8">
         <div ngbDropdown class="d-inline-block">
-          <select
-            #qualification
-            (change)="onSelection(qualification.value)"
-            class="btn btn-outline-primary"
-          >
-            <option default>Tenth</option>
-            <option>Twelfth</option>
-            <option>UG</option>
-            <option>PG</option>
+          <select type="text" id="qualification" formControlName="qualification" class="form-control"
+            [ngClass]="{'is-invalid':(jobAddForm.controls['qualification'].touched||jobAddForm.controls['qualification'].dirty) && jobAddForm.controls['qualification'].errors}">
+
+            <option value="" disabled selected>Select your Qualification</option>
+
+            <option *ngFor="let qualification of qualifications | keyvalue" value="{{qualification.key}}">
+              {{qualification.value}}</option>
           </select>
         </div>
         <br />
       </div>
     </div>
-    
-    
+
+
     <div>
-      <button class="btn btn-success" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
-      </svg>ADD</button>
+      <button class="btn btn-success" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+          fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+          <path
+            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+        </svg>ADD</button>
     </div>
   </form>
 </div>
@@ -54,48 +59,51 @@
 <div *ngIf="status == 1">
   <form [formGroup]="jobEditForm" (ngSubmit)="jobEdit()">
     <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>Title</h2> </label>
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>Title</h2>
+      </label>
       <div class="col-sm-8">
-        <input type="text" formControlName="title" class="form-control form-control-lg"
-        /><br />
+        <input type="text" formControlName="title" class="form-control form-control-lg" /><br />
       </div>
     </div>
     <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>Description</h2> </label>
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>Description</h2>
+      </label>
       <div class="col-sm-8">
-        <input type="text" formControlName="description" class="form-control form-control-lg"
-        /><br />
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>No Of Openings</h2> </label>
-      <div class="col-sm-8">
-        <input type="text" formControlName="noOfOpenings" class="form-control form-control-lg"
-        /><br />
+        <input type="text" formControlName="description" class="form-control form-control-lg" /><br />
       </div>
     </div>
 
     <div class="form-group row">
-      <label for="firstname" class="col-sm-4 col-form-label"><h2>Qualification</h2> </label>
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>No Of Openings</h2>
+      </label>
+      <div class="col-sm-8">
+        <input type="text" formControlName="noOfOpenings" class="form-control form-control-lg" /><br />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="firstname" class="col-sm-4 col-form-label">
+        <h2>Qualification</h2>
+      </label>
       <div class="col-sm-8">
         <div ngbDropdown class="d-inline-block">
-          <select
-            #qualification
-            (change)="onSelection(qualification.value)"
-            class="btn btn-outline-primary"
-          >
-            <option default>Tenth</option>
-            <option>Twelfth</option>
-            <option>UG</option>
-            <option>PG</option>
+          <select type="text" id="qualification" formControlName="qualification" class="form-control"
+            [ngClass]="{'is-invalid':(jobEditForm.controls['qualification'].touched||jobEditForm.controls['qualification'].dirty) && jobEditForm.controls['qualification'].errors}">
+
+            <option value="" disabled selected>Select your Qualification</option>
+
+            <option *ngFor="let qualification of qualifications | keyvalue" value="{{qualification.key}}">
+              {{qualification.value}}</option>
           </select>
         </div>
         <br />
       </div>
     </div>
     <div>
-      <button class="btn btn-success"type="submit">Update</button>
+      <button class="btn btn-success" type="submit">Update</button>
     </div>
   </form>
 </div>

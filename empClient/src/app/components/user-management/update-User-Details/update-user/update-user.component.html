@@ -1,19 +1,29 @@
 <form [formGroup]="updateForm" (ngSubmit)="updateUser()">
-    <div class="form-outline mb-4">
-      <input type="text" id="form5Example2" class="form-control" formControlName="name"/>
-      <label class="form-label" for="form5Example2">Enter Name</label>
+  <div class="form-outline mb-4">
+    <input type="text" id="form5Example2" class="form-control" formControlName="name" />
+    <label class="form-label" for="form5Example2">Enter Name</label>
+  </div>
+  <div class="form-outline mb-4">
+    <input type="text" id="form5Example2" class="form-control" formControlName="address" />
+    <label class="form-label" for="form5Example2">Enter Address</label>
+  </div>
+  <div class="form-outline mb-4">
+    <input type="text" id="form5Example2" class="form-control" formControlName="phoneNo" />
+    <label class="form-label" for="form5Example2">Enter Phone No</label>
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label" for="form5Example2">Enter Qualification</label>&nbsp;
+    <div ngbDropdown class="d-inline-block">
+      <select type="text" id="qualification" formControlName="qualification" class="form-control"
+        [ngClass]="{'is-invalid':(updateForm.controls['qualification'].touched||updateForm.controls['qualification'].dirty) && updateForm.controls['qualification'].errors}">
+
+        <option value="" disabled selected>Select your Qualification</option>
+
+        <option *ngFor="let qualification of qualifications | keyvalue" value="{{qualification.key}}">
+          {{qualification.value}}</option>
+      </select>
     </div>
-    <div class="form-outline mb-4">
-        <input type="text" id="form5Example2" class="form-control" formControlName="address"/>
-        <label class="form-label" for="form5Example2">Enter Address</label>
-      </div>
-      <div class="form-outline mb-4">
-        <input type="text" id="form5Example2" class="form-control" formControlName="phoneNo"/>
-        <label class="form-label" for="form5Example2">Enter Phone No</label>
-      </div>
-      <div class="form-outline mb-4">
-        <input type="text" id="form5Example2" class="form-control" formControlName="qualification"/>
-        <label class="form-label" for="form5Example2">Enter Qualification</label>
-      </div>
-    <button type="submit" class="btn btn-primary btn-block mb-4">Update</button>
-  </form>
+
+  </div>
+  <button type="submit" class="btn btn-primary btn-block mb-4">Update</button>
+</form>

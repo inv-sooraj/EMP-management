@@ -21,9 +21,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   closeResult: string = '';
 
   gaugeValues: any = {
-    1: 50,
-    2: 50,
-    3: 50
+    1: 0,
+    2: 0,
+    3: 0
   };
 
   interval: any;

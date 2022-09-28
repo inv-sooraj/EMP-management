@@ -20,6 +20,8 @@ export class ListJobRequestComponent implements OnInit {
   sortBy:string='job_Id'
   search:string='';
 
+  role:any
+
   title = 'appBootstrap';
 
   closeResult: string = '';
@@ -27,14 +29,20 @@ export class ListJobRequestComponent implements OnInit {
 
   ngOnInit(): void {
     this.reqList()
+    this.role=localStorage.getItem('role');
   }
   addJob() {
     this.service.status = 0;
   }
 
-  edit(reqId: any) {
-    this.service.status = 1;
-    this.service.reqId = reqId;
+  edit(reqId: any,id:any) {
+    this.service.updateRequest(reqId,id).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.reqList();
+      },
+      error: (error: any) => { console.log(error) }
+    })
   }
 
   delete(reqId: any) {

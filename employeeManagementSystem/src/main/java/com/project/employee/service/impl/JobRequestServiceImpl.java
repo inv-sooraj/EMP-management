@@ -19,7 +19,6 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import com.project.employee.entity.Job;
 import com.project.employee.entity.JobRequest;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
@@ -44,13 +43,14 @@ public class JobRequestServiceImpl implements JobRequestService {
 
 	@Override
 	public Collection<JobRequestView> list() {
+		
 		return jobRequestRepository.findAll().stream().map((jobRequest) -> new JobRequestView(jobRequest)).toList();
 
 	}
 
-	@Override
-	public Collection<JobRequestView> listById(Integer jobId) {
-		return jobRequestRepository.findAllByJobJobId(jobId).stream()
+	@Override 
+	public Collection<JobRequestView> listByUserId() {
+		return jobRequestRepository.findAllByUserUserIdAndStatus(SecurityUtil.getCurrentUserId(),JobRequest.Status.ACTIVE.value).stream()
 				.map((jobRequest) -> new JobRequestView(jobRequest)).toList();
 
 	}
@@ -77,21 +77,21 @@ public class JobRequestServiceImpl implements JobRequestService {
 		jobRequestRepository.save(jobRequest);
 
 	}
-	
+
 	@Override
-    public void deleteSelected(Collection<Integer> reqIds) {
+	public void deleteSelected(Collection<Integer> reqIds) {
 
-        for (Integer reqId : reqIds) {
-            
-            Optional<JobRequest> req = jobRequestRepository.findById(reqId);
+		for (Integer reqId : reqIds) {
 
-            if (req.isPresent()) {
-                jobRequestRepository.save(req.get().delete());
-            }
+			Optional<JobRequest> req = jobRequestRepository.findById(reqId);
 
-        }
+			if (req.isPresent()) {
+				jobRequestRepository.save(req.get().delete());
+			}
 
-    }
+		}
+
+	}
 
 	@Override
 	public long jobRequestCount() {
@@ -109,14 +109,10 @@ public class JobRequestServiceImpl implements JobRequestService {
 			page = 1;
 		}
 
-		Page<JobRequest> jobRequests = jobRequestRepository.findAllByStatus(JobRequest.Status.ACTIVE.value, search,
+		Page<JobRequest> jobRequests = jobRequestRepository.findAllByUserUserId(SecurityUtil.getCurrentUserId(), search,
 				PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
 		Pager<JobRequestView> jobRequestViews = new Pager<JobRequestView>(limit, (int) jobRequests.getTotalElements(),
 				page + 1);
-
-		// Pager<JobView> jobViews = new
-		// Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
-		// search).intValue(),page);
 
 		jobRequestViews
 				.setResult(jobRequests.getContent().stream().map(JobRequestView::new).collect(Collectors.toList()));

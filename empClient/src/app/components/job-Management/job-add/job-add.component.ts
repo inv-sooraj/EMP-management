@@ -16,11 +16,13 @@ export class JobAddComponent implements OnInit {
     title: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
     noOfOpenings: new FormControl('', Validators.required),
+    qualification: new FormControl('', Validators.required),
   })
 
   jobEditForm: FormGroup = new FormGroup({
     title: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
+    qualification: new FormControl('', Validators.required),
     noOfOpenings: new FormControl('', Validators.required),
   })
 
@@ -35,11 +37,12 @@ export class JobAddComponent implements OnInit {
     if (this.status == 1) {
       this.jobService.getJob().subscribe({
         next: (response: any) => {
-            this.jobEditForm.patchValue({
-              title: response.title,
-              description: response.description,
-              noOfOpenings: response.noOfOpenings,
-            })
+          this.jobEditForm.patchValue({
+            title: response.title,
+            description: response.description,
+            noOfOpenings: response.noOfOpenings,
+            qualification: response.qualification,
+          })
         },
         error: (error: any) => {
           console.log(error);
@@ -47,18 +50,14 @@ export class JobAddComponent implements OnInit {
       })
     }
   }
+  qualifications: { [key: number]: string } = {
+    0: 'SSLC ',
+    1: 'PLUS TWO',
+    2: 'UG ',
+    3: 'PG ',
+  };
 
-  onSelection(value: any) {
-    if (value == 'Tenth') {
-      this.qualification = '0';
-    } else if (value == 'Twelfth') {
-      this.qualification = '1';
-    } else if (value == 'UG') {
-      this.qualification = '2';
-    } else if (value == 'PG') {
-      this.qualification = '3';
-    }
-  }
+
 
 
 
@@ -70,7 +69,7 @@ export class JobAddComponent implements OnInit {
         title: this.jobAddForm.controls['title'].value,
         description: this.jobAddForm.controls['description'].value,
         noOfOpenings: this.jobAddForm.controls['noOfOpenings'].value,
-        qualification: this.qualification,
+        qualification: this.jobAddForm.controls['qualification'].value,
       }
 
       this.jobService.jobAdd(jobData).subscribe({
@@ -92,7 +91,7 @@ export class JobAddComponent implements OnInit {
         title: this.jobEditForm.controls['title'].value,
         description: this.jobEditForm.controls['description'].value,
         noOfOpenings: this.jobEditForm.controls['noOfOpenings'].value,
-        qualification: this.qualification,
+        qualification: this.jobAddForm.controls['qualification'].value,
       }
 
       this.jobService.jobEdit(jobData).subscribe({

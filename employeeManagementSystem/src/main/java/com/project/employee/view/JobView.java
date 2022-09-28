@@ -12,6 +12,7 @@ public class JobView {
 	private final Integer noOfOpenings;
 	private final String createdBy;
 	private final short qualification;
+	private final short jobStatus;
 	private final short status;
 	@Json.DateTimeFormat
 	private final Date createDate;
@@ -28,16 +29,11 @@ public class JobView {
 		this.status = job.getStatus();
 		this.createDate = job.getCreateDate();
 		this.updateDate = job.getUpdateDate();
+		this.jobStatus=job.getJobStatus();
 	}
 	
-	
-
-	
-
-
-
 	public JobView(int jobId, String title, String description, Integer noOfOpenings, String createdBy,
-			short qualification, short status, Date createDate, Date updateDate) {
+			short qualification, short status,short jobStatus, Date createDate, Date updateDate) {
 		this.jobId = jobId;
 		this.title = title;
 		this.description = description;
@@ -45,15 +41,10 @@ public class JobView {
 		this.createdBy = createdBy;
 		this.qualification = qualification;
 		this.status = status;
+		this.jobStatus=jobStatus;
 		this.createDate = createDate;
 		this.updateDate = updateDate;
 	}
-
-
-
-
-
-
 
 	public int getJobId() {
 		return jobId;
@@ -77,6 +68,10 @@ public class JobView {
 
 	public short getQualification() {
 		return qualification;
+	}
+
+	public short getJobStatus() {
+		return jobStatus;
 	}
 
 	public short getStatus() {

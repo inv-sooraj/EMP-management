@@ -1,0 +1,32 @@
+@import url("https://www.w3schools.com/w3css/4/w3.css");
+@import url("https://www.w3schools.com/lib/w3-theme-blue.css");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+
+
+body{
+    margin-top: -3%;
+    background-color: white;
+}
+.w3-theme-l5 {
+    color: #000 !important;
+    background-color: #fbfcfd !important;
+}
+
+.ss{
+    margin-left: 28%;
+    margin-top: 10%;
+    
+}
+*{
+    overflow:-moz-hidden-unscrollable;
+}
+
+.aaa{
+    margin-left: 20%;
+}
+/* body {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #999;
+    font-family: Hevletica, sans-serif;
+  } */

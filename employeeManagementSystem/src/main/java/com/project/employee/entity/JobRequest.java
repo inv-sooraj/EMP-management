@@ -40,7 +40,7 @@ public class JobRequest {
     private Integer reqId;
 	private String remark;
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User userId;
+    private User user;
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Job job;
 	private byte requestStatus;
@@ -57,7 +57,7 @@ public class JobRequest {
     }
 
     public JobRequest(Integer jobId,JobRequestForm form,Integer userId) {
-    	this.userId=new User(userId);
+    	this.user=new User(userId);
     	this.job=new Job(jobId);
     	this.remark=form.getRemark();	
     	this.requestStatus=JobRequest.RequestStatus.PENDING.value;
@@ -103,11 +103,11 @@ public class JobRequest {
 	
 	
 	public User getUserId() {
-		return userId;
+		return user;
 	}
 
 	public void setUserId(User userId) {
-		this.userId = userId;
+		this.user = userId;
 	}
 
 	

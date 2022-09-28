@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 export class AuthService {
 
   API_URL = environment.apiUrl
+  role:any
   constructor(private http: HttpClient) { }
 
   loginUser(data: any): Observable<any> {

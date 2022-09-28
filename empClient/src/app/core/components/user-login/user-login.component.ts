@@ -34,6 +34,7 @@ export class UserLoginComponent implements OnInit {
       this.service.loginUser(userData).subscribe({
         next: (response: any) => {
           console.log(response);
+          localStorage.setItem("role",response.role);
           localStorage.setItem("accesstoken", response.accessToken.value);
           localStorage.setItem("refreshtoken", response.refreshToken.value);
           if (response.role == 0) {
@@ -53,7 +54,7 @@ export class UserLoginComponent implements OnInit {
         }
 
       });
-    }
+    } else this.loginForm.markAllAsTouched();
   }
 
 }

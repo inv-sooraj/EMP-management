@@ -49,7 +49,6 @@ public class JobServiceImpl implements JobService {
 			sortBy = "job_id";
 		}
 		
-		System.out.println("aaaaaaaaaaaaaaaaaaaa"+sortBy);
 
 		if (page <= 0) {
 			page = 1;

@@ -20,10 +20,13 @@ public interface UserRepository extends Repository<User, Integer> {
 	Optional<User> findByUserIdAndPasswordAndStatus(Integer userId, String password, Byte status);
 
 	User findByUserId(Integer userId);
-	
+
 	Optional<User> findById(Integer jobId);
 
-	
+	Optional<User> findByUserName(String userName);
+
+	Optional<User> findByEmail(String email);
+
 //	Optional<User>findByUserIdAndStatus(Integer userId,byte status);
 
 	Optional<User> findByUserIdAndStatus(Integer userId, Byte status);

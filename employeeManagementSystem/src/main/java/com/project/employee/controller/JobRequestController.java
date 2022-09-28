@@ -34,8 +34,8 @@ public class JobRequestController {
 	}
 
 //		api for changing job request status
-	@PutMapping("/{reqId}/{status}")
-	public JobRequestView update(@PathVariable("reqId") Integer reqId, @PathVariable("status") Integer status) {
+	@PutMapping("/{reqId}")
+	public JobRequestView update(@PathVariable("reqId") Integer reqId, @RequestBody Integer status) {
 		return jobRequestService.update(reqId, status);
 	}
 
@@ -54,9 +54,9 @@ public class JobRequestController {
 	}
 
 //	api for listing  job requests of current logged in user	
-	@GetMapping("/{jobId}")
-	public Collection<JobRequestView> listById(@PathVariable("jobId") Integer jobId) {
-		return jobRequestService.listById(jobId);
+	@GetMapping("/emp")
+	public Collection<JobRequestView> listByUserId() {
+		return jobRequestService.listByUserId();
 	}
 
 	@GetMapping("/download")

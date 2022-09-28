@@ -39,6 +39,7 @@ export class JobService {
     return this.http.put(environment.apiUrl + '/job/delete/selected', jobIds);
   }
 
+  
 
 
 }

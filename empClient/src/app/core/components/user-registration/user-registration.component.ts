@@ -9,18 +9,20 @@ import { AuthService } from '../../service/auth.service';
   styleUrls: ['./user-registration.component.css']
 })
 export class UserRegistrationComponent implements OnInit {
+  
+  role:string='2';
 
   constructor(private service: AuthService, private router: Router) { }
 
   registerForm: FormGroup = new FormGroup({
     userName: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required,Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$'), Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$'), Validators.minLength(8)])
-
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$'), Validators.minLength(8)]),
+    confirmPassword:new FormControl('',[Validators.required])
   })
   ngOnInit(): void {
     // TODO document why this method 'ngOnInit' is empty
-  
+
   }
 
 
@@ -29,12 +31,15 @@ export class UserRegistrationComponent implements OnInit {
 
   registerUser() {
     if (this.registerForm.valid) {
+    console.log(this.role);
+      
+      
       console.log("in func")
       let userData = {
         userName: this.registerForm.controls['userName'].value,
         email: this.registerForm.controls['email'].value,
         password: this.registerForm.controls['password'].value,
-        role:2
+        role: this.role
       }
       this.service.registerUser(userData).subscribe({
         next: (response: any) => {
@@ -50,7 +55,8 @@ export class UserRegistrationComponent implements OnInit {
         }
 
       });
-    }
+    } else { this.registerForm.markAllAsTouched() }
+
   }
 
   login() {

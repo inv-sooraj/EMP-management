@@ -59,6 +59,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserView add(UserRegistrationForm form) {
+		if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+            throw new BadRequestException("Username Already Exists");
+        }
+
+        if (userRepository.findByEmail(form.getEmail()).isPresent()) {
+            throw new BadRequestException("Email Already Exists");
+        }
 		return new UserView(userRepository.save(new User(form.getUserName(), form.getEmail(),
 				passwordEncoder.encode(form.getPassword()), form.getRole())));
 	}
