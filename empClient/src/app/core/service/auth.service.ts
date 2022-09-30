@@ -19,4 +19,10 @@ export class AuthService {
   register(body: any): Observable<any> {
     return this.http.post(environment.apiUrl + '/users', body);
   }
+
+  logout(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('name');
+  }
 }

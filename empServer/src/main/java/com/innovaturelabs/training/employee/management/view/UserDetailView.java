@@ -13,6 +13,7 @@ public class UserDetailView {
     private final String userName;
     private final String email;
     private final short status;
+    private final short role;
     private final short qualification;
 
     private final String address;
@@ -29,6 +30,8 @@ public class UserDetailView {
         this.userName = user.getUserName();
         this.email = user.getEmail();
         this.status = user.getStatus();
+
+        this.role=user.getRole();
 
         this.qualification = user.getQualification();
 
@@ -78,6 +81,10 @@ public class UserDetailView {
 
     public Date getUpdateDate() {
         return updateDate;
+    }
+
+    public short getRole() {
+        return role;
     }
 
 }

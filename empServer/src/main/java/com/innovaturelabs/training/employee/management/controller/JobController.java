@@ -20,6 +20,7 @@ import com.innovaturelabs.training.employee.management.form.JobForm;
 import com.innovaturelabs.training.employee.management.service.JobService;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.JobView;
+import com.innovaturelabs.training.employee.management.view.StatusView;
 
 @RestController
 @RequestMapping("/job")
@@ -37,9 +38,10 @@ public class JobController {
     public Pager<JobView> list(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
-            @RequestParam(name = "sortBy", defaultValue = "jobId") String sortBy,
+            @RequestParam(name = "sortBy", defaultValue = "job_id") String sortBy,
+            @RequestParam(name = "filter", defaultValue = "5") Integer data,
             @RequestParam(name = "search", defaultValue = "") String search) {
-        return jobService.list(page, limit, sortBy, search);
+        return jobService.list(page, limit, sortBy, search, data);
     }
 
     @GetMapping("/{jobId}")
@@ -50,6 +52,17 @@ public class JobController {
     @PutMapping("/{jobId}")
     public JobView update(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobForm form) {
         return jobService.update(form, jobId);
+    }
+
+    @PutMapping("/status/{jobId}")
+    public JobView updateStatus(@PathVariable("jobId") Integer jobId, @Valid @RequestBody Byte status) {
+        return jobService.updateStatus(jobId, status);
+    }
+
+    @PutMapping("/status/selected/{status}")
+    public void changeSelectedStatus(@RequestBody Collection<Integer> jobIds,
+            @PathVariable(name = "status") Byte status) {
+        jobService.changeSelectedStatus(jobIds, status);
     }
 
     @PutMapping("/delete/{jobId}")
@@ -65,5 +78,11 @@ public class JobController {
     @GetMapping("/download")
     public void jobCsv(HttpServletResponse httpServletResponse) {
         jobService.jobCsv(httpServletResponse);
+    }
+
+    @GetMapping("/stat")
+    public Collection<StatusView> count() {
+
+        return jobService.getStat();
     }
 }

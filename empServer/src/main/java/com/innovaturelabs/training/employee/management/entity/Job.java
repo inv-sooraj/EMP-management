@@ -106,6 +106,8 @@ public class Job {
         return this;
     }
 
+    
+
     public Job delete() {
 
         this.status = Job.Status.DELETED.value;
@@ -114,6 +116,7 @@ public class Job {
 
         return this;
     }
+
 
     public Integer getJobId() {
         return jobId;

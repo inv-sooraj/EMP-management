@@ -3,6 +3,7 @@ package com.innovaturelabs.training.employee.management.repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,14 +18,28 @@ public interface JobRequestRepository extends Repository<JobRequest, Integer> {
 
     Collection<JobRequest> findAll();
 
-    @Query(value = "SELECT * FROM jobrequest_tbl  WHERE status = ?1 AND (feedback LIKE %?2% OR remark LIKE %?2%)", nativeQuery = true)
-    Page<JobRequest> findAllByStatus(byte status, String search, Pageable page);
+    Optional<JobRequest> findByUserUserIdAndJobJobId(Integer userId, Integer jobId);
 
-    @Query(value = "SELECT `COLUMN_NAME`  FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='jobrequest_tbl'", nativeQuery = true)
+    Optional<JobRequest> findByJobRequestId(Integer jobRequestId);
+
+    @Query(value = "SELECT * FROM job_request_tbl  WHERE status IN ?1 AND (feedback LIKE %?2% OR remark LIKE %?2%)", nativeQuery = true)
+    Page<JobRequest> findAllByStatus(byte[] status, String search, Pageable page);
+
+
+
+
+    @Query(value = "SELECT * FROM job_request_tbl  WHERE job_id IN (select job_id from job_tbl where user_id=?1) AND status IN ?2 AND (feedback LIKE %?3% OR remark LIKE %?3%)", nativeQuery = true)
+    Page<JobRequest> findAllByUserIdStatus(Integer userId, byte[] status, String search, Pageable page);
+    
+    @Query(value = "SELECT * FROM job_request_tbl  WHERE user_id=?1 AND status IN ?2 AND (feedback LIKE %?3% OR remark LIKE %?3%)", nativeQuery = true)
+    Page<JobRequest> findAllByUserUserIdStatus(Integer userId, byte[] status, String search, Pageable page);
+
+    @Query(value = "SELECT `COLUMN_NAME`  FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='job_request_tbl'", nativeQuery = true)
     ArrayList<String> findColumns();
-
 
     Collection<JobRequest> findAllByUserUserId(Integer userId);
 
+    @Query(value = "SELECT job_id FROM job_request_tbl  WHERE user_id=?1", nativeQuery = true)
+    Collection<Integer> getAppliedJobs(Integer userId);
 
 }

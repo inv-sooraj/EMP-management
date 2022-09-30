@@ -1,0 +1,63 @@
+<div class="card m-auto">
+
+    <div class="card-body">
+
+        <div class="container pt-2">
+
+            <form [formGroup]="userEditForm" class="row g-3">
+
+
+
+                <div class="col-12 mt-0">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" formControlName="name" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['name'].touched||userEditForm.controls['name'].dirty) && userEditForm.controls['name'].errors}">
+
+                    <div *ngIf="userEditForm.controls['name'].touched||userEditForm.controls['name'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['name'].errors?.['required']">
+                            Name is required.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12 mt-0">
+                    <label for="userName" class="form-label">userName</label>
+                    <input type="text" formControlName="userName" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['userName'].touched||userEditForm.controls['userName'].dirty) && userEditForm.controls['userName'].errors}">
+
+                    <div *ngIf="userEditForm.controls['userName'].touched||userEditForm.controls['userName'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['userName'].errors?.['required']">
+                            User Name is required.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" formControlName="email" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['email'].touched||userEditForm.controls['email'].dirty) && userEditForm.controls['email'].errors}">
+
+                    <div *ngIf="(userEditForm.controls['email'].touched)" class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['email'].errors?.['required']">
+                            Email is required.
+                        </div>
+                        <div class="text-danger" *ngIf="userEditForm.controls['email'].errors?.['pattern']">
+                            Invalid email.
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+</div>

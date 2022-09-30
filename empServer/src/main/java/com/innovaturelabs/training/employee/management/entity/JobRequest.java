@@ -1,6 +1,8 @@
 package com.innovaturelabs.training.employee.management.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,14 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.innovaturelabs.training.employee.management.form.JobRequestForm;
+import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 
-@Entity(name = "jobrequest_tbl")
+@Entity(name = "job_request_tbl")
 public class JobRequest {
 
     public enum Status {
-        APPROVED((byte) 0),
-        PENDING((byte) 1),
+        PENDING((byte) 0),
+        APPROVED((byte) 1),
         REJECT((byte) 2);
 
         public final byte value;
@@ -51,17 +53,29 @@ public class JobRequest {
     public JobRequest() {
     }
 
-    public JobRequest(JobRequestForm form, Integer userId, Integer jobId) {
+    public JobRequest(Integer userId, Integer jobId) {
         this.user = new User(userId);
         this.job = new Job(jobId);
-        this.status = form.getStatus();
-        this.feedback = form.getFeedback();
-        this.remark = form.getRemark();
+        this.status = JobRequest.Status.PENDING.value;
+
+        this.feedback = "";
+        this.remark = "";
 
         Date date = new Date();
         this.createDate = date;
         this.updateDate = date;
     }
+
+    // public JobRequest(JobRequestForm form, Integer userId, Integer jobId) {
+    // this.user = new User(userId);
+    // this.job = new Job(jobId);
+    // this.setStatus(form.getStatus());
+    // this.remark = form.getRemark();
+
+    // Date date = new Date();
+    // this.createDate = date;
+    // this.updateDate = date;
+    // }
 
     public JobRequest(Integer jobRequestId, Integer userId, Integer jobId, Byte status, String feedback,
             String remark) {
@@ -106,7 +120,13 @@ public class JobRequest {
     }
 
     public void setStatus(Byte status) {
-        this.status = status;
+
+        if (Arrays.asList(Status.values()).stream().map(q -> q.value).collect(Collectors.toList())
+                .contains(status)) {
+            this.status = status;
+        } else {
+            throw new BadRequestException("Status : " + status + " Not Allowed");
+        }
     }
 
     public String getFeedback() {

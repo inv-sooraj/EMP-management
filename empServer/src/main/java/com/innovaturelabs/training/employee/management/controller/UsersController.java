@@ -1,13 +1,16 @@
 
 package com.innovaturelabs.training.employee.management.controller;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.innovaturelabs.training.employee.management.form.ChangePasswordForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
+import com.innovaturelabs.training.employee.management.form.UserEditForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
+import com.innovaturelabs.training.employee.management.form.UserProfilePicForm;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.Pager;
@@ -37,8 +43,13 @@ public class UsersController {
     }
 
     @GetMapping()
-    public UserView currentUser() {
+    public UserDetailView currentUser() {
         return userService.currentUser();
+    }
+
+    @GetMapping("/{userId}")
+    public UserDetailView getUser(@PathVariable("userId") Integer userId) {
+        return userService.getUser(userId);
     }
 
     @GetMapping("/page")
@@ -50,12 +61,6 @@ public class UsersController {
 
         return userService.list(page, limit, sortBy, search);
     }
-
-    // @PutMapping()
-    // public UserView update(
-    // @Valid @RequestBody UserForm form) {
-    // return userService.update(SecurityUtil.getCurrentUserId(), form);
-    // }
 
     @PutMapping("/username")
     public UserView updateUserName(
@@ -69,12 +74,11 @@ public class UsersController {
         return userService.updateUserDetails(form);
     }
 
-    // @PutMapping("/{UserId}")
-    // public UserView update(
-    // @PathVariable("UserId") Integer userId,
-    // @Valid @RequestBody UserForm form) {
-    // return userService.update(userId, form);
-    // }
+    @PutMapping("/user-update/{userId}")
+    public UserView updateUser(@PathVariable(value = "userId") Integer useId,
+            @RequestBody UserEditForm form) {
+        return userService.updateUser(form, useId);
+    }
 
     @PutMapping("/delete/{UserId}")
     public void delete(@PathVariable("UserId") Integer userId) {
@@ -90,4 +94,24 @@ public class UsersController {
     public void userCsv(HttpServletResponse httpServletResponse) {
         userService.userCsv(httpServletResponse);
     }
+
+    @PutMapping("/profile")
+    public void setProfile(@ModelAttribute UserProfilePicForm form)
+            throws IOException {
+
+        userService.setProfilePic(form);
+    }
+
+    @GetMapping("/profile")
+    public HttpEntity<byte[]> getProfilePic() {
+
+        return userService.getProfilePic(SecurityUtil.getCurrentUserId());
+
+    }
+
+    @PutMapping("/change-password")
+    public UserView changePassword(@RequestBody ChangePasswordForm form) {
+        return userService.changePassword(form);
+    }
+
 }

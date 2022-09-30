@@ -23,13 +23,13 @@ public class AccessTokenUserDetails implements UserDetails {
         this.userId = userId;
 
         switch (role) {
-            case 0:
+            case 2:
                 userRole = "ADMIN";
                 break;
             case 1:
                 userRole = "EMPLOYER";
                 break;
-            case 2:
+            case 0:
                 userRole = "EMPLOYEE";
                 break;
             default:

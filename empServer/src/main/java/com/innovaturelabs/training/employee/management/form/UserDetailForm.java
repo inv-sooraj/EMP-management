@@ -4,7 +4,8 @@ import javax.validation.constraints.Size;
 
 public class UserDetailForm {
 
-    @Size(min = 10, max = 13)
+    private String name;
+
     private String phone;
 
     @Size(max = 255)
@@ -14,6 +15,14 @@ public class UserDetailForm {
 
     public String getPhone() {
         return phone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setPhone(String phone) {
@@ -36,8 +45,4 @@ public class UserDetailForm {
         this.qualification = qualification;
     }
 
-
-    
-
-    
 }

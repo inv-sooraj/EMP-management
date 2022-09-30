@@ -2,6 +2,7 @@
 package com.innovaturelabs.training.employee.management.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,10 +13,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.innovaturelabs.training.employee.management.entity.Job;
 import com.innovaturelabs.training.employee.management.entity.JobRequest;
+import com.innovaturelabs.training.employee.management.entity.User;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
+import com.innovaturelabs.training.employee.management.exception.NotFoundException;
 import com.innovaturelabs.training.employee.management.form.JobRequestForm;
+import com.innovaturelabs.training.employee.management.repository.JobRepository;
 import com.innovaturelabs.training.employee.management.repository.JobRequestRepository;
+import com.innovaturelabs.training.employee.management.repository.UserRepository;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.JobRequestService;
 import com.innovaturelabs.training.employee.management.util.CsvDownload;
@@ -28,11 +34,36 @@ public class JobRequestServiceImpl implements JobRequestService {
     @Autowired
     private JobRequestRepository jobRequestRepository;
 
-    @Override
-    public JobRequestView add(JobRequestForm form, Integer jobId) {
+    @Autowired
+    private JobRepository jobRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    // @Override
+    // public JobRequestView add(JobRequestForm form, Integer jobId) {
+
+    // return new JobRequestView(
+    // jobRequestRepository.save(new JobRequest(form,
+    // SecurityUtil.getCurrentUserId(), jobId)));
+
+    // }
+
+    @Override
+    public JobRequestView add(Integer jobId) {
+
+        if (jobRequestRepository.findByUserUserIdAndJobJobId(SecurityUtil.getCurrentUserId(), jobId).isPresent()) {
+            throw new BadRequestException("Already Applied");
+        }
+
+        if (userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+                .orElseThrow(NotFoundException::new).getQualification() < jobRepository.findByjobId(jobId)
+                        .orElseThrow(NotFoundException::new).getQualification()) {
+            throw new BadRequestException("Insufficien Qualification");
+
+        }
         return new JobRequestView(
-                jobRequestRepository.save(new JobRequest(form, SecurityUtil.getCurrentUserId(), jobId)));
+                jobRequestRepository.save(new JobRequest(SecurityUtil.getCurrentUserId(), jobId)));
 
     }
 
@@ -46,9 +77,26 @@ public class JobRequestServiceImpl implements JobRequestService {
         if (page <= 0) {
             page = 1;
         }
+        Page<JobRequest> jobRequests;
 
-        Page<JobRequest> jobRequests = jobRequestRepository.findAllByStatus(JobRequest.Status.PENDING.value, search,
-                PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+        byte[] status = { JobRequest.Status.PENDING.value, JobRequest.Status.APPROVED.value,
+                JobRequest.Status.REJECT.value };
+
+        if (SecurityUtil.getCurrentUserRole().equals("EMPLOYER") || SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+
+            jobRequests = jobRequestRepository.findAllByUserIdStatus(SecurityUtil.getCurrentUserId(),
+                    status, search,
+                    PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+
+        } else if (SecurityUtil.getCurrentUserRole().equals("EMPLOYEE")) {
+
+            jobRequests = jobRequestRepository.findAllByUserUserIdStatus(SecurityUtil.getCurrentUserId(),
+                    status, search,
+                    PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+        } else {
+            throw new BadRequestException("Illegal Access");
+
+        }
 
         Pager<JobRequestView> jobRequestViews = new Pager<>(limit, (int) jobRequests.getTotalElements(), page);
 
@@ -85,6 +133,45 @@ public class JobRequestServiceImpl implements JobRequestService {
 
         CsvDownload.download(httpServletResponse, exportlist, "Job_Requests");
 
+    }
+
+    @Override
+    public Collection<Integer> appliedJobs() {
+        return jobRequestRepository.getAppliedJobs(SecurityUtil.getCurrentUserId());
+    }
+
+    @Override
+    public JobRequestView update(Integer jobRequestId, JobRequestForm form) {
+
+        if (SecurityUtil.getCurrentUserRole() == null || SecurityUtil.getCurrentUserRole().equals("EMPLOYEE")) {
+            throw new BadRequestException("Illegal Access");
+        }
+
+        JobRequest jobRequest = jobRequestRepository.findByJobRequestId(jobRequestId)
+                .orElseThrow(NotFoundException::new);
+
+        Job job = jobRequest.getJob();
+
+        if (!jobRequest.getStatus().equals(JobRequest.Status.APPROVED.value)
+                && form.getStatus().equals(JobRequest.Status.APPROVED.value)) {
+
+            job.setOpenings(job.getOpenings() - 1);
+
+            jobRepository.save(job);
+
+        } else if (jobRequest.getStatus().equals(JobRequest.Status.APPROVED.value)
+                && !form.getStatus().equals(JobRequest.Status.APPROVED.value)) {
+            job.setOpenings(job.getOpenings() + 1);
+            jobRepository.save(job);
+        }
+
+        jobRequest.setStatus(form.getStatus());
+
+        jobRequest.setRemark(form.getRemark());
+
+        jobRequest.setUpdateDate(new Date());
+
+        return new JobRequestView(jobRequestRepository.save(jobRequest));
     }
 
 }

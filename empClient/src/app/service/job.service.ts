@@ -35,7 +35,25 @@ export class JobService {
     return this.http.put(this.apiUrl + '/job/delete/selected', jobIds);
   }
 
+  changeJobStatus(jobId: number, status: number): Observable<any> {
+    return this.http.put(this.apiUrl + '/job/status/' + jobId, status);
+  }
+
+  changeJobsStatus(requestBody: any, status: number): Observable<any> {
+    return this.http.put(
+      this.apiUrl + '/job/status/selected/' + status,
+      requestBody
+    );
+  }
+
   downloadCsv(): Observable<any> {
-    return this.http.get(this.apiUrl + '/job/download',{responseType:'blob',observe:'response'});
+    return this.http.get(this.apiUrl + '/job/download', {
+      responseType: 'blob',
+      observe: 'response',
+    });
+  }
+
+  getStat(): Observable<any> {
+    return this.http.get(this.apiUrl + '/job/stat');
   }
 }

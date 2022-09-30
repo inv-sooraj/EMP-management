@@ -9,7 +9,11 @@ import { JobService } from 'src/app/service/job.service';
   styleUrls: ['./job-list.component.css'],
 })
 export class JobListComponent implements OnInit {
-  constructor(private jobService: JobService, private modalService: NgbModal) {}
+  role: number;
+
+  constructor(private jobService: JobService, private modalService: NgbModal) {
+    this.role = parseInt(localStorage.getItem('role') as string);
+  }
 
   jobList: any;
 
@@ -30,8 +34,18 @@ export class JobListComponent implements OnInit {
     3: 'PG ',
   };
 
+  status: { [key: number]: string } = {
+    0: 'PENDING',
+    1: 'APPROVED',
+    2: 'COMPLETED',
+    3: 'DELETED',
+  };
+
+  statusCount: { [key: string]: number } = {};
+
   ngOnInit(): void {
     this.listJobs();
+    this.getStat();
   }
 
   numSeq(n: number): Array<number> {
@@ -81,12 +95,14 @@ export class JobListComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('filter', this.selectedStatus)
       .append('search', this.search);
 
     this.jobService.getJobs(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
         this.jobList = response;
+        this.getStat();
       },
       error: (err: any) => {
         console.error(err);
@@ -184,4 +200,59 @@ export class JobListComponent implements OnInit {
     this.jobId = jobId ? jobId : 0;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
+
+  changeJobStatus(jobId: number, status: number): void {
+    this.jobService.changeJobStatus(jobId, status).subscribe({
+      next: (response: any) => {
+        console.log('Status Changed', response);
+        this.listJobs();
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
+  }
+
+  changeJobsStatus(status: number): void {
+    if (this.checked.length <= 0) {
+      return;
+    }
+
+    this.jobService.changeJobsStatus(this.checked, status).subscribe({
+      next: (response: any) => {
+        console.log('Updated', this.checked, ' : ', status, response);
+        this.listJobs();
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
+
+    (document.getElementById('selectAll') as HTMLInputElement).checked = false;
+  }
+
+  getStat(): void {
+    this.statusCount = {
+      PENDING: 0,
+      APPROVED: 0,
+      COMPLETED: 0,
+      DELETED: 0,
+    };
+    this.jobService.getStat().subscribe({
+      next: (response: any) => {
+        console.log('Stat', response);
+
+        response.forEach((element: any) => {
+          console.log(element);
+
+          this.statusCount[this.status[element.status]] = element.count;
+        });
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
+  }
+
+  selectedStatus: number = 4;
 }

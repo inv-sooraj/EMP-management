@@ -1,4 +1,42 @@
-<div class="container">
+<div class="container mt-4">
+    <div class="col">
+        <div class="row">
+            <div class="col-3" *ngFor=" let sta of statusCount|keyvalue">
+                <div class="card">
+                    <div class="card-statistic-3 p-2">
+                        <div class="m-4">
+                            <h5 class="card-title mb-0">{{sta.key}}</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-8 px-4 pb-2">
+                                <h2 class="d-flex align-items-center mb-0">
+                                   {{sta.value}}
+                                </h2>
+                            </div>
+                            <div class="col-4 text-right">
+                                <span>{{sta.value*100/(statusCount["PENDING"]+statusCount["APPROVED"]+statusCount["COMPLETED"]+statusCount["DELETED"])}} % </span>
+
+
+                            </div>
+                        </div>
+                        <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                            <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25"
+                                aria-valuemin="0" aria-valuemax="100" [style.width.%]='sta.value*100/(statusCount["PENDING"]+statusCount["APPROVED"]+statusCount["COMPLETED"]+statusCount["DELETED"])'></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+<div class="container-xl">
     <div class="table-responsive">
 
         <div class="table-wrapper">
@@ -7,22 +45,31 @@
                     <div class="col-sm-6">
                         <h2>Manage <strong>Jobs</strong></h2>
                     </div>
-                    <div class="col-sm-6">
-                        <button (click)="open(formModule)" class="btn btn-success">
-                            <em class="bi bi-plus-circle-fill"></em>
-                            &nbsp; Add Job
-                        </button>
+                    <div class="col-sm-6" *ngIf="role==2 || role==1">
 
-                        <button placement="bottom" ngbTooltip="Delete selected jobs from table" (click)="deleteJobs()"
-                            class="btn btn-danger" [disabled]="!checked.length">
+
+                        <button placement="bottom" ngbTooltip="Delete selected jobs from table"
+                            (click)="changeJobsStatus(3)" class="btn btn-danger" [disabled]="!checked.length">
                             <em class="bi-trash-fill"></em>
                             &nbsp;Delete Jobs
+                        </button>
+
+                        <button *ngIf="role==2" placement="bottom" ngbTooltip="Approve selected jobs from table"
+                            (click)="changeJobsStatus(1)" class="btn btn-success" [disabled]="!checked.length">
+                            <em class="bi-check-square"></em>
+                            &nbsp;Approve Jobs
                         </button>
 
                         <button placement="bottom" ngbTooltip="Download job list as Csv" (click)="downloadCsv()"
                             class="btn btn-secondary">
                             <em class="bi bi-download"></em>
                             &nbsp;Download
+                        </button>
+
+
+                        <button (click)="open(formModule)" class="btn btn-success">
+                            <em class="bi bi-plus-circle-fill"></em>
+                            &nbsp; Add Job
                         </button>
                     </div>
                 </div>
@@ -31,7 +78,7 @@
 
             <div class="row">
 
-                <div class="col-6">
+                <div class="col-2">
                     Show
                     <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="setLimit()">
                         <option selected="selected" [ngValue]="3">3</option>
@@ -39,6 +86,23 @@
                         <option [ngValue]="5">5</option>
                     </select>
                     entries
+                </div>
+
+
+                <div class="col-3">
+                    <label for="filter">
+
+                        <em class="bi bi-funnel-fill"></em>
+                        Status : &nbsp;
+                    </label>
+                    <select id="filter" class="form-select w-auto d-inline" [(ngModel)]="selectedStatus"
+                        (change)="setLimit()">
+                        <option selected="selected" [ngValue]="4">All</option>
+                        <option *ngFor="let filter of status | keyvalue" [ngValue]="filter.key">{{filter.value}}
+                        </option>
+
+                    </select>
+
                 </div>
 
                 <div class="col-6 text-end">
@@ -58,21 +122,22 @@
                             </span>
                         </th>
 
-                        <th scope="col" (click)="setSort('job_id')">Id <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col" (click)="setSort('title')">Title <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
+                        <th scope="col" (click)="setSort('job_id')">Id <span class="bi bi-sort-numeric-down"></span>
+                        </th>
+                        <th scope="col" (click)="setSort('title')">Title <span class="bi bi-sort-alpha-down"></span>
+                        </th>
                         <th scope="col" (click)="setSort('description')">Description <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
+                                class="bi bi-sort-alpha-down"></span></th>
                         <th scope="col" (click)="setSort('qualification')">Qualification <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
+                                class="bi bi-sort-alpha-down"></span></th>
                         <th scope="col" (click)="setSort('openings')">Openings <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
+                                class="bi bi-sort-numeric-down"></span>
+                        </th>
                         <th scope="col">User</th>
                         <th scope="col" (click)="setSort('update_date')">Last Modified <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col" (click)="setSort('status')">Status <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
+                                class="bi bi-sort-alpha-down"></span></th>
+                        <th scope="col" (click)="setSort('status')">Status <span class="bi bi-sort-alpha-down"></span>
+                        </th>
                     </tr>
                 </thead>
 
@@ -98,15 +163,24 @@
                         <td>{{ job.userId }}</td>
 
                         <td>{{ job.updateDate }}</td>
-                        <td>{{ job.status }}</td>
+                        <td>{{ status[job.status] }}</td>
 
-                        <td>
-                            <a placement="top" ngbTooltip="Edit job" class="edit"
-                                (click)="open(formModule,job.jobId)"><em class="bi bi-pencil-fill"></em></a>
+                        <td *ngIf="role==2 || role==1">
+                            <button placement="top" ngbTooltip="Edit job" class="btn"
+                                (click)="open(formModule,job.jobId)"><a class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
-                            <a placement="top" ngbTooltip="Delete job" class="delete" (click)="deleteJob(job.jobId)">
-                                <em class="bi bi-trash-fill"></em>
-                            </a>
+                            <button [disabled]="job.status==3" placement="top" ngbTooltip="Delete job" class="btn"
+                                (click)="changeJobStatus(job.jobId,3)">
+                                <a class="bi bi-trash-fill delete"></a>
+                            </button>
+
+                            &nbsp;
+                            <button *ngIf="role==2" [disabled]="job.status==1" placement="top" ngbTooltip="Approve job"
+                                class="btn" (click)="changeJobStatus(job.jobId,1)">
+                                <em class="bi bi-check2-square"></em>
+                            </button>
+
+
                         </td>
                     </tr>
                 </tbody>

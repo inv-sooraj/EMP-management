@@ -13,6 +13,11 @@ import { UserListComponent } from './components/user-management/user-list/user-l
 import { UserEditComponent } from './components/user-management/user-edit/user-edit.component';
 import { JobListComponent } from './components/job-management/job-list/job-list.component';
 import { JobFormComponent } from './components/job-management/job-form/job-form.component';
+import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
+import { JobRequestListComponent } from './components/job-request-management/job-request-list/job-request-list.component';
+import { JobApplyComponent } from './components/job-management/job-apply/job-apply.component';
+import { HeaderComponent } from './components/header/header.component';
+import { AdminUserEditComponent } from './components/user-management/admin-user-edit/admin-user-edit.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +28,11 @@ import { JobFormComponent } from './components/job-management/job-form/job-form.
     UserEditComponent,
     JobListComponent,
     JobFormComponent,
+    UserProfileComponent,
+    JobRequestListComponent,
+    JobApplyComponent,
+    HeaderComponent,
+    AdminUserEditComponent,
   ],
 
   imports: [

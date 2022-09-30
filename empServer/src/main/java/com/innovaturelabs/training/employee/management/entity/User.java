@@ -75,6 +75,8 @@ public class User {
     private byte role;
     private byte qualification;
 
+    private String profilePic;
+
     @Column(length = 255)
     private String address;
 
@@ -126,11 +128,15 @@ public class User {
 
     public User updateDetails(UserDetailForm form) {
 
+        this.name = form.getName();
+
         setQualification(form.getQualification());
 
         this.address = form.getAddress();
 
-        this.phone = form.getAddress();
+        this.phone = form.getPhone();
+
+        this.updateDate = new Date();
 
         return this;
     }
@@ -245,6 +251,14 @@ public class User {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
 }

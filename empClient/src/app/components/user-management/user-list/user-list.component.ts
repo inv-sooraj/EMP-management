@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -8,7 +9,13 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit {
-  constructor(private userService: UserService) {}
+  role: number;
+  constructor(
+    private userService: UserService,
+    private modalService: NgbModal
+  ) {
+    this.role = parseInt(localStorage.getItem('role') as string);
+  }
 
   ngOnInit(): void {
     this.listUsers();
@@ -23,7 +30,6 @@ export class UserListComponent implements OnInit {
   search: string = '';
 
   userList: any = {};
-
 
   numSeq(n: number): Array<number> {
     return Array(n);
@@ -83,9 +89,6 @@ export class UserListComponent implements OnInit {
       },
     });
   }
-
-
-
 
   deleteUser(userId: number) {
     this.userService.deleteUser(userId).subscribe({
@@ -171,5 +174,9 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  userId: number = 0;
 
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
 }

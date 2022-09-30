@@ -3,6 +3,7 @@ package com.innovaturelabs.training.employee.management.configuration;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -47,7 +48,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(OPTIONS, "/login").anonymous()
                 .antMatchers(POST, "/login").anonymous()
                 .antMatchers(PUT, "/login").anonymous()
-                // .antMatchers(GET, "/users/**").hasAnyRole("EMPLOYER", "ADMIN")
+                .antMatchers(GET, "/job/page/**").hasAnyRole("EMPLOYER", "ADMIN", "EMPLOYEE")
+                .antMatchers(GET, "/users/page/**").hasAnyRole("EMPLOYER", "ADMIN")
+                .antMatchers(PUT, "/users/delete/**").hasAnyRole("ADMIN")
+                // .antMatchers(GET, "/job/**").hasRole("ADMIN")
                 .antMatchers(OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
     }

@@ -1,1 +1,65 @@
-<p>user-edit works!</p>
+<div class="card m-auto">
+
+    <div class="card-body">
+
+        <div class="container pt-2">
+
+            <form [formGroup]="userEditForm" class="row g-3">
+
+
+
+                <div class="col-12 mt-0">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" formControlName="name" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['name'].touched||userEditForm.controls['name'].dirty) && userEditForm.controls['name'].errors}">
+
+                    <div *ngIf="userEditForm.controls['name'].touched||userEditForm.controls['name'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['name'].errors?.['required']">
+                            Name is required.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" formControlName="phone" class="form-control" id="phone">
+                </div>
+
+
+                <div class="col-12">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea  formControlName="address" class="form-control"></textarea>
+                </div>
+
+                <div class="col-12">
+                    <label for="qualification" class="form-label">Qualification</label>
+
+                    <select type="text" id="qualification" formControlName="qualification" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['qualification'].touched||userEditForm.controls['qualification'].dirty) && userEditForm.controls['qualification'].errors}">
+
+                        <option value="" disabled selected>Select your Qualification</option>
+
+                        <option *ngFor="let qualification of qualifications | keyvalue" value="{{qualification.key}}">
+                            {{qualification.value}}</option>
+                    </select>
+
+
+                    <div *ngIf="(userEditForm.controls['qualification'].touched||userEditForm.controls['qualification'].dirty)"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['qualification'].errors?.['required']">
+                            Qualification is required.
+                        </div>
+
+                    </div>
+                    <label for="qualification" class="text-danger pt-1"></label>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>

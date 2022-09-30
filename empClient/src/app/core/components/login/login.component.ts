@@ -11,7 +11,9 @@ import { AuthService } from '../../service/auth.service';
 export class LoginComponent implements OnInit {
   constructor(private router: Router, private service: AuthService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.service.logout();
+  }
 
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -35,7 +37,8 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('accessToken', response.accessToken.value);
         localStorage.setItem('refreshToken', response.refreshToken.value);
         localStorage.setItem('name', response.name);
-        // this.router.navigate(['home']);
+        localStorage.setItem('role', response.role);
+        this.router.navigate(['user-profile']);
       },
       error: (error: any) => {
         console.log('Error', error.error);

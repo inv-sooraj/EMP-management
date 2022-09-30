@@ -3,6 +3,12 @@ package com.innovaturelabs.training.employee.management.service.impl;
 
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -14,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -21,9 +30,12 @@ import org.springframework.validation.Errors;
 import com.innovaturelabs.training.employee.management.entity.User;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.exception.NotFoundException;
+import com.innovaturelabs.training.employee.management.form.ChangePasswordForm;
 import com.innovaturelabs.training.employee.management.form.LoginForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
+import com.innovaturelabs.training.employee.management.form.UserEditForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
+import com.innovaturelabs.training.employee.management.form.UserProfilePicForm;
 import com.innovaturelabs.training.employee.management.repository.UserRepository;
 import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
 import com.innovaturelabs.training.employee.management.security.util.InvalidTokenException;
@@ -87,8 +99,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserView currentUser() {
-        return new UserView(
+    public UserDetailView currentUser() {
+        return new UserDetailView(
                 userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
                         .orElseThrow(NotFoundException::new));
     }
@@ -255,6 +267,94 @@ public class UserServiceImpl implements UserService {
         user.updateDetails(form);
 
         return new UserDetailView(userRepository.save(user));
+    }
+
+    @Override
+    public UserView updateUser(UserEditForm form, Integer userId) {
+
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundException::new);
+
+        user.setName(form.getName());
+
+        user.setEmail(form.getEmail());
+        user.setUserName(form.getUserName());
+
+        user.setUpdateDate(new Date());
+
+        return new UserView(userRepository.save(user));
+    }
+
+    @Override
+    public UserDetailView getUser(Integer userId) {
+
+        return new UserDetailView(userRepository.findByUserId(userId).orElseThrow(NotFoundException::new));
+    }
+
+    @Override
+    public void setProfilePic(UserProfilePicForm form) throws IOException {
+
+        User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+                .orElseThrow(NotFoundException::new);
+
+        String uploadDir = "profile_pics/";
+        String fileName;
+        fileName = user.getUserId().toString() + ".png";
+
+        Path uploadPath = Paths.get("src/main/resources/static/" + uploadDir);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        try (InputStream inputStream = form.getProfilePic().getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {
+            throw new IOException("Could not save file");
+        }
+
+        user.setProfilePic(fileName);
+
+        user.setUpdateDate(new Date());
+
+        userRepository.save(user);
+
+    }
+
+    @Override
+    public HttpEntity<byte[]> getProfilePic(Integer userId) {
+
+        String profilePic = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
+                .orElseThrow(NotFoundException::new).getProfilePic();
+        byte[] file;
+        try {
+            file = Files.readAllBytes(Path.of("src/main/resources/static/profile_pics/" + profilePic));
+        } catch (IOException e) {
+            throw new BadRequestException("File Not Found");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        headers.setContentLength(file.length);
+
+        return new HttpEntity<>(file, headers);
+
+    }
+
+    @Override
+    public UserView changePassword(ChangePasswordForm form) {
+        User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+                .orElseThrow(NotFoundException::new);
+
+        if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
+            throw new BadRequestException("Password Doesnot Match");
+        }
+
+        user.setPassword(passwordEncoder.encode(form.getPassword()));
+
+        user.setUpdateDate(new Date());
+
+        return new UserView(userRepository.save(user));
     }
 
 }
