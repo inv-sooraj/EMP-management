@@ -67,20 +67,7 @@ public class Job {
 
     }
 
-    // public Job(Integer jobId, String jobTitle, String jobDescription, byte qualification, byte status, Integer openings,
-    //         User user, Date createDate, Date updateDate) {
-    //     this.jobId = jobId;
-    //     this.jobTitle = jobTitle;
-    //     this.jobDescription = jobDescription;
-    //     this.qualification = qualification;
-    //     this.status = status;
-    //     this.openings = openings;
-    //     this.user = user;
-    //     this.createDate = createDate;
-    //     this.updateDate = updateDate;
-    // }
-
-    public Job(JobForm form, User userId) {
+    public Job(JobForm form, User userId, Byte role) {
 
         this.user = userId;
         this.jobTitle = form.getJobTitle();
@@ -94,8 +81,12 @@ public class Job {
         // } else {
         // throw new BadRequestException("invalid qualification");
         // }
+        if (role.equals(User.Role.ADMIN.value)) {
+            this.status = Status.ACTIVE.value;
+        } else {
+            this.status = Status.PENDING.value;
 
-        this.status = Status.PENDING.value;
+        }
         Date dt = new Date();
 
         this.createDate = dt;

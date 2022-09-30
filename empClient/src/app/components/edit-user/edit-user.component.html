@@ -1,0 +1,69 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
+<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
+    <div class="container">
+        <div class="row mt-5">
+            <div class="spContainer mx-auto">
+                <div class="card px-4 py-5 border-0 shadow">
+                    <div class="d-inline text-left mb-3">
+                        <h3 class="font-weight-bold">Edit User</h3>
+                        <!-- <p>Access the most popular project management app in indonesia !</p> -->
+                    </div>
+
+                    <div class="d-inline text-center mb-0">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="userName" type="text"
+                                placeholder="username" />
+                        </div>
+                    </div>
+
+                    <div class="d-inline text-center mb-0">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="name" type="text" placeholder="name" />
+                        </div>
+                    </div>
+
+                    <div class="d-inline text-center ">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="email" type="text" placeholder="email" />
+                        </div>
+                    </div>
+
+                    <div class="d-inline text-center">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="phone" type="text" placeholder="phone" />
+                        </div>
+                    </div>
+                    <div class="d-inline text-center">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="address" type="text"
+                                placeholder="address" />
+                        </div>
+                    </div>
+                    <label>Select Qualification</label>
+                    <div class="d-inline text-center mb-0">
+                        <div class="form-group mx-auto">
+                            <select formControlName="qualification">
+                                <option value="dqdqdqd" selected disabled hidden>
+                                    Choose Qualification
+                                </option>
+                                <option value="0">SSLC</option>
+                                <option value="1">HIGHER</option>
+                                <option value="2">UG</option>
+                                <option value="3">PG</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="d-inline text-left mb-3">
+                        <div class="form-group mx-auto">
+                            <button class="btn btn-primary">Update</button>
+                            <!-- <a class="small text-black-50 pl-2 ml-2 border-left" href="">Forgot Password ?</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

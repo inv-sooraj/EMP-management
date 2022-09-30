@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.EmployeeManagement.entity.User;
 import com.project.EmployeeManagement.form.UserForm;
 import com.project.EmployeeManagement.service.EmployerService;
-import com.project.EmployeeManagement.service.UserService;
 import com.project.EmployeeManagement.view.UserView;
 
 @RestController
@@ -27,8 +26,6 @@ public class Employer {
     @Autowired
     private EmployerService employerService;
 
-    @Autowired
-    private UserService userService;
 
 
     @PostMapping

@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.EmployeeManagement.entity.User;
+import com.project.EmployeeManagement.form.UserAddForm;
 import com.project.EmployeeManagement.form.UserDetailForm;
 import com.project.EmployeeManagement.form.UserForm;
 import com.project.EmployeeManagement.security.util.SecurityUtil;
 import com.project.EmployeeManagement.service.UserService;
 import com.project.EmployeeManagement.util.Pager;
 import com.project.EmployeeManagement.view.UserView;
-
 
 // @CrossOrigin("http://localhost:4200")
 
@@ -33,12 +33,19 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+
+
+    // user registration
     @PostMapping
     public UserView add(@Valid @RequestBody UserForm form) {
         return userService.add(form);
     }
 
-
+    // Add new user
+    @PostMapping("/details")
+    public UserView addUser(@Valid @RequestBody UserForm form) {
+        return userService.addUser(form);
+    }
 
     @GetMapping
     public Collection<User> list() {
@@ -50,17 +57,15 @@ public class UsersController {
         return userService.get(userId);
     }
 
-
     @PutMapping
-    public UserView edit(@Valid @RequestBody UserDetailForm form) {
+    public UserView edit(@Valid @RequestBody UserAddForm form) {
         return userService.edit(SecurityUtil.getCurrentUserId(), form);
     }
 
     @PutMapping("/{userId}")
     public UserView edit(
             @PathVariable("userId") Integer userId,
-            @Valid @RequestBody UserDetailForm form
-    ) {
+            @Valid @RequestBody UserAddForm form) {
         return userService.edit(userId, form);
     }
 
@@ -69,8 +74,6 @@ public class UsersController {
         userService.delete(userId);
     }
 
-
-    
     // ..................................pagination.................................
 
     @GetMapping("/list")
@@ -78,20 +81,17 @@ public class UsersController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", required = false, defaultValue = "1") String page,
             @RequestParam(value = "limit", required = false, defaultValue = "16") String limit,
-            @RequestParam(value = "sort", required = false, defaultValue = "updateDate") String sort
-    ) {
+            @RequestParam(value = "sort", required = false, defaultValue = "update_date") String sort) {
 
         return userService.listItem(search, limit, sort, page);
     }
 
-
-    // ................................CSV Download..................................
-
+    // ................................CSV
+    // Download..................................
 
     @GetMapping("/download")
     public void jobCsv(HttpServletResponse httpServletResponse) {
         userService.jobCsv(httpServletResponse);
     }
 
-    
 }

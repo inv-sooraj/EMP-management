@@ -24,7 +24,7 @@ public class UserForm {
     @Password
     private String password;
 
-  
+    private byte role;
 
     public String getUserName() {
         return userName;
@@ -59,6 +59,17 @@ public class UserForm {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
+    public byte getRole() {
+        return role;
+    }
+
+
+    public void setRole(byte role) {
+        this.role = role;
+    }
+    
 
 
     

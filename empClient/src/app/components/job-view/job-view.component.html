@@ -1,0 +1,206 @@
+<app-header></app-header>
+
+<body>
+    <div class="container-xl">
+        <div class="table-responsive" style="height: 500px;">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h2>Manage <b>Jobs</b></h2>
+                        </div>
+                        <!-- <div class="col-sm-6">
+                            <button class="btn btn-success" type="button" routerLink="/list">View List</button>
+
+                            
+                        </div> -->
+
+                        <div class="col-sm-6">
+
+                            <!-- <button class="btn btn-info btn-sm" type="button" (click)="logOut()">
+                                Log Out
+                            </button> -->
+
+                            <!-- <button class="btn btn-success btn-sm" type="button" routerLink="/editJob">
+                                Add Job
+                            </button> -->
+                            <!-- <button class="btn btn-success btn-sm" type="button" routerLink="/adminDashboard">
+                                View Users
+                            </button> -->
+                            <!-- <button class="btn btn-success btn-sm" type="button">
+                                Pending Job Requests
+                            </button> -->
+                            <button class="btn btn-secondary btn-sm" type="button" (click)="csvDownload()">
+                                Download Csv
+                            </button>
+
+
+                            <div>
+
+                                <input type="search" placeholder="Search.." [(ngModel)]="search" (keyup)="setSearch()">
+                            </div>
+
+
+
+                            <!-- <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a> -->
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label><b>Filter</b></label>
+                    <div class="col-6">
+
+                        <select class="form-select w-auto d-inline" [(ngModel)]="view" (change)="setView()">
+                            <option selected="selected" [ngValue]="3">ALL</option>
+                            <!-- <option [ngValue]="3">ALL</option> -->
+                            <option [ngValue]="1">ACTIVE</option>
+                            <option [ngValue]="2">PENDING</option>
+                        </select>
+
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="selectAll" />
+                                    <label for="selectAll"></label>
+                                </span>
+                            </th>
+                            <th>Id</th>
+                            <th>Job Title</th>
+                            <th>JOb Description</th>
+                            <th>Qualification</th>
+                            <th>Openings</th>
+                            <th>Status</th>
+
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="details">
+                        <tr *ngFor="let val of details.result">
+                            <td>
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="checkbox1" name="options[]" value="1" />
+                                    <label for="checkbox1"></label>
+                                </span>
+                            </td>
+                            <td>{{ val.jobId }}</td>
+                            <td>{{ val.jobTitle }}</td>
+                            <td>{{ val.jobDescription }}</td>
+                            <td>{{ qualifications[val.qualification] }}</td>
+                            <td>{{ val.openings }}</td>
+                            <td>{{ status[val.status] }}</td>
+
+                            <td>
+                                <div class="row">
+                                    <div class="myDIV-1">
+                                        <button class="btn">
+
+                                            <!-- <button type="button" class="btn btn-warning" (click)="jobEdit(val.jobId)">edit</button> -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="p-3 mb-2 bg-info text-white" class="bi bi-pen" viewBox="0 0 16 16"
+                                                (click)="open(editJob);jobId=val.jobId">
+                                                <path
+                                                    d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="hide">Edit</div>
+
+
+                                    <div class="myDIV">
+                                        <button class="btn">
+
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
+                                                class="bi bi-trash" viewBox="0 0 16 16"
+                                                (click)="flag=0;jobDelete(val.jobId);">
+                                                <path
+                                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                <path fill-rule="evenodd"
+                                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="hide">Delete</div>
+                                    <button *ngIf="view==2" class="btn-danger" (click)="flag=3;jobDelete(val.jobId)">Approve</button >
+
+
+                                    <!-- <button type="button" class="btn btn-warning btn-sm"
+                                    routerLink="/editJob/{{val.jobId}}">
+                                    edit
+                                </button> -->
+
+
+                                    <!-- <button type="button" class="btn btn-danger btn-sm" (click)="jobDelete(val.jobId)">
+                                    delete
+                                </button> -->
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+            </div>
+        </div>
+        <div class="hint-text" *ngIf="details">
+            Showing &nbsp;
+            <strong>{{ details.itemStart }} </strong> to <strong> {{ details.itemEnd }} </strong> out of
+            <strong>{{ details.numItems }}</strong> &nbsp; entries
+        </div>
+
+        <div class="clearfix">
+            <!-- <div class="hint-text">Showing <b>1</b> out of <b>1</b> entries</div> -->
+            <ul class="pagination" *ngIf="details">
+                <!-- <li class="page-item disabled"></li> -->
+                <button class="page-link" [class.disabled]="!details.hasPrevious" (click)="navPrevious()">
+                    Previous
+                </button>
+                <!-- <button class="page-item"  (click)="navPrevious()">Previous</button> -->
+                <li class="page-item" *ngFor="let s of numSeq(details.numPages); let i = index"
+                    [ngClass]="{ active: details.currentPage == i + 1 }">
+                    <button (click)="gotoPage(i + 1)" class="page-link">
+                        {{ i + 1 }}
+                    </button>
+                </li>
+                <!-- <li class="page-item"><a href="#" class="page-link">Next</a></li> -->
+                <!-- <button class="page-item" [disabled]="!details.hasNext" (click)="navNext()">Next</button> -->
+                <button class="page-link" [class.disabled]="!details.hasNext" (click)="navNext()">
+                    Next
+                </button>
+            </ul>
+        </div>
+    </div>
+    <!-- Edit Modal HTML -->
+</body>
+<div class="col-6">
+    Show
+    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="setLimit()">
+        <option selected="selected" [ngValue]="3">3</option>
+        <option [ngValue]="4">4</option>
+        <option [ngValue]="5">5</option>
+    </select>
+    entries
+</div>
+
+
+<ng-template #editJob let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Edit Job</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <app-edit-job (completed)="pagination()" #addEditComponent [jobId]="jobId"></app-edit-job>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-success" (click)="modal.dismiss();addEditComponent.submit()"> <label
+                *ngIf="jobId">Edit</label></button>
+    </div>
+</ng-template>
+
+<app-footer></app-footer>

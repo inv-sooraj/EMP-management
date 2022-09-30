@@ -28,7 +28,7 @@ public interface UserRepository extends Repository<User, Integer> {
     Collection<User> findByRoleAndStatus(byte role, byte status);
 
     // ...............................................
-    @Query(value = "SELECT COUNT(*) FROM user as u WHERE u.role = ?1 AND u.status in ?2 AND (u.first_name like %?3% OR u.last_name like %?3% OR u.email like %?3%) ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM user as u WHERE u.role = ?1 AND u.status in ?2 AND (u.user_name like %?3% OR u.name like %?3% ) ", nativeQuery = true)
     Long countUserList(byte role, byte status, String search);
 
     @Query(value = "SELECT * FROM user  WHERE status = ?1  AND (name like %?2% OR address like %?2% OR email like %?2%) ", nativeQuery = true)

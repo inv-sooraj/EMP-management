@@ -1,0 +1,114 @@
+<section class="navigation">
+    <div class="nav-container">
+        <div class="brand">
+            <a href="#!">Logo</a>
+        </div>
+        <nav>
+            <div class="nav-mobile"><a id="navbar-toggle" href="#!"><span></span></a></div>
+            <ul class="nav-list">
+                <li>
+                    <a href="#!">Home</a>
+                </li>
+                <li>
+                    <a href="#!">About</a>
+                </li>
+                <li>
+                    <div class="col">
+                        <div ngbDropdown class="d-inline-block mt-2 ">
+                            <button type="button" class="btn text-white" id="dropdownBasic1" ngbDropdownToggle>Manage
+                                Users</button>
+                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                <button class="btn" ngbDropdownItem routerLink="/adminDashboard">View Users</button>
+                                <button ngbDropdownItem (click)="open(addUser)">Add new User</button>
+                                <button ngbDropdownItem>Something else is here</button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+
+
+                    <div class="col">
+                        <div ngbDropdown class="d-inline-block mt-2 ">
+                            <button type="button" class="btn  text-white" id="dropdownBasic1" ngbDropdownToggle>Manage
+                                Jobs</button>
+                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                <button class="btn" ngbDropdownItem routerLink="/jobView">View Jobs</button>
+                                <button ngbDropdownItem (click)="open(addJob)">Add New Job</button>
+                                <button ngbDropdownItem routerLink="/jobRequestView">View Job Requests</button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <!-- <a>Category</a>
+                    <ul class="navbar-dropdown">
+                        <li>
+                            <a href="#!">Sass</a>
+                        </li>
+                        <li>
+                            <a href="#!">Less</a>
+                        </li>
+                        <li>
+                            <a href="#!">Stylus</a>
+                        </li>
+                    </ul> -->
+
+
+                </li>
+                <li>
+                    <a (click)="logOut()">Log Out</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+
+
+<!-- <div class="col">
+    <div ngbDropdown class="d-inline-block">
+        <button type="button" class="btn btn-outline-primary" id="dropdownBasic1"
+            ngbDropdownToggle>Toggle dropdown</button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem>Action - 1</button>
+            <button ngbDropdownItem>Another Action</button>
+            <button ngbDropdownItem>Something else is here</button>
+        </div>
+    </div>
+</div> -->
+<ng-template #addJob let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add Job</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <app-edit-job #addEditComponent></app-edit-job>
+        <!-- <app-add-edit-user #addUser></app-add-edit-user> -->
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-success" (click)="modal.dismiss();addEditComponent.submit()">
+            <label>add</label></button>
+    </div>
+</ng-template>
+
+
+
+<ng-template #addUser let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add User</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <app-add-edit-user (completed)="modal.dismiss()" #addUser></app-add-edit-user>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-success" (click)="addUser.addUser()">
+            <label>add</label></button>
+    </div>
+</ng-template>

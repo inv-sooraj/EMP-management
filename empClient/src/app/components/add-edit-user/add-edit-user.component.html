@@ -1,0 +1,89 @@
+<form [formGroup]="addEditUserForm">
+    <div class="container">
+        <div class="row mt-5">
+            <div class="spContainer mx-auto">
+                <div class="card px-4 py-5 border-0 shadow">
+                    <div class="d-inline text-left mb-3">
+                        <!-- <h3 class="font-weight-bold">Add User</h3> -->
+                        <!-- <p>Access the most popular project management app in indonesia !</p> -->
+                    </div>
+
+                    <div class="d-inline text-center mb-0">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="userName" type="text"
+                                placeholder="username" />
+                        </div>
+                    </div>
+
+                    <div class="d-inline text-center mb-0">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="name" type="text" placeholder="name" />
+                        </div>
+                    </div>
+
+                    <div class="d-inline text-center ">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="email" type="text" placeholder="email" />
+                        </div>
+                    </div>
+                    <div class="d-inline text-center " *ngIf="flag">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="password" type="password"
+                                placeholder="password" />
+                        </div>
+                    </div>
+                    <!-- <div class="d-inline text-center">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="phone" type="text" placeholder="phone" />
+                        </div>
+                    </div>
+                    <div class="d-inline text-center">
+                        <div class="form-group mx-auto">
+                            <input class="form-control inpSp" formControlName="address" type="text"
+                                placeholder="address" />
+                        </div>
+                    </div>
+                    <label>Select Qualification</label>
+                    <div class="d-inline text-center mb-0">
+                        <div class="form-group mx-auto">
+                            <select formControlName="qualification">
+                                <option value="dqdqdqd" selected disabled hidden>
+                                    Choose Qualification
+                                </option>
+                                <option value="0">SSLC</option>
+                                <option value="1">HIGHER</option>
+                                <option value="2">UG</option>
+                                <option value="3">PG</option>
+                            </select>
+                        </div>
+                    </div> -->
+                    <!--######################################### -->
+                    <hr>
+                    <!-- <label>
+                        Add new
+                    </label> -->
+                    <div class=" text-center">
+                        <label>
+                            Add as
+                        </label>
+                        <input class="form-check-input mx-3" type="radio" id="employer" value=1
+                            formControlName="role">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label class="form-check-label" for="employer">
+                            employer
+                        </label>
+
+                        <input class="form-check-input mx-3" type="radio" id="employee" value="2"
+                            formControlName="role">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label class="form-check-label" for="employee">
+                            Employee
+                        </label>
+                    </div>
+                    <hr>
+                    <!-- ####################################### -->
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

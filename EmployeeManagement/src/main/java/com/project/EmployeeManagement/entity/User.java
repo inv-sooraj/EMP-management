@@ -101,8 +101,29 @@ public class User {
         this.updateDate = dt;
     }
 
-    public Integer getUserId() {
+    public User(String userName, String name, String email,String password, String address, String phone,
+            byte qualification, Byte role) {
+        this.userName = userName;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.password=password;
+        this.phone = phone;
+        this.qualification = qualification;
+        this.status = Status.ACTIVE.value;
+        this.role = role;
+        Date dt = new Date();
+        this.createDate = dt;
+        this.updateDate = dt;
+    }
+
+        public Integer getUserId() {
         return userId;
+    }
+
+    public User(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
     }
 
     public void setUserId(Integer userId) {

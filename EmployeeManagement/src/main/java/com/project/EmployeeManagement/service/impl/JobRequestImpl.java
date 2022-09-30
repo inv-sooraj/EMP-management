@@ -1,8 +1,11 @@
 package com.project.EmployeeManagement.service.impl;
 
-import java.util.Date;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.project.EmployeeManagement.entity.JobRequest;
@@ -14,47 +17,90 @@ import com.project.EmployeeManagement.repository.JobRequestRepository;
 import com.project.EmployeeManagement.repository.UserRepository;
 import com.project.EmployeeManagement.security.util.SecurityUtil;
 import com.project.EmployeeManagement.service.JobRequestService;
+import com.project.EmployeeManagement.util.Pager;
 import com.project.EmployeeManagement.view.JobRequestView;
 
 @Service
 public class JobRequestImpl implements JobRequestService {
 
-    @Autowired
-    private JobRequestRepository jobRequestRepository;
+        @Autowired
+        private JobRequestRepository jobRequestRepository;
 
-    @Autowired
+        @Autowired
+        private UserRepository userRepository;
 
-    private UserRepository userRepository;
+        @Override
+        public JobRequestView addJobRequest(Integer jobId) {
+                Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
 
-    @Override
-    public JobRequestView addJobRequest(Integer jobId, JobRequestForm form) {
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+                if (userRole.equals(User.Role.USER.value)) {
 
-        if (userRole.equals(User.Role.USER.value)) {
+                        return new JobRequestView(
+                                        jobRequestRepository
+                                                        .save(new JobRequest(jobId, SecurityUtil.getCurrentUserId())));
+                } else
+                        throw new BadRequestException("Illegal Access");
+        }
 
-            return new JobRequestView(
-                    jobRequestRepository
-                            .save(new JobRequest(form, jobId, SecurityUtil.getCurrentUserId())));
-        } else
-            throw new BadRequestException("Illegal Access");
-    }
+        @Override
+        public Pager<JobRequestView> listItem(String search, String limit, String sort, String page) {
+                Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
 
-    @Override
-    public void delete(Integer jobReqId) {
+                if (!userRole.equals(User.Role.USER.value)) {
 
-        // Byte userRole =
-        // userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+                        Page<JobRequest> jobsRequests = jobRequestRepository
+                                        .findAllByUserUserId(SecurityUtil.getCurrentUserId(),
+                                                        search,
+                                                        PageRequest.of(Integer.parseInt(page) - 1,
+                                                                        Integer.parseInt(limit),
+                                                                        Sort.by(sort).ascending()));
 
-        // if (!userRole.equals(User.Role.USER.value)) {
-        JobRequest jobRequest = jobRequestRepository.findById(jobReqId).orElseThrow(NotFoundException::new);
+                        Pager<JobRequestView> JobRequestViews = new Pager<JobRequestView>(Integer.parseInt(limit),
+                                        (int) jobsRequests.getTotalElements(),
+                                        Integer.parseInt(page));
 
-        jobRequest.setStatus(JobRequest.Status.REJECT.value);
+                        JobRequestViews.setResult(
+                                        jobsRequests.getContent().stream()
+                                                        .map(jobsRequest -> new JobRequestView(jobsRequest))
+                                                        .collect(Collectors.toList()));
 
-        jobRequest.setUpdateDate(new Date());
+                        return JobRequestViews;
 
-        jobRequestRepository.save(jobRequest);
-        // } else
-        // throw new BadRequestException("illegal access");
-    }
+                } else if (userRole.equals(User.Role.USER.value)) {
+                        Page<JobRequest> jobsRequests = jobRequestRepository
+                                        .findByJobReqId(SecurityUtil.getCurrentUserId(), search,
+                                                        PageRequest.of(Integer.parseInt(page) - 1,
+                                                                        Integer.parseInt(limit),
+                                                                        Sort.by(sort).ascending()));
+
+                        Pager<JobRequestView> JobRequestViews = new Pager<JobRequestView>(Integer.parseInt(limit),
+                                        (int) jobsRequests.getTotalElements(),
+                                        Integer.parseInt(page));
+
+                        JobRequestViews.setResult(
+                                        jobsRequests.getContent().stream()
+                                                        .map(jobsRequest -> new JobRequestView(jobsRequest))
+                                                        .collect(Collectors.toList()));
+
+                        return JobRequestViews;
+                        
+
+                } else
+                        throw new BadRequestException("invalid");
+
+        }
+
+        @Override
+        public JobRequestView edit(Integer jobRequestId, JobRequestForm form) {
+
+                JobRequest jobRequest = jobRequestRepository.findById(jobRequestId).orElseThrow(NotFoundException::new);
+
+                jobRequest.changeStatus(form);
+
+                jobRequestRepository.save(jobRequest);
+
+                return new JobRequestView(jobRequest);
+
+        }
 
 }

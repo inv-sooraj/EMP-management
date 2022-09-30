@@ -16,16 +16,15 @@ public interface JobService {
     Collection<JobView> list();
 
     JobView addJob(JobForm form);
-    void delete(Integer jobId) throws NotFoundException;
-    
-     JobDetailView update(Integer jobId,JobForm form)throws NotFoundException;
 
-    public Pager<JobDetailView> listItem(String search, String limit, String sort, String page);
+    void delete(Integer jobId, Integer flag) throws NotFoundException;
+
+    JobDetailView update(Integer jobId, JobForm form) throws NotFoundException;
+
+    public Pager<JobDetailView> listItem(String search, String limit, String sort, String page, String filter);
 
     void jobCsv(HttpServletResponse httpServletResponse);
 
     JobDetailView get(Integer jobId);
-        
-    
-    
+
 }

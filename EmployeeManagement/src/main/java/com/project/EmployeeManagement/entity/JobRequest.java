@@ -36,7 +36,7 @@ public class JobRequest {
     private Job job;
     private byte status;
 
-    private String remarks;
+    private String remarks = "";
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
@@ -72,6 +72,22 @@ public class JobRequest {
         this.createDate = dt;
         this.updateDate = dt;
 
+    }
+
+    public JobRequest(Integer jobId, Integer currentUserId) {
+        this.user = new User(currentUserId);
+        this.job = new Job(jobId);
+        this.status = Status.PENDING.value;
+        Date dt = new Date();
+
+        this.createDate = dt;
+        this.updateDate = dt;
+    }
+
+    public JobRequest changeStatus(JobRequestForm form) {
+        this.remarks = form.getRemarks();
+        this.status = form.getStatus();
+        return this;
     }
 
     public Integer getJobReqId() {

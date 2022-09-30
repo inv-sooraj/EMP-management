@@ -2,11 +2,15 @@ package com.project.EmployeeManagement.form;
 
 import javax.validation.constraints.Size;
 
+import com.project.EmployeeManagement.form.validations.Password;
+
 public class UserDetailForm {
 
     private String userName;
     private String name;
     private String email;
+    @Password
+    private String password;
 
     @Size(max = 225)
     private String address;
@@ -15,6 +19,8 @@ public class UserDetailForm {
     private String phone;
 
     private byte qualification;
+
+    private byte role;
 
     public String getUserName() {
         return userName;
@@ -40,6 +46,14 @@ public class UserDetailForm {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -62,6 +76,14 @@ public class UserDetailForm {
 
     public void setQualification(byte qualification) {
         this.qualification = qualification;
+    }
+
+    public byte getRole() {
+        return role;
+    }
+
+    public void setRole(byte role) {
+        this.role = role;
     }
 
 }

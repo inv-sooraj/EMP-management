@@ -26,6 +26,7 @@ import com.project.EmployeeManagement.entity.User;
 import com.project.EmployeeManagement.exception.BadRequestException;
 import com.project.EmployeeManagement.exception.NotFoundException;
 import com.project.EmployeeManagement.form.LoginForm;
+import com.project.EmployeeManagement.form.UserAddForm;
 import com.project.EmployeeManagement.form.UserDetailForm;
 import com.project.EmployeeManagement.form.UserForm;
 import com.project.EmployeeManagement.repository.UserRepository;
@@ -69,7 +70,30 @@ public class UserServiceImpl implements UserService {
                 form.getUserName(),
                 form.getName(),
                 form.getEmail(),
-                passwordEncoder.encode(form.getPassword()))));
+                passwordEncoder.encode(form.getPassword()),
+                form.getRole())));
+    }
+
+    @Override
+    public UserView addUser(UserForm form) {
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        if (userRole.equals(User.Role.ADMIN.value)) {
+
+            if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+                throw new BadRequestException("Already Exists");
+            }
+            return new UserView(userRepository.save(new User(
+                    form.getUserName(),
+                    form.getName(),
+                    form.getEmail(),
+                    passwordEncoder.encode(form.getPassword()),
+                    // form.getAddress(),
+                    // form.getPhone(),
+                    // form.getQualification(),
+                    form.getRole())));
+        } else
+            throw new BadRequestException("Illegal Access");
+
     }
 
     @Override
@@ -82,7 +106,7 @@ public class UserServiceImpl implements UserService {
     public UserView get(Integer userId) {
         Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
 
-        if (userRole.equals(User.Role.ADMIN.value)) {
+        if (userRole.equals(User.Role.ADMIN.value) || userId == SecurityUtil.getCurrentUserId()) {
             return userRepository.findById(userId)
                     .map((user) -> {
                         return new UserView(user);
@@ -94,7 +118,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserView edit(Integer userId, UserDetailForm form) throws NotFoundException {
+    public UserView edit(Integer userId, UserAddForm form) throws NotFoundException {
 
         if (!userId.equals(SecurityUtil.getCurrentUserId())
                 && userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new)
@@ -108,6 +132,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(form.getEmail());
         user.setAddress(form.getAddress());
         user.setPhone(form.getPhone());
+        user.setQualification(form.getQualification());
 
         user.setUpdateDate(new Date());
         userRepository.save(user);
@@ -194,7 +219,6 @@ public class UserServiceImpl implements UserService {
 
         return userViews;
     }
-
 
     // ################################CSVDownload########################################
     @Override

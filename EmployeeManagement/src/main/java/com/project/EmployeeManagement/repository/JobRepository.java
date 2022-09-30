@@ -1,14 +1,13 @@
 package com.project.EmployeeManagement.repository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
-import org.springframework.data.util.Streamable;
 
 import com.project.EmployeeManagement.entity.Job;
 import com.project.EmployeeManagement.view.JobView;
@@ -18,8 +17,8 @@ public interface JobRepository extends Repository<Job, Integer> {
     Collection<Job> findAll();
 
     Optional<Job> findById(Integer userId);
-    Optional<Job> findByJobIdAndStatus(Integer jobId,Byte status);
 
+    Optional<Job> findByJobIdAndStatus(Integer jobId, Byte status);
 
     Job save(Job job);
 
@@ -42,8 +41,12 @@ public interface JobRepository extends Repository<Job, Integer> {
     @Query(value = "SELECT COUNT(*) FROM job as j WHERE j.status in ?1 AND j.openings = ?2 AND(j.job_title like %?3% OR j.job_description like %?3% ) ", nativeQuery = true)
     Long countJobList(byte status, Integer openings, String search);
 
-    @Query(value = "SELECT * FROM job  WHERE status = ?1  AND (job_title like %?2% OR job_description like %?2% ) ", nativeQuery = true)
-    Page<Job> find(Byte status, String search, Pageable pageable);
+    @Query(value = "SELECT * FROM job  WHERE status IN ?1  AND (job_title like %?2% OR job_description like %?2% ) ", nativeQuery = true)
+    Page<Job> find(ArrayList<Byte> status, String search, Pageable pageable);
+
+    @Query(value = "SELECT * FROM job WHERE user_id=?1 AND status IN ?2 AND (job_title  LIKE %?3% OR job_description  LIKE %?3% )", nativeQuery = true)
+    Page<Job> findAllByUserIdStatus(Integer userId, ArrayList<Byte> status, String search, Pageable page);
+    // Page<Job> findById(User userId, String search, Pageable pageable);
 
     Optional<Job> findByJobId(Long jobId);
 
