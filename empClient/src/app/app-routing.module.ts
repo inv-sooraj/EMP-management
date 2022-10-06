@@ -12,11 +12,15 @@ import { UserListComponent } from './components/user-management/user-list/user-l
 import { AuthGuard } from './core/auth-guard/auth.guard';
 import { UserLoginComponent } from './core/components/user-login/user-login.component';
 import { UserRegistrationComponent } from './core/components/user-registration/user-registration.component';
+import { JoblistEmplyrComponent } from './components/job-Management/joblist-emplyr/joblist-emplyr.component';
+import { JoblistEmployeeComponent } from './components/job-Management/joblist-emp/joblist-employee.component';
+import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   {path:"",redirectTo:"login",pathMatch:"full"},
   {path:"login",component:UserLoginComponent,pathMatch:"full"},
   {path:"register",component:UserRegistrationComponent,pathMatch:"full"},
+  {path:"resetpswd/:url",component:ForgotPasswordComponent,pathMatch:"full"},
 
   {path:"header",component:HeaderComponent,canActivate:[AuthGuard],pathMatch:"full"},
   {path:"admindashboard",component:AdminComponent,canActivate:[AuthGuard],pathMatch:"full"},
@@ -27,7 +31,10 @@ const routes: Routes = [
   
   {path:"job",component:JoblistComponent,canActivate:[AuthGuard],pathMatch:"full"},
   {path:"jobadd",component:JobAddComponent,canActivate:[AuthGuard],pathMatch:"full"},
-  {path:"joblist",component:JoblistComponent,canActivate:[AuthGuard],pathMatch:"full"},
+  {path:"joblistadmin",component:JoblistComponent,canActivate:[AuthGuard],pathMatch:"full"},
+  {path:"joblistemp",component:JoblistEmployeeComponent,canActivate:[AuthGuard],pathMatch:"full"},
+  {path:"joblistemplyr",component:JoblistEmplyrComponent,canActivate:[AuthGuard],pathMatch:"full"},
+
 
   {path:"req",component:ListJobRequestComponent,canActivate:[AuthGuard],pathMatch:"full"},
   {path:"reqlistemp",component:EmpJobReqComponent,canActivate:[AuthGuard],pathMatch:"full"},

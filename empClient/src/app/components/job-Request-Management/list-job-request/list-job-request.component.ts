@@ -11,16 +11,17 @@ import { JobRequestService } from 'src/app/services/jobRequest-services/job-requ
 })
 export class ListJobRequestComponent implements OnInit {
   requests: any
-  requestData:any
+  requestData: any
   count: any
   total: any
- 
-  page:number = 1
-  limit:number=5;
-  sortBy:string='job_Id'
-  search:string='';
 
-  role:any
+  page: number = 1
+  limit: number = 5;
+  sortBy: string = 'job_Id'
+  search: string = '';
+
+  role: any
+  showSpinner: boolean = false
 
   title = 'appBootstrap';
 
@@ -29,19 +30,24 @@ export class ListJobRequestComponent implements OnInit {
 
   ngOnInit(): void {
     this.reqList()
-    this.role=localStorage.getItem('role');
+    this.role = localStorage.getItem('role');
   }
   addJob() {
     this.service.status = 0;
   }
 
-  edit(reqId: any,id:any) {
-    this.service.updateRequest(reqId,id).subscribe({
+  edit(reqId: any, id: any) {
+    this.showSpinner = true
+    this.service.updateRequest(reqId, id).subscribe({
       next: (response: any) => {
         console.log(response);
+        this.showSpinner = false
         this.reqList();
       },
-      error: (error: any) => { console.log(error) }
+      error: (error: any) => {
+        console.log(error);
+        this.showSpinner = false
+      }
     })
   }
 
@@ -57,16 +63,16 @@ export class ListJobRequestComponent implements OnInit {
 
   reqList() {
     let queryParams = new HttpParams()
-    .append('page', this.page)
-    .append('limit', this.limit)
-    .append('sortBy', this.sortBy)
-    .append('search', this.search);
+      .append('page', this.page)
+      .append('limit', this.limit)
+      .append('sortBy', this.sortBy)
+      .append('search', this.search);
     this.service.getJobRequests(queryParams).subscribe({
       next: (response: any) => {
         if (response) {
           console.log(response);
           this.requests = response;
-          this.requestData=response.result;
+          this.requestData = response.result;
           this.count = response.result.length;
           this.total = response.numItems;
         }

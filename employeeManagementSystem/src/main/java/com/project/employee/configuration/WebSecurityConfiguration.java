@@ -43,11 +43,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.addFilter(accessTokenProcessingFilter())
 				.authenticationProvider(preAuthenticatedAuthenticationProvider()).exceptionHandling().and().headers()
 				.and().sessionManagement().sessionCreationPolicy(STATELESS).and().securityContext().and().anonymous()
-				.and().authorizeRequests().antMatchers(OPTIONS, "/**").anonymous().antMatchers(OPTIONS, "/users")
-				.anonymous().antMatchers(POST, "/users").anonymous().antMatchers(OPTIONS, "/login").anonymous()
-				.antMatchers(POST, "/login").anonymous().antMatchers(PUT, "/login").anonymous().anyRequest()
+				.and().authorizeRequests()
+				.antMatchers(OPTIONS, "/**").anonymous()
+				.antMatchers(OPTIONS, "/users").anonymous()
+				.antMatchers(POST, "/users").anonymous()
+				.antMatchers(POST, "/users/resetPswdEmail").anonymous()
+				.antMatchers(POST, "/users/forgotPswd/**").anonymous()
+				.antMatchers(OPTIONS, "/login").anonymous()
+				.antMatchers(POST, "/login").anonymous()
+				.antMatchers(PUT, "/login").anonymous().anyRequest()
 				.authenticated();
-	}
+	}	
 
 	@Bean
 	protected AccessTokenUserDetailsService accessTokenUserDetailsService() {

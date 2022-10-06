@@ -73,6 +73,8 @@
 
                 <div>
                   <label class="form-la167%bel"  for="form3Example4cdg">Register as :</label>&nbsp;&nbsp;
+                  <input  *ngIf="!status==false" type="radio" id="html"  value='0' [(ngModel)]='role' name="fav_language" >
+                  <label  *ngIf="!status==false" >Admin</label>&nbsp;&nbsp;
                   <input type="radio" id="html"  value='1' [(ngModel)]='role' name="fav_language" >
                   <label for="html">Employer</label>&nbsp;&nbsp;
                   <input type="radio" id="html"  value='2' [(ngModel)]='role'name="fav_language"  checked>
@@ -99,3 +101,9 @@
     </div>
   </div>
 </section>
+
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>
+
+

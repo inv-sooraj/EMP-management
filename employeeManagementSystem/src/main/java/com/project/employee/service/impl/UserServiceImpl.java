@@ -3,18 +3,32 @@ package com.project.employee.service.impl;
 import static com.project.employee.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +41,11 @@ import com.project.employee.entity.User;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
 import com.project.employee.exception.UserNotFoundException;
+import com.project.employee.features.EmailSenderService;
 import com.project.employee.features.Pager;
+import com.project.employee.form.ChangePasswordForm;
+import com.project.employee.form.ForgotPasswordForm;
+import com.project.employee.form.ImageForm;
 import com.project.employee.form.LoginForm;
 import com.project.employee.form.UserDetailForm;
 import com.project.employee.form.UserRegistrationForm;
@@ -53,19 +71,36 @@ public class UserServiceImpl implements UserService {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private TokenGenerator tokenGenerator;
+	
+	@Autowired
+	private EmailSenderService emailService;
+	
+	private TextEncryptor textEncryptor;
+
 
 	@Autowired
 	private SecurityConfig securityConfig;
 
 	@Override
-	public UserView add(UserRegistrationForm form) {
+	public UserView add(UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException {
 		if (userRepository.findByUserName(form.getUserName()).isPresent()) {
-            throw new BadRequestException("Username Already Exists");
-        }
+			throw new BadRequestException("Username Already Exists");
+		}
 
-        if (userRepository.findByEmail(form.getEmail()).isPresent()) {
-            throw new BadRequestException("Email Already Exists");
-        }
+		if (userRepository.findByEmail(form.getEmail()).isPresent()) {
+			throw new BadRequestException("Email Already Exists");
+		}
+		User user=userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+				.orElseThrow(NotFoundException::new);
+		if(user.getRole()==0) {
+			String emailId = form.getEmail();
+			System.out.println(emailId);
+			String subject = "Login Credentials";
+			String body = "Your Username and Password to log on to the JobFinder are: \n"
+					+ "\n Username : "+form.getUserName()
+					+ "\n Password : "+form.getPassword();
+			emailService.sendEmail(emailId, subject, body);
+		}
 		return new UserView(userRepository.save(new User(form.getUserName(), form.getEmail(),
 				passwordEncoder.encode(form.getPassword()), form.getRole())));
 	}
@@ -141,6 +176,48 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User uploadImage(ImageForm form) {
+		User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new);
+
+		String fileName = user.getName() + user.getUserId() + user.getRole() + "."
+				+ FilenameUtils.getExtension(form.getProfilePhoto().getOriginalFilename());
+		String path = "src/main/resources/static/images/";
+
+		Path uploadPath = Paths.get(path);
+
+		try {
+			InputStream inputStream = form.getProfilePhoto().getInputStream();
+			Path filePath = uploadPath.resolve(fileName);
+			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		user.setImagePath(fileName);
+		userRepository.save(user);
+		return user;
+	}
+
+	public byte[] getImgBin(String fileName) {
+		try {
+			return Files.readAllBytes(Path.of("src/main/resources/static/images/" + fileName));
+		} catch (IOException e) {
+			throw new BadRequestException("File Not Found");
+		}
+	}
+
+	// to get profile picture
+	public HttpEntity<byte[]> getImg() {
+
+		User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new);
+		String fileName = user.getImagePath();
+		byte[] file = getImgBin(fileName);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_JPEG);
+		headers.setContentLength(file.length);
+		return new HttpEntity<>(file, headers);
+	}
+
+	@Override
 	@Transactional
 	public void delete(Integer userId) {
 		User user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
@@ -152,21 +229,21 @@ public class UserServiceImpl implements UserService {
 
 		return;
 	}
-	
+
 	@Override
-    public void deleteSelected(Collection<Integer> userIds) {
+	public void deleteSelected(Collection<Integer> userIds) {
 
-        for (Integer userId : userIds) {
-            
-            Optional<User> user = userRepository.findById(userId);
+		for (Integer userId : userIds) {
 
-            if (user.isPresent()) {
-                userRepository.save(user.get().delete());
-            }
+			Optional<User> user = userRepository.findById(userId);
 
-        }
+			if (user.isPresent()) {
+				userRepository.save(user.get().delete());
+			}
 
-    }
+		}
+
+	}
 
 	@Override
 	public long userCount() {
@@ -232,6 +309,72 @@ public class UserServiceImpl implements UserService {
 		return new UserDetailView(
 				userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
 						.orElseThrow(NotFoundException::new));
+	}
+
+	@Override
+	public UserView changePassword(ChangePasswordForm form) throws NotFoundException {
+		User user = userRepository.findByUserId(SecurityUtil.getCurrentUserId());
+
+		if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
+			throw new BadRequestException("Password Mismatch");
+		}
+		user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+		user.setUpdateDate(new Date());
+		return new UserView(userRepository.save(user));
+	}
+
+	@Override
+	public void forgotPassword(String token, ForgotPasswordForm form) {
+		System.out.println(form.getEmail());
+				User user = userRepository.findByEmail(form.getEmail()).orElseThrow(NotFoundException::new);
+				if(user != null) {
+					
+					long t = System.currentTimeMillis();
+					Duration passwordResetTokenExpiry=Duration.ofMinutes(10);
+					textEncryptor = Encryptors.text("7C481ADD4AF55AB8", "374195D5E3080DC1");
+					String tokenBfrEncript = token+"#"+t+"#"+passwordResetTokenExpiry.toMillis();
+					String finalToken=textEncryptor.encrypt(tokenBfrEncript);
+					user.setResetPswdToken(token);
+					userRepository.save(user);
+							
+		
+					String url="http://localhost:4200/resetpswd/"+finalToken;
+					String emailId=user.getEmail();
+					String subject="Reset your password";
+					String body= "<h3>Click the link to reset the password </h3>"
+							+"<a href="+url+">Click here to reset password</a>";
+					try {
+						emailService.sendEmail(emailId, subject, body);
+					} catch (UnsupportedEncodingException | MessagingException e) {
+						e.printStackTrace();
+					}
+					
+				} 
+		
+	}
+
+	@Override
+	public void resetPswd(String token, String password) {
+		String decryptedToken = textEncryptor.decrypt(token);
+        String[] parts = decryptedToken.split("#");
+        String tokenFromUrl=parts[0];
+        long createTime=Long.parseLong(parts[1]);
+        long tokenExpiry=Long.parseLong(parts[2]);
+        long currentTime=System.currentTimeMillis();
+        long timeDiff=currentTime-createTime;
+        
+        if(timeDiff>=tokenExpiry) {
+        	throw new TokenExpiredException("Reset link expired");
+        }
+        else {
+        	
+        		User user = userRepository.findByResetPswdToken(tokenFromUrl).orElseThrow(NotFoundException::new);
+        		user.setPassword(passwordEncoder.encode(password));
+        		user.setResetPswdToken(token);
+        		System.out.println("employee ex");
+        		userRepository.save(user);
+        	}
+		
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.project.employee.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.employee.exception.NotFoundException;
 import com.project.employee.features.Pager;
 import com.project.employee.form.JobRequestForm;
 import com.project.employee.service.JobRequestService;
@@ -35,7 +38,7 @@ public class JobRequestController {
 
 //		api for changing job request status
 	@PutMapping("/{reqId}")
-	public JobRequestView update(@PathVariable("reqId") Integer reqId, @RequestBody Integer status) {
+	public JobRequestView update(@PathVariable("reqId") Integer reqId, @RequestBody Integer status) throws NotFoundException, UnsupportedEncodingException, MessagingException {
 		return jobRequestService.update(reqId, status);
 	}
 
@@ -54,9 +57,14 @@ public class JobRequestController {
 	}
 
 //	api for listing  job requests of current logged in user	
-	@GetMapping("/emp")
-	public Collection<JobRequestView> listByUserId() {
+	@GetMapping("/reqIds")
+	public Collection<Integer> listByUserId() {
 		return jobRequestService.listByUserId();
+	}
+	
+	@GetMapping("/emp")
+	public Collection<JobRequestView> reqlistById() {
+		return jobRequestService.reqlistById();
 	}
 
 	@GetMapping("/download")

@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 export class AuthService {
 
   API_URL = environment.apiUrl
-  role:any
+  role: any
   constructor(private http: HttpClient) { }
 
   loginUser(data: any): Observable<any> {
@@ -20,4 +20,17 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/users`, data);
   }
 
+  regUser(data: any): Observable<any> {
+    return this.http.post(`${this.API_URL}/users/admin`, data);
+  }
+
+  forgotPswd(data: any): Observable<any> {
+    return this.http.post(`${this.API_URL}/users/resetPswdEmail`, data);
+  }
+  resetPswd(data :any,token:any){
+    return this.http.post(`${this.API_URL}/users/forgotPswd/`+token, data);
+  }
+
 }
+
+

@@ -10,7 +10,7 @@
           <button (click)="download()" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
           </svg>Download</button>
-          <button class="btn btn-success" (click)="addUser()" (click)="open(mymodal)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+          <button class="btn btn-success" routerLink="/register" (click)="open(mymodal)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
           </svg>Add User </button>&nbsp;
           <button *ngIf="checked.length>0" (click)="deleteJobs()" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -68,8 +68,8 @@
           </td>
           <td>{{ user.updateDate|date:'mediumDate' }}</td>
           <td>
-            <p style="color: red;" *ngIf="user.status == 0">Inactive</p>
-            <p style="color: green;" *ngIf="user.status == 1">Active</p>
+            <p *ngIf="user.status == 0"><span class="badge bg-danger">Inactive</span></p>
+            <p *ngIf="user.status == 1"><span class="badge bg-success">Active</span></p>
           </td>
           <td>
             <button (click)="edit(user.userId)" (click)="open(mymodal)" class="btn btn-warning"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">

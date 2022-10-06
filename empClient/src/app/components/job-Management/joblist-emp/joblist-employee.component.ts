@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobService } from 'src/app/services/job-services/job.service';
 import { JobRequestService } from 'src/app/services/jobRequest-services/job-request.service';
+import { EmpJobReqComponent } from '../../job-Request-Management/emp-job-req/emp-job-req.component';
 
 @Component({
   selector: 'app-joblist-employee',
@@ -16,11 +17,14 @@ export class JoblistEmployeeComponent implements OnInit {
   jobsData: any
   count: any
   total: any
+  requests:Array<number>=[]
+
 
   page: number = 1
   limit: number = 5;
   sortBy: string = 'job_Id'
   search: string = '';
+button:boolean=false;
 
   title = 'appBootstrap';
 
@@ -32,14 +36,18 @@ export class JoblistEmployeeComponent implements OnInit {
 
   jobId: any
 
-  constructor(private jobService: JobService, private router: Router, private modalService: NgbModal, private reqService: JobRequestService) { }
+  constructor(private jobService: JobService,
+    private modalService: NgbModal,
+    private reqService: JobRequestService) { }
 
   ngOnInit(): void {
-    this.jobList()
+    this.jobList();
+   
   }
 
   jobList() {
-
+    console.log("hhhh");
+    
     let queryParams = new HttpParams()
       .append('page', this.page)
       .append('limit', this.limit)
@@ -54,12 +62,27 @@ export class JoblistEmployeeComponent implements OnInit {
           this.jobsData = response.result;
           this.count = response.result.length;
           this.total = response.numItems;
+          this.reqList();
         }
 
       },
       error: (error: any) => { console.log(error) }
     })
   }
+  reqList() {
+    this.reqService.getEmpReqIds().subscribe({
+      next: (response: any) => {
+        if (response) {
+          console.log(response);
+          this.requests = response;
+
+        }
+
+      },
+      error: (error: any) => { console.log(error) }
+    })
+  }
+  
 
   numSeq(n: number): Array<number> {
     return Array(n);
@@ -148,8 +171,9 @@ export class JoblistEmployeeComponent implements OnInit {
         remark: this.remarkForm.controls['remark'].value
       }
       this.reqService.jobApply(this.jobId, data).subscribe({
-        next: (response: any) => { console.log(response);
-        document.getElementById('closeJobApplyModal')?.click();
+        next: (response: any) => {
+          console.log(response);
+          document.getElementById('closeJobApplyModal')?.click();
         },
         error: (error: any) => { console.log(error); }
       })

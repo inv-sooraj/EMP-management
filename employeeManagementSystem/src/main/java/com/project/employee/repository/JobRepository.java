@@ -32,13 +32,19 @@ public interface JobRepository extends Repository<Job, Integer> {
 	@Query(value = "SELECT `COLUMN_NAME`  FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='job'", nativeQuery = true)
 	ArrayList<String> findColumns();
 
-	@Query(value = "SELECT * FROM job  WHERE status = ?1 AND (title LIKE %?2% OR description LIKE %?2% OR update_date LIKE %?2%  )", nativeQuery = true)
-	Page<Job> findAllByStatus(Byte status, String search, Pageable page);
+	@Query(value = "SELECT * FROM job  WHERE job_status IN ?1 AND (title LIKE %?2% OR description LIKE %?2% OR update_date LIKE %?2%  )", nativeQuery = true)
+	Page<Job> findAllByStatus(ArrayList<Byte> status, String search, Pageable page);
+
+	@Query(value = "SELECT * FROM job  WHERE user_id=?1 AND status = ?2 AND (title LIKE %?3% OR description LIKE %?3% OR update_date LIKE %?3%  )", nativeQuery = true)
+	Page<Job> findAllByUserIdAndStatus(Integer userId, Byte status, String search, Pageable page);
+
+	@Query(value = "SELECT * FROM job  WHERE status = ?1 AND job_status	=?2 AND (title LIKE %?3% OR description LIKE %?3% OR update_date LIKE %?3%  )", nativeQuery = true)
+	Page<Job> findAllByStatusAndJobStatus(Byte status, Byte jobStatus, String search, Pageable page);
 
 	@Query(value = "SELECT COUNT(*) FROM job  WHERE status = ?1 AND (title LIKE %?2% OR description LIKE %?2% OR update_date LIKE %?2%)", nativeQuery = true)
 	Long countJobList(Byte status, String search);
 
-	@Query(value = "SELECT COUNT(*) FROM job  WHERE status = ?1 ", nativeQuery = true)
+	@Query(value = "SELECT COUNT(*) FROM job  WHERE status = ?1 AND job_status=1", nativeQuery = true)
 	Long countJobs(Byte status);
 
 	Job save(Job job);

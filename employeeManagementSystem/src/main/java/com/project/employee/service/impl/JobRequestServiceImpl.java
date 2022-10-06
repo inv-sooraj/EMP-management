@@ -1,12 +1,14 @@
 package com.project.employee.service.impl;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.supercsv.prefs.CsvPreference;
 import com.project.employee.entity.JobRequest;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
+import com.project.employee.features.EmailSenderService;
 import com.project.employee.features.Pager;
 import com.project.employee.form.JobRequestForm;
 import com.project.employee.repository.JobRepository;
@@ -38,20 +41,25 @@ public class JobRequestServiceImpl implements JobRequestService {
 
 	@Autowired
 	private UserRepository userRepository;
+
 	@Autowired
-	JobRequestRepository jobRequestRepository;
+	private JobRequestRepository jobRequestRepository;
+
+	@Autowired
+	private EmailSenderService emailService;
 
 	@Override
-	public Collection<JobRequestView> list() {
-		
-		return jobRequestRepository.findAll().stream().map((jobRequest) -> new JobRequestView(jobRequest)).toList();
+	public Collection<JobRequestView> reqlistById() {
 
+		return jobRequestRepository
+				.findAllByUserUserIdAndStatus(SecurityUtil.getCurrentUserId(),JobRequest.Status.ACTIVE.value).stream()
+				.map((jobRequest) -> new JobRequestView(jobRequest)).toList();
 	}
 
-	@Override 
-	public Collection<JobRequestView> listByUserId() {
-		return jobRequestRepository.findAllByUserUserIdAndStatus(SecurityUtil.getCurrentUserId(),JobRequest.Status.ACTIVE.value).stream()
-				.map((jobRequest) -> new JobRequestView(jobRequest)).toList();
+	@Override
+	public Collection<Integer> listByUserId() {
+		return jobRequestRepository
+				.findAllByUserUserId(SecurityUtil.getCurrentUserId());
 
 	}
 
@@ -62,10 +70,25 @@ public class JobRequestServiceImpl implements JobRequestService {
 	}
 
 	@Override
-	public JobRequestView update(Integer reqId, Integer status) {
+	public JobRequestView update(Integer reqId, Integer status) throws UnsupportedEncodingException, MessagingException {
 
 		JobRequest jobRequest = jobRequestRepository.findById(reqId).orElseThrow(NotFoundException::new);
 		jobRequest.update(status);
+
+		if (status == 1) {
+			String emailId = jobRequest.getUserId().getEmail();
+			System.out.println(emailId);
+			String subject = "Request Approved";
+			String body = "Your Job Application for the Job : "+ jobRequest.getJob().getTitle()+" is Approved";
+			emailService.sendEmail(emailId, subject, body);
+		}
+		if (status == 2) {
+			String emailId = jobRequest.getUserId().getEmail();
+			System.out.println(emailId);
+			String subject = "Request Rejected";
+			String body = "Your Job Application for the Job : "+ jobRequest.getJob().getTitle()+" is Rejected";
+			emailService.sendEmail(emailId, subject, body);
+		}
 		jobRequestRepository.save(jobRequest);
 		return new JobRequestView(jobRequest);
 	}
@@ -112,7 +135,7 @@ public class JobRequestServiceImpl implements JobRequestService {
 		Page<JobRequest> jobRequests = jobRequestRepository.findAllByUserUserId(SecurityUtil.getCurrentUserId(), search,
 				PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
 		Pager<JobRequestView> jobRequestViews = new Pager<JobRequestView>(limit, (int) jobRequests.getTotalElements(),
-				page + 1);
+				page);
 
 		jobRequestViews
 				.setResult(jobRequests.getContent().stream().map(JobRequestView::new).collect(Collectors.toList()));

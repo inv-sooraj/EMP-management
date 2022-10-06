@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../service/auth.service';
 
 @Component({
@@ -9,12 +10,18 @@ import { AuthService } from '../../service/auth.service';
   styleUrls: ['./user-login.component.css']
 })
 export class UserLoginComponent implements OnInit {
+  showSpinner: boolean = false
 
-  constructor(private service: AuthService, private router: Router) { }
+  constructor(private service: AuthService,
+     private router: Router,
+     private modalService: NgbModal) { }
   loginForm: FormGroup = new FormGroup({
     userName: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$'), Validators.minLength(8)])
+  })
 
+  forgotPswdForm: FormGroup = new FormGroup({
+    email: new FormControl('',[ Validators.required,Validators.email]),
   })
 
   ngOnInit(): void {
@@ -50,11 +57,36 @@ export class UserLoginComponent implements OnInit {
           console.log(error);
           if (error.status == 404) {
             alert("User Not Found");
-          } else if (error.status == 400) { alert("Password Mismatch"); }
+          } else if (error.status == 400) { alert("Invalid Password"); }
         }
 
       });
     } else this.loginForm.markAllAsTouched();
+  }
+
+  forgotPswd(){
+    if(this.forgotPswdForm.valid){
+      this.showSpinner=true
+      let data = {
+        email: this.forgotPswdForm.controls['email'].value
+      }
+      this.service.forgotPswd(data).subscribe({
+        next: (response: any) => {
+          this.showSpinner=false;
+          console.log(response);
+          document.getElementById('forgotPswdModal')?.click();
+          alert("Password reset link has been sent to "+this.forgotPswdForm.controls['email'].value);
+        },
+        error: (error: any) => { 
+          this.showSpinner=false;
+          console.log(error);
+          document.getElementById('forgotPswdModal')?.click(); }
+      })
+    }
+  }
+
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
   }
 
 }

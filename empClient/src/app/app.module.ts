@@ -27,6 +27,7 @@ import { EmplyrHeaderComponent } from './components/user-management/employer/emp
 import { EmplyrJobReqtsComponent } from './components/job-Request-Management/emplyr-job-reqts/emplyr-job-reqts.component';
 import { JoblistEmplyrComponent } from './components/job-Management/joblist-emplyr/joblist-emplyr.component';
 import { JoblistEmployeeComponent } from './components/job-Management/joblist-emp/joblist-employee.component';
+import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { JoblistEmployeeComponent } from './components/job-Management/joblist-em
     EmplyrHeaderComponent,
     EmplyrJobReqtsComponent,
     JoblistEmplyrComponent,
-    JoblistEmployeeComponent
+    JoblistEmployeeComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

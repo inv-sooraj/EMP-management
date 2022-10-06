@@ -1,17 +1,40 @@
-@import url("https://www.w3schools.com/w3css/4/w3.css");
+ @import url("https://www.w3schools.com/w3css/4/w3.css");
 @import url("https://www.w3schools.com/lib/w3-theme-blue.css");
 @import url("https://fonts.googleapis.com/css?family=Open+Sans");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
+/* @import url("https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css");
+@import url("https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/css/bootstrap-extended.min.css");
+@import url("https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/fonts/simple-line-icons/style.min.css");
+@import url("https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/css/colors.min.css");
+@import url("https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/css/bootstrap.min.css");
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap"); */
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" );
+/* @import url("//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"); */
 
 body{
     margin-top: -3%;
     background-color: white;
+    /* background-image:"assets/build.jpg" ; */
+
 }
 .w3-theme-l5 {
     color: #000 !important;
     background-color: #fbfcfd !important;
 }
+
+element.style {
+    font-family: Tahoma;
+    font-size: 50px;
+    
+}
+
+.col-md-3 {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
 
 .ss{
     margin-left: 28%;
@@ -23,10 +46,67 @@ body{
 }
 
 .aaa{
-    margin-left: 20%;
+    margin-left: 13%;
 }
-/* body {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #999;
-    font-family: Hevletica, sans-serif;
-  } */
+.grey-bg {  
+    background-color: #F5F7FA;
+}
+.card-counter{
+    box-shadow: 2px 2px 10px #DADADA;
+    margin: 5px;
+    padding: 20px 10px;
+    background-color: #fff;
+    height: 100px;
+    border-radius: 5px;
+    transition: .3s linear all;
+  }
+
+  .card-counter:hover{
+    box-shadow: 4px 4px 20px #DADADA;
+    transition: .3s linear all;
+  }
+
+  .card-counter.primary{
+    background-color: #435d7d;
+    color: #FFF;
+  }
+
+  .card-counter.danger{
+    background-color: #ef5350;
+    color: #FFF;
+  }  
+
+  .card-counter.success{
+    background-color: #66bb6a;
+    color: #FFF;
+  }  
+
+  .card-counter.info{
+    background-color: #26c6da;
+    color: #FFF;
+  }  
+
+  .card-counter i{
+    font-size: 5em;
+    opacity: 0.2;
+  }
+
+  .card-counter .count-numbers{
+    position: absolute;
+    right: 35px;
+    top: 20px;
+    font-size: 32px;
+    display: block;
+  }
+
+  .card-counter .count-name{
+    position: absolute;
+    right: 35px;
+    top: 65px;
+    font-style: italic;
+    text-transform: capitalize;
+    opacity: 0.5;
+    display: block;
+    font-size: 18px;
+  }
+

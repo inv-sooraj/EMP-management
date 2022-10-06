@@ -37,15 +37,20 @@ export class JobRequestService {
   deleteRequests(reqIds: Array<number>): Observable<any> {
     return this.http.put(environment.apiUrl + '/jobrequest/delete/selected', reqIds);
   }
-  jobApply(id:any, data:any){
-    return this.http.post(`${environment.apiUrl}/jobrequest/${id}`,data);
+  jobApply(id: any, data: any):Observable<any> {
+    return this.http.post(`${environment.apiUrl}/jobrequest/${id}`, data);
   }
 
 
   getEmpRequests(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/jobrequest/emp`);
   }
-  updateRequest(reqId:any,status:any){
-    return this.http.put(`${environment.apiUrl}/jobrequest/${reqId}`,status);
+
+  getEmpReqIds(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/jobrequest/reqIds`);
+  }
+
+  updateRequest(reqId: any, status: any) :Observable<any>{
+    return this.http.put(`${environment.apiUrl}/jobrequest/${reqId}`, status);
   }
 }

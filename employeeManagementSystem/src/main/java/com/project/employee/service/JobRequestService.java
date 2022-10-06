@@ -1,7 +1,9 @@
 package com.project.employee.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -14,9 +16,9 @@ import com.project.employee.view.JobRequestView;
 
 @Service
 public interface JobRequestService {
-	Collection<JobRequestView> list();
+	Collection<JobRequestView> reqlistById();
 
-	Collection<JobRequestView> listByUserId();
+	Collection<Integer> listByUserId();
 
 	Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search);
 
@@ -24,7 +26,7 @@ public interface JobRequestService {
 
 	long jobRequestCount();
 
-	JobRequestView update(Integer reqId, Integer status) throws NotFoundException;
+	JobRequestView update(Integer reqId, Integer status) throws NotFoundException, UnsupportedEncodingException, MessagingException;
 
 	void csvReq(HttpServletResponse httpServletResponse);
 

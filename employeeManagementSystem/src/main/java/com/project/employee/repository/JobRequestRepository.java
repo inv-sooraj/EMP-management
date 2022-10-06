@@ -13,13 +13,14 @@ import com.project.employee.entity.JobRequest;
 import com.project.employee.view.JobRequestView;
 
 public interface JobRequestRepository extends Repository<JobRequest, Integer> {
-	Collection<JobRequest> findAll();
+	Collection<JobRequest> findAllByUserUserIdAndStatus(Integer userId,Byte status);
 
 	Collection<JobRequestView> findAllByStatus(Byte status);
 
 	Collection<JobRequest> findAllByJobJobId(Integer jobId);
 
-	Collection<JobRequest> findAllByUserUserIdAndStatus(Integer userId,Byte Status);
+	@Query(value = "SELECT job_id from job_request where user_id=?1", nativeQuery = true)
+	Collection<Integer> findAllByUserUserId(Integer userId);
 
 	Optional<JobRequest> findById(Integer reqId);
 

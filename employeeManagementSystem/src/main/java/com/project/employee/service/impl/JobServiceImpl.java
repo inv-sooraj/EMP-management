@@ -2,6 +2,7 @@ package com.project.employee.service.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
 import com.project.employee.entity.Job;
+import com.project.employee.entity.User;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
 import com.project.employee.features.Pager;
@@ -43,24 +45,45 @@ public class JobServiceImpl implements JobService {
 		return jobRepository.findAll().stream().map((job) -> new JobView(job)).collect(Collectors.toList());
 	}
 
-	public Pager<JobView> list(Integer page, Integer limit, String sortBy, String search) {
+	public Pager<JobView> list(Integer page, Integer limit, String sortBy, String filter, String search) {
+		User user = userRepository.findByUserId(SecurityUtil.getCurrentUserId());
 
 		if (!jobRepository.findColumns().contains(sortBy)) {
 			sortBy = "job_id";
 		}
-		
 
 		if (page <= 0) {
 			page = 1;
 		}
+		Page<Job> jobs;
+		if (user.getRole() == 0) {
 
-		Page<Job> jobs = jobRepository.findAllByStatus(Job.Status.ACTIVE.value, search,
-				PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
-		Pager<JobView> jobViews = new Pager<JobView>(limit, (int) jobs.getTotalElements(), page , limit);
+			ArrayList<Byte> status = new ArrayList<>();
+			if (filter.equals("0")) {
+				status.add(Job.JobStatus.PENDING.value);
+			} else if (filter.equals("1")) {
+				status.add(Job.JobStatus.APPROVED.value);
+			} else if (filter.equals("2")) {
+				status.add(Job.JobStatus.REJECTED.value);
+			} else {
+				
+				status.add(Job.JobStatus.PENDING.value);
+				status.add(Job.JobStatus.APPROVED.value);
+				status.add(Job.JobStatus.REJECTED.value);
+			}
+			jobs = jobRepository.findAllByStatus(status, search,
+					PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+		} else if (user.getRole() == 1) {
 
-		// Pager<JobView> jobViews = new
-		// Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
-		// search).intValue(),page);
+			jobs = jobRepository.findAllByUserIdAndStatus(SecurityUtil.getCurrentUserId(), Job.Status.ACTIVE.value,
+					search, PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+		} else if (user.getRole() == 2) {
+			jobs = jobRepository.findAllByStatusAndJobStatus(Job.Status.ACTIVE.value, Job.JobStatus.APPROVED.value,
+					search, PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+		} else
+			throw new BadRequestException("Hii");
+
+		Pager<JobView> jobViews = new Pager<JobView>(limit, (int) jobs.getTotalElements(), page, limit);
 
 		jobViews.setResult(jobs.getContent().stream().map(JobView::new).collect(Collectors.toList()));
 
@@ -76,11 +99,9 @@ public class JobServiceImpl implements JobService {
 	@Override
 	@Transactional
 	public JobView update(Integer jobId, JobForm form) {
-		return jobRepository
-				.findByJobIdAndUserUserIdAndStatus(jobId, SecurityUtil.getCurrentUserId(), Job.Status.ACTIVE.value)
-				.map((job) -> {
-					return new JobView(jobRepository.save(job.update(form)));
-				}).orElseThrow(NotFoundException::new);
+		return jobRepository.findByJobIdAndStatus(jobId, Job.Status.ACTIVE.value).map((job) -> {
+			return new JobView(jobRepository.save(job.update(form)));
+		}).orElseThrow(NotFoundException::new);
 	}
 
 	@Override
@@ -132,20 +153,20 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-    public void deleteSelected(Collection<Integer> jobIds) {
+	public void deleteSelected(Collection<Integer> jobIds) {
 
-        for (Integer jobId : jobIds) {
-            
-            Optional<Job> job = jobRepository.findById(jobId);
+		for (Integer jobId : jobIds) {
 
-            if (job.isPresent()) {
-                jobRepository.save(job.get().delete());
-            }
+			Optional<Job> job = jobRepository.findById(jobId);
 
-        }
+			if (job.isPresent()) {
+				jobRepository.save(job.get().delete());
+			}
 
-    }
-	
+		}
+
+	}
+
 	@Override
 	public long jobCount() {
 		return jobRepository.countJobs(Job.Status.ACTIVE.value);
@@ -157,4 +178,13 @@ public class JobServiceImpl implements JobService {
 		return new JobView(
 				jobRepository.findByJobIdAndStatus(jobId, Job.Status.ACTIVE.value).orElseThrow(NotFoundException::new));
 	}
+
+	@Override
+	public JobView approve(Integer jobId, Integer status) {
+		Job job = jobRepository.findById(jobId).orElseThrow(NotFoundException::new);
+		job.approve(status);
+		jobRepository.save(job);
+		return new JobView(job);
+	}
+
 }

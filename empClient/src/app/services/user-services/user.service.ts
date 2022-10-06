@@ -40,4 +40,16 @@ export class UserService {
   deleteUsers(userIds: Array<number>): Observable<any> {
     return this.http.put(environment.apiUrl + '/users/delete/selected', userIds);
   }
+
+  uploadImageManager(selectedFile:any):Observable<any>{
+    return this.http.put(environment.apiUrl+"/users/profilePic",selectedFile);
+  }
+
+  getProfilePic():Observable<any>{
+    return this.http.get(environment.apiUrl+"/users/getImg",{ responseType: "blob" })
+
+  }
+  changePswd(data:any):Observable<any>{
+    return this.http.put(environment.apiUrl+"/users/changepswd",data)
+  }
 }

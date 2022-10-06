@@ -19,6 +19,7 @@ export class JoblistComponent implements OnInit {
   limit:number=5;
   sortBy:string='job_Id'
   search:string='';
+  filter:number=5;
 
 
   title = 'appBootstrap';
@@ -35,9 +36,6 @@ export class JoblistComponent implements OnInit {
   addJob() {
     this.jobService.status = 0;
   }
-
-
-
   edit(jobId: any) {
     this.jobService.status = 1;
     this.jobService.jobId = jobId;
@@ -59,6 +57,7 @@ export class JoblistComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('filter',this.filter)
       .append('search', this.search);
 
     this.jobService.getJobs(queryParams).subscribe({
@@ -87,9 +86,7 @@ export class JoblistComponent implements OnInit {
       },
       error: (error: any) => { console.log(error) }
     })
-
   }
-
 
   numSeq(n: number): Array<number> {
     return Array(n);
@@ -116,6 +113,11 @@ export class JoblistComponent implements OnInit {
   }
 
   setLimit() {
+    console.log(this.limit);
+    this.jobList();
+  }
+
+  setFilter() {
     console.log(this.limit);
     this.jobList();
   }
@@ -183,6 +185,16 @@ export class JoblistComponent implements OnInit {
     });
 
     (document.getElementById('selectAll') as HTMLInputElement).checked = false;
+  }
+
+  changeStatus(jobId:any,status:any){
+    this.jobService.approveJob(jobId,status).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.jobList();
+      },
+      error: (error: any) => { console.log(error) }
+    })
   }
 }
 

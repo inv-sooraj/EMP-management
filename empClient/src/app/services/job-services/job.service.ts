@@ -39,6 +39,10 @@ export class JobService {
     return this.http.put(environment.apiUrl + '/job/delete/selected', jobIds);
   }
 
+  approveJob(jobId:any,status:any):Observable<any>{
+    return this.http.put(`${environment.apiUrl}/job/approve/${jobId}`,status);
+  }
+
   
 
 

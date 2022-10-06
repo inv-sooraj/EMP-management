@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { JobService } from 'src/app/services/job-services/job.service';
+import { JoblistComponent } from '../joblist-admin/joblist.component';
 
 @Component({
   selector: 'app-job-add',
@@ -11,6 +12,7 @@ export class JobAddComponent implements OnInit {
 
   status: any;
   qualification: any
+  role:any
 
   jobAddForm: FormGroup = new FormGroup({
     title: new FormControl('', Validators.required),
@@ -26,10 +28,11 @@ export class JobAddComponent implements OnInit {
     noOfOpenings: new FormControl('', Validators.required),
   })
 
-  constructor(private jobService: JobService) { }
+  constructor(private jobService: JobService,private job:JoblistComponent) { }
 
   ngOnInit(): void {
     this.formSelect()
+    this.role=localStorage.getItem('role');
   }
 
   formSelect() {
@@ -71,10 +74,18 @@ export class JobAddComponent implements OnInit {
         noOfOpenings: this.jobAddForm.controls['noOfOpenings'].value,
         qualification: this.jobAddForm.controls['qualification'].value,
       }
-
+      
       this.jobService.jobAdd(jobData).subscribe({
         next: (response: any) => {
           console.log(response);
+          if(this.role==0){
+            this.changeStatus(response.jobId)
+            // .subscribe({
+            //   next:(response:any)=>{
+            //     document.getElementById('closeJobEditModal')?.click();
+            //   }
+            // });
+          }
           document.getElementById('closeJobEditModal')?.click();
         },
         error: (error: any) => {
@@ -91,16 +102,14 @@ export class JobAddComponent implements OnInit {
         title: this.jobEditForm.controls['title'].value,
         description: this.jobEditForm.controls['description'].value,
         noOfOpenings: this.jobEditForm.controls['noOfOpenings'].value,
-        qualification: this.jobAddForm.controls['qualification'].value,
+        qualification: this.jobEditForm.controls['qualification'].value,
       }
+      console.log(jobData);
 
       this.jobService.jobEdit(jobData).subscribe({
         next: (response: any) => {
           console.log(response);
           document.getElementById('closeJobEditModal')?.click();
-
-
-
         },
         error: (error: any) => {
           console.log(error);
@@ -108,5 +117,15 @@ export class JobAddComponent implements OnInit {
       })
 
     }
+  }
+  changeStatus(jobId:any){
+    this.jobService.approveJob(jobId,1).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.job.jobList();
+      },
+      error:(error:any)=>console.log(error)
+      
+    })
   }
 }

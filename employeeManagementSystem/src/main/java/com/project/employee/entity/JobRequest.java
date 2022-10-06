@@ -110,9 +110,6 @@ public class JobRequest {
 		this.user = userId;
 	}
 
-	
-	
-
 	public Job getJob() {
 		return job;
 	}

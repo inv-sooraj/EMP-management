@@ -18,8 +18,8 @@ public class Job {
 	public static enum JobStatus {
         PENDING((byte) 0),
         APPROVED((byte) 1),
-        COMPLETED((byte) 2),
-        DELETED((byte) 3);
+        REJECTED((byte) 2);
+        
 
         public final byte value;
 
@@ -95,6 +95,7 @@ public class Job {
         this.updateDate = dt;
         return this;
     }
+    
     public Job delete() {
 
         this.status = Job.Status.INACTIVE.value;
@@ -102,6 +103,20 @@ public class Job {
         this.updateDate = new Date();
         return this;
     }
+    
+    public Job approve(Integer status) {
+    	if(status==0) {
+			this.jobStatus=Job.JobStatus.PENDING.value;		
+		}else if(status==1) {
+			this.jobStatus=Job.JobStatus.APPROVED.value;
+		}else if(status==2) {
+			this.jobStatus=Job.JobStatus.REJECTED.value;
+		}
+    	 Date dt = new Date();
+         this.updateDate = dt;
+		return this;
+    }
+    
 
 	public Integer getJobId() {
 		return jobId;

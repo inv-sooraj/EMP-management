@@ -16,13 +16,15 @@ import com.project.employee.view.JobView;
 public interface JobService {
 	Collection<JobView> list();
 
-	Pager<JobView> list(Integer page, Integer limit, String sortBy, String search);
+	Pager<JobView> list(Integer page, Integer limit, String sortBy,String filter, String search);
 
 	JobView add(@Valid JobForm form);
 
 	JobView getJob(Integer jobId);
 
 	JobView update(Integer jobId, JobForm form);
+	
+	JobView approve(Integer jobId,Integer status);
 
 	long jobCount();
 	

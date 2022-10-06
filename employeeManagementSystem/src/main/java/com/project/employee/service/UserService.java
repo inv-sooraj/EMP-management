@@ -1,16 +1,23 @@
 package com.project.employee.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
+import com.project.employee.entity.User;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
 import com.project.employee.features.Pager;
+import com.project.employee.form.ChangePasswordForm;
+import com.project.employee.form.ForgotPasswordForm;
+import com.project.employee.form.ImageForm;
 import com.project.employee.form.LoginForm;
 import com.project.employee.form.UserDetailForm;
 import com.project.employee.form.UserRegistrationForm;
@@ -24,12 +31,12 @@ public interface UserService {
 
 	Pager<UserView> list(Integer page, Integer limit, String sortBy, String search);
 
-	UserView add(@Valid UserRegistrationForm form);
+	UserView add(@Valid UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException;
 
 	LoginView login(LoginForm form, Errors errors) throws BadRequestException;
 
 	long userCount();
-	
+
 	UserDetailView detailView();
 
 	LoginView refresh(String refreshToken) throws BadRequestException;
@@ -37,6 +44,16 @@ public interface UserService {
 	UserView currentUser(); // finds currently logged in user detail
 
 	UserView update(UserDetailForm form);
+
+	UserView changePassword(ChangePasswordForm form) throws NotFoundException;
+
+	User uploadImage(ImageForm form);
+
+	HttpEntity<byte[]> getImg();
+
+	void forgotPassword(String token, ForgotPasswordForm form);
+
+	void resetPswd(String token, String password);
 
 	void csvUser(HttpServletResponse httpServletResponse);
 

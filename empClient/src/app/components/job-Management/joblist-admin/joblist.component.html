@@ -30,6 +30,17 @@
             <option [ngValue]=3>3</option>
             <option [ngValue]=4>4</option>
             <option [ngValue]=5>5</option>
+            <option [ngValue]=10>10</option>
+        </select>
+
+
+        Filter :
+
+        <select [(ngModel)]="filter" (change)="setFilter()">
+          <option selected="selected" [ngValue]=5>All</option>
+          <option [ngValue]=0>Pending</option>
+          <option [ngValue]=1>Approved</option>
+          <option [ngValue]=2>Rejected</option>
         </select>
     <table class="table table-striped table-hover">
       <thead>
@@ -78,22 +89,22 @@
             <td>{{ job.createdBy }}</td>
             <td>{{ job.updateDate|date:'mediumDate' }}</td>
             <td>
-              <p style="color: red;" *ngIf="job.jobStatus == 0">Pending</p>
-              <p style="color: green;" *ngIf="job.jobStatus == 1">Approved</p>
-              <p style="color: green;" *ngIf="job.jobStatus == 2">Completed</p>
-              <p style="color: red;" *ngIf="job.jobStatus == 3">Deleted</p>
+              <p *ngIf="job.jobStatus == 0"><span class="badge bg-warning">Pending</span></p>
+              <p *ngIf="job.jobStatus == 1"><span class="badge bg-success">Approved</span></p>
+              <p *ngIf="job.jobStatus == 2"><b><span class="badge bg-danger">Rejected</span></b></p>
             </td>
             <td>
-              <p style="color: red;" *ngIf="job.status == 0">Inactive</p>
-              <p style="color: green;" *ngIf="job.status == 1">Active</p>
+              <p *ngIf="job.status == 0"><span class="badge bg-danger">Inactive</span></p>
+              <p *ngIf="job.status == 1"><span class="badge bg-success">Active</span></p>
             </td>
             <td>
               <div ngbDropdown class="d-inline-block">
                 <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Actions</button>
                 <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                  <button  ngbDropdownItem>Approve</button>
-                  <button  ngbDropdownItem>Reject</button>
-                  <button  ngbDropdownItem>Delete</button>
+                  <button [disabled]="job.jobStatus == 1" (click)="changeStatus(job.jobId,1)" ngbDropdownItem>Approve</button>
+                  <button (click)="changeStatus(job.jobId,2)" ngbDropdownItem>Reject</button>
+                  <button (click)="edit(job.jobId)" (click)="open(mymodal)" ngbDropdownItem>Edit</button>
+                  <button (click)="delete(job.jobId)" ngbDropdownItem>Delete</button>
                 </div>
               </div>
            </td>

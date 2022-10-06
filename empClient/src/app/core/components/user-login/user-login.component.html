@@ -16,7 +16,7 @@
                     formControlName="userName" required
                     [ngClass]="{'is-invalid': loginForm.controls['userName'].touched&& loginForm.controls['userName'].errors}" />
                   <div *ngIf="loginForm.controls['userName'].touched">
-                    <div *ngIf="loginForm.controls['userName']?.errors?.['required']" class="text-danger"> UserName
+                    <div *ngIf="loginForm.controls['userName']?.errors?.['required']" class="text-danger"> Username is
                       Required</div>
                   </div>
                 </div>
@@ -42,7 +42,8 @@
                     class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Login</button>
                 </div>
                 <p class="text-center text-muted mt-5 mb-0"> Don't have an account?
-                  <button type="button" (click)="register()" class="btn btn-link"><u>Register here</u></button>
+                  <button type="button" (click)="register()" class="btn btn-link"><u>Register here</u></button><br>
+                  <button type="button" (click)="open(mymodal)" class="btn btn-link"><u>Forgot Password?</u></button>
                 </p>
               </form>
 
@@ -53,3 +54,37 @@
     </div>
   </div>
 </section>
+
+
+
+<!-- Add/Edit modal  -->
+<ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Forgot Password</h4>
+    <button type="button" class=" btn-close" aria-label="Close" id="forgotPswdModal"
+      (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="forgotPswdForm" (ngSubmit)="forgotPswd()">
+      <div class="form-outline mb-4">
+        <input type="text" id="form5Example2" class="form-control" formControlName="email"  [ngClass]="{'is-invalid': forgotPswdForm.controls['email'].touched&& forgotPswdForm.controls['email'].errors}" />
+        <label class="form-label" for="form5Example2">Enter your registered Email address</label>
+        <div *ngIf="forgotPswdForm.controls['email'].touched">
+          <div *ngIf="forgotPswdForm.controls['email']?.errors?.['required']" class="text-danger"> Email
+            Required</div>
+          <div *ngIf="forgotPswdForm.controls['email']?.errors?.['email']" class="text-danger"> Invalid Email
+            Format</div>
+         
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+    </form>
+  </div>
+</ng-template>
+
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>

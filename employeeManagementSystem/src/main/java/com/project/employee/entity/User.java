@@ -55,6 +55,7 @@ public class User {
 	private String name;
 	private String address;
 	private String phoneNo;
+	private String imagePath;
 	private byte role;
 	private byte qualification;
 	private byte status;
@@ -62,6 +63,7 @@ public class User {
     private Date createDate;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
+    private String resetPswdToken;
     
     public User() {
     }
@@ -93,6 +95,7 @@ public class User {
         this.updateDate = dt;
         return this;
     }
+    
     
     public User delete() {
 
@@ -196,6 +199,25 @@ public class User {
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public String getResetPswdToken() {
+		return resetPswdToken;
+	}
+
+	public void setResetPswdToken(String resetPswdToken) {
+		this.resetPswdToken = resetPswdToken;
+	}
+	
+
+	
     
     
 

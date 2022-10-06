@@ -29,9 +29,9 @@
           <tr *ngFor="let req of requests">
             <td>{{ req.reqId }}</td>
             <td>{{ req.remark }}</td>
-            <td><p style="color: red;" *ngIf="req.requestStatus == 0">Pending</p>
-                <p style="color: green;"*ngIf="req.requestStatus == 1">Approved</p>
-                <p style="color: red;"*ngIf="req.requestStatus == 2">Rejected</p>
+            <td><p *ngIf="req.requestStatus == 0"><span class="badge bg-warning">Pending</span></p>
+              <p *ngIf="req.requestStatus == 1"><span class="badge bg-success">Approved</span></p>
+              <p *ngIf="req.requestStatus == 2"><span class="badge bg-danger">Rejected</span></p>
             </td>
             <td>{{ req.jobId }}</td>
             <td>{{ req.userId }}</td>

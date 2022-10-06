@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.employee.features.Pager;
 import com.project.employee.form.JobForm;
 import com.project.employee.service.JobService;
+import com.project.employee.view.JobRequestView;
 import com.project.employee.view.JobView;
 
 @RestController
@@ -41,8 +42,9 @@ public class JobController {
 	public Pager<JobView> list(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
 			@RequestParam(name = "sortBy", required = false, defaultValue = "job_id") String sortBy,
+			@RequestParam(name = "filter", required = false, defaultValue = "") String filter,
 			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
-		return jobService.list(page, limit, sortBy, search);
+		return jobService.list(page, limit, sortBy, filter,search);
 	}
 
 //	api for downloading csv file of jobs
@@ -66,15 +68,22 @@ public class JobController {
 	public JobView update(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobForm form) {
 		return jobService.update(jobId, form);
 	}
-	@PutMapping("/delete/selected")
-    public void deleteSelected(@RequestBody Collection<Integer> jobIds) {
-        jobService.deleteSelected(jobIds);
-    }
-
+	
+	@PutMapping("/approve/{jobId}")
+	public JobView approve(@PathVariable("jobId") Integer jobId, @RequestBody Integer status) {
+		return jobService.approve(jobId, status);
+	}
+	
 //	api for logically deleting a job 
 	@PutMapping("/delete")
 	public void delete(@RequestBody Integer jobId) {
 		jobService.delete(jobId);
 	}
+	@PutMapping("/delete/selected")
+	public void deleteSelected(@RequestBody Collection<Integer> jobIds) {
+		jobService.deleteSelected(jobIds);
+	}
+
+
 
 }

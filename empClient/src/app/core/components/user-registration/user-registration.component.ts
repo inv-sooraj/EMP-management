@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../service/auth.service';
 
 @Component({
@@ -9,58 +10,80 @@ import { AuthService } from '../../service/auth.service';
   styleUrls: ['./user-registration.component.css']
 })
 export class UserRegistrationComponent implements OnInit {
-  
-  role:string='2';
 
-  constructor(private service: AuthService, private router: Router) { }
+  role: string = '2';
+
+  status: boolean = false
+
+  Role: any
+
+  showSpinner: boolean = false
+
+
+  constructor(private service: AuthService,
+     private router: Router) { }
 
   registerForm: FormGroup = new FormGroup({
     userName: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$'), Validators.minLength(8)]),
-    confirmPassword:new FormControl('',[Validators.required])
+    confirmPassword: new FormControl('', [Validators.required])
   })
   ngOnInit(): void {
-    // TODO document why this method 'ngOnInit' is empty
-
+    this.Role = localStorage.getItem('role');
+    if (this.Role == 0) {
+      this.status = true;
+    }
   }
-
-
 
 
 
   registerUser() {
     if (this.registerForm.valid) {
-    console.log(this.role);
-      
-      
-      console.log("in func")
+      this.showSpinner = true
+      console.log(this.role);
       let userData = {
         userName: this.registerForm.controls['userName'].value,
         email: this.registerForm.controls['email'].value,
         password: this.registerForm.controls['password'].value,
         role: this.role
+      };
+      if (this.Role) {
+        console.log("in role fun");
+        
+        this.service.regUser(userData).subscribe({
+          next: (response: any) => {
+            console.log(response);
+            this.showSpinner = false;
+            alert("Registration Successfull");
+            this.router.navigate(['users']);
+          },
+          error: (error: any) => {
+            console.log(error);
+            this.showSpinner = false;
+          }
+
+        });
+      } else {
+        this.service.registerUser(userData).subscribe({
+          next: (response: any) => {
+            console.log(response);
+            this.showSpinner = false;
+            alert("Registration Successfull")
+            this.router.navigate(['login']);
+          },
+          error: (error: any) => {
+            console.log(error);
+            this.showSpinner = false;
+          }
+        });
       }
-      this.service.registerUser(userData).subscribe({
-        next: (response: any) => {
-          console.log(response);
-
-          alert("Registration Successfull")
-        },
-        error: (error: any) => {
-          console.log(error);
-          if (error.status == 404) {
-            alert("User Not Found");
-          } else if (error.status == 400) { alert("Password Mismatch"); }
-        }
-
-      });
     } else { this.registerForm.markAllAsTouched() }
 
   }
+  
 
   login() {
     this.router.navigate(['login'])
   }
-
 }

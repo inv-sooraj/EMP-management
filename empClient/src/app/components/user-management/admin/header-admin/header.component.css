@@ -5,4 +5,10 @@
 
 html, body {
 height: 8%;
+
+}
+
+.w3-theme-d2 {
+    color: #fff !important;
+    background-color: #435d7d !important;
 }
