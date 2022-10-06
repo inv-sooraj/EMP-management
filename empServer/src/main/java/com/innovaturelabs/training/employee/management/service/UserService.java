@@ -19,6 +19,7 @@ import com.innovaturelabs.training.employee.management.form.UserForm;
 import com.innovaturelabs.training.employee.management.form.UserProfilePicForm;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
+import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
@@ -55,5 +56,7 @@ public interface UserService {
     void setProfilePic(UserProfilePicForm form) throws IOException;
 
     HttpEntity<byte[]> getProfilePic(Integer userId);
+
+    Collection<StatusView> getRoleStat();
 
 }

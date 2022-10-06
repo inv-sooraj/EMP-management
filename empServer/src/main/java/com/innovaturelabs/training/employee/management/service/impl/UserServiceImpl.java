@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -48,6 +49,7 @@ import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.CsvDownload;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
+import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
@@ -178,6 +180,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search) {
 
+        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+            throw new BadRequestException("Illegal Access");
+        }
+
         if (!userRepository.findColumns().contains(sortBy)) {
             sortBy = "user_id";
         }
@@ -186,7 +192,12 @@ public class UserServiceImpl implements UserService {
             page = 1;
         }
 
-        Page<User> users = userRepository.findAllByStatus(User.Status.ACTIVE.value, search,
+        ArrayList<Byte> status = new ArrayList<>();
+
+        status.add(User.Status.ACTIVE.value);
+        status.add(User.Status.INACTIVE.value);
+
+        Page<User> users = userRepository.findAllByStatus(status, search,
                 PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
 
         Pager<UserView> userViews = new Pager<>(limit, (int) users.getTotalElements(), page);
@@ -198,6 +209,7 @@ public class UserServiceImpl implements UserService {
         userViews.setResult(users.getContent().stream().map(UserView::new).collect(Collectors.toList()));
 
         return userViews;
+
     }
 
     @Override
@@ -350,11 +362,21 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Password Doesnot Match");
         }
 
-        user.setPassword(passwordEncoder.encode(form.getPassword()));
+        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
 
         user.setUpdateDate(new Date());
 
         return new UserView(userRepository.save(user));
+    }
+
+    @Override
+    public Collection<StatusView> getRoleStat() {
+
+        if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+            return userRepository.countUserRoles();
+        }
+
+        throw new BadRequestException("Illegal");
     }
 
 }

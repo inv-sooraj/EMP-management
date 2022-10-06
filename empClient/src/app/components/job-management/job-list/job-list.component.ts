@@ -20,26 +20,16 @@ export class JobListComponent implements OnInit {
   page: number = 1;
 
   sortBy: string = 'job_id';
+  sortDesc: boolean = false;
 
   limit: number = 5;
 
   search: string = '';
 
   // tableHeight: number = 73 * (this.limit + 1);
+  qualifications = this.jobService.qualifications;
 
-  qualifications: { [key: number]: string } = {
-    0: 'SSLC ',
-    1: 'PLUS TWO',
-    2: 'UG ',
-    3: 'PG ',
-  };
-
-  status: { [key: number]: string } = {
-    0: 'PENDING',
-    1: 'APPROVED',
-    2: 'COMPLETED',
-    3: 'DELETED',
-  };
+  status = this.jobService.status;
 
   statusCount: { [key: string]: number } = {};
 
@@ -71,7 +61,14 @@ export class JobListComponent implements OnInit {
     if (this.jobList.result.length <= 1) {
       return;
     }
-    console.log('sort by : ', sortBy);
+    
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
+    
+    console.log('sort by : ', sortBy,", desc : ",this.sortDesc);
 
     this.sortBy = sortBy;
     this.page = 1;
@@ -95,6 +92,7 @@ export class JobListComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
       .append('filter', this.selectedStatus)
       .append('search', this.search);
 

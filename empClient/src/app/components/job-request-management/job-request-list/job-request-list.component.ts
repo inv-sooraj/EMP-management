@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobRequestService } from 'src/app/service/job-request.service';
+import { JobService } from 'src/app/service/job.service';
 
 @Component({
   selector: 'app-job-request-list',
@@ -11,6 +12,7 @@ import { JobRequestService } from 'src/app/service/job-request.service';
 export class JobRequestListComponent implements OnInit {
   constructor(
     private jobRequestService: JobRequestService,
+    private jobService: JobService,
     private modalService: NgbModal
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
@@ -28,11 +30,7 @@ export class JobRequestListComponent implements OnInit {
 
   // tableHeight: number = 73 * (this.limit + 1);
 
-  status: { [key: number]: string } = {
-    0: 'PENDING',
-    1: 'APPROVED ',
-    2: 'REJECT',
-  };
+  status = this.jobService.status;
 
   role: number;
 

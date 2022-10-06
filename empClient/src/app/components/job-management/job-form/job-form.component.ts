@@ -17,14 +17,9 @@ export class JobFormComponent implements OnInit {
 
   title: string = '';
 
-  qualifications = {
-    0: 'SSLC ',
-    1: 'PLUS TWO',
-    2: 'UG ',
-    3: 'PG ',
-  };
+  qualifications = this.jobService.qualifications
 
-  constructor(private service: JobService, private router: Router) {}
+  constructor(private jobService: JobService, private router: Router) {}
 
   ngOnInit(): void {
     this.patchValue(this.jobId);
@@ -66,7 +61,7 @@ export class JobFormComponent implements OnInit {
   }
 
   addJob(body: any): void {
-    this.service.addJob(body).subscribe({
+    this.jobService.addJob(body).subscribe({
       next: (response: any) => {
         console.log('Added ', response);
         this.completedEvent.emit();
@@ -78,7 +73,7 @@ export class JobFormComponent implements OnInit {
   }
 
   editJob(jobId: number, body: any): void {
-    this.service.editJob(jobId, body).subscribe({
+    this.jobService.editJob(jobId, body).subscribe({
       next: (response: any) => {
         console.log('Edited ', response);
         this.completedEvent.emit();
@@ -96,7 +91,7 @@ export class JobFormComponent implements OnInit {
 
     console.log('patch');
 
-    this.service.getJob(jobId).subscribe({
+    this.jobService.getJob(jobId).subscribe({
       next: (response: any) => {
         console.log(response);
         this.jobForm.patchValue({

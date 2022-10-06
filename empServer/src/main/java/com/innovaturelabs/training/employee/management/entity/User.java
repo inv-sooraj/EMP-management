@@ -43,10 +43,11 @@ public class User {
     }
 
     public enum Qualification {
-        SSLC((byte) 0),
-        PLUSTWO((byte) 1),
-        UG((byte) 2),
-        PG((byte) 3);
+        NIL((byte) 0),
+        SSLC((byte) 1),
+        PLUSTWO((byte) 2),
+        UG((byte) 3),
+        PG((byte) 4);
 
         public final byte value;
 
@@ -104,22 +105,7 @@ public class User {
 
         this.role = role;
 
-        Date date = new Date();
-        this.createDate = date;
-        this.updateDate = date;
-    }
-
-    public User(String name, String userName, String email, String password, byte role,
-            String address, String phone) {
-
-        this.name = name;
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-        this.status = Status.ACTIVE.value;
-        this.role = role;
-        this.address = address;
-        this.phone = phone;
+        this.qualification = Qualification.NIL.value;
 
         Date date = new Date();
         this.createDate = date;

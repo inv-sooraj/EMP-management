@@ -39,9 +39,10 @@ public class JobController {
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
             @RequestParam(name = "sortBy", defaultValue = "job_id") String sortBy,
+            @RequestParam(name = "desc", defaultValue = "false") Boolean desc,
             @RequestParam(name = "filter", defaultValue = "5") Integer data,
             @RequestParam(name = "search", defaultValue = "") String search) {
-        return jobService.list(page, limit, sortBy, search, data);
+        return jobService.list(page, limit, sortBy,desc, search, data);
     }
 
     @GetMapping("/{jobId}")

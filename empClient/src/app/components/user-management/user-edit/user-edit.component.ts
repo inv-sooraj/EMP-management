@@ -15,12 +15,7 @@ export class UserEditComponent implements OnInit {
 
   constructor(private userService: UserService) {}
 
-  qualifications: { [key: number]: string } = {
-    0: 'SSLC ',
-    1: 'PLUS TWO',
-    2: 'UG ',
-    3: 'PG ',
-  };
+  qualifications =this.userService.qualifications
 
   userEditForm: FormGroup = new FormGroup({
     name: new FormControl('', Validators.required),

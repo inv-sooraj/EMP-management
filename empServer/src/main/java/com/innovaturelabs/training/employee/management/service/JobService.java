@@ -26,7 +26,7 @@ public interface JobService {
 
     void changeSelectedStatus(Collection<Integer> jobIds, Byte status);
 
-    Pager<JobView> list(Integer page, Integer limit, String sortBy, String search, Integer data);
+    Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc,String search, Integer data);
 
     void jobCsv(HttpServletResponse httpServletResponse);
 

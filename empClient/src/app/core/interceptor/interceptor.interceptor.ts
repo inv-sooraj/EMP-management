@@ -11,6 +11,10 @@ import { Observable } from 'rxjs';
 export class InterceptorInterceptor implements HttpInterceptor {
   constructor() {}
 
+  getAccessToken(): any {
+    return localStorage.getItem('accessToken');
+  }
+
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
@@ -26,9 +30,5 @@ export class InterceptorInterceptor implements HttpInterceptor {
     }
 
     return next.handle(request);
-  }
-
-  getAccessToken(): any {
-    return localStorage.getItem('accessToken');
   }
 }

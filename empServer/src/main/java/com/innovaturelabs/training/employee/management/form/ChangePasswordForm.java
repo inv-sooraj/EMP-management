@@ -6,7 +6,7 @@ public class ChangePasswordForm {
     @Password
     private String currentPassword;
     @Password
-    private String password;
+    private String newPassword;
 
     public String getCurrentPassword() {
         return currentPassword;
@@ -16,12 +16,12 @@ public class ChangePasswordForm {
         this.currentPassword = currentPassword;
     }
 
-    public String getPassword() {
-        return password;
+    public String getNewPassword() {
+        return newPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
 }

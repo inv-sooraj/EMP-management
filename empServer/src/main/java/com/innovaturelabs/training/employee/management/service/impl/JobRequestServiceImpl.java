@@ -52,13 +52,15 @@ public class JobRequestServiceImpl implements JobRequestService {
     @Override
     public JobRequestView add(Integer jobId) {
 
+        Job job = jobRepository.findByJobIdAndStatus(jobId, Job.Status.APPROVED.value)
+                .orElseThrow(NotFoundException::new);
+
         if (jobRequestRepository.findByUserUserIdAndJobJobId(SecurityUtil.getCurrentUserId(), jobId).isPresent()) {
             throw new BadRequestException("Already Applied");
         }
 
         if (userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
-                .orElseThrow(NotFoundException::new).getQualification() < jobRepository.findByjobId(jobId)
-                        .orElseThrow(NotFoundException::new).getQualification()) {
+                .orElseThrow(NotFoundException::new).getQualification() < job.getQualification()) {
             throw new BadRequestException("Insufficien Qualification");
 
         }

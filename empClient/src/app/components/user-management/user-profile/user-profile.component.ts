@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/service/user.service';
 
@@ -15,18 +16,30 @@ export class UserProfileComponent implements OnInit {
 
   userDetails: any = {};
 
-  role: { [key: number]: string } = {
-    0: 'EMPLOYEE ',
-    1: 'EMPLOYER',
-    2: 'ADMIN ',
-  };
+  role = this.userService.role;
 
-  qualifications: { [key: number]: string } = {
-    0: 'SSLC ',
-    1: 'PLUS TWO',
-    2: 'UG ',
-    3: 'PG ',
-  };
+  qualifications = this.userService.qualifications;
+
+  changePasswordForm: FormGroup = new FormGroup({
+    currentPassword: new FormControl('', [
+      Validators.required,
+      Validators.pattern(
+        '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+      ),
+    ]),
+    newPassword: new FormControl('', [
+      Validators.required,
+      Validators.pattern(
+        '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+      ),
+    ]),
+    confirmNewPassword: new FormControl('', [
+      Validators.required,
+      Validators.pattern(
+        '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+      ),
+    ]),
+  });
 
   ngOnInit(): void {
     this.getProfile();
@@ -79,7 +92,6 @@ export class UserProfileComponent implements OnInit {
         console.log(response);
 
         (document.getElementById('profilePicture') as HTMLImageElement).src =
-        
           URL.createObjectURL(new Blob([response], { type: response.type }));
       },
       error(err) {
@@ -88,6 +100,28 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  changePassword(): void {
+    if (!this.changePasswordForm.valid) {
+      console.log('Validation Failed');
+      this.changePasswordForm.markAllAsTouched();
+      return;
+    }
 
+    let param = {
+      currentPassword:
+        this.changePasswordForm.controls['currentPassword'].value,
+      newPassword: this.changePasswordForm.controls['newPassword'].value,
+    };
 
+    this.userService.changePassword(param).subscribe({
+      next: (response: any) => {
+        console.log('Password Changed', response);
+        alert('Password Changed');
+        this.modalService.dismissAll();
+      },
+      error: (error: any) => {
+        console.log('error', error.error);
+      },
+    });
+  }
 }

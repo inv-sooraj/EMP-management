@@ -10,6 +10,13 @@ import { UserService } from 'src/app/service/user.service';
 })
 export class UserListComponent implements OnInit {
   role: number;
+
+  status = this.userService.status;
+
+  roles = this.userService.role;
+
+  roleStatusCount: { [key: string]: number } = {};
+
   constructor(
     private userService: UserService,
     private modalService: NgbModal
@@ -19,6 +26,7 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listUsers();
+    this.getRoleStat();
   }
 
   page: number = 1;
@@ -178,5 +186,27 @@ export class UserListComponent implements OnInit {
 
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
+
+  getRoleStat(): void {
+    this.roleStatusCount = {
+      ADMIN: 0,
+      EMPLOYER: 0,
+      EMPLOYEE: 0,
+    };
+    this.userService.getRoleStat().subscribe({
+      next: (response: any) => {
+        console.log('Stat', response);
+
+        response.forEach((element: any) => {
+          console.log(element);
+
+          this.roleStatusCount[this.roles[element.status]] = element.count;
+        });
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
   }
 }

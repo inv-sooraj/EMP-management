@@ -15,9 +15,9 @@ import com.innovaturelabs.training.employee.management.view.StatusView;
 
 public interface JobRepository extends Repository<Job, Integer> {
 
-    Optional<Job> findByjobId(Integer jobId);
+    Optional<Job> findByJobId(Integer jobId);
 
-    // Optional<Job> findByjobIdAndStaus(Integer jobId,Byte status);
+    Optional<Job> findByJobIdAndStatus(Integer jobId,Byte status);
 
     Job save(Job job);
 

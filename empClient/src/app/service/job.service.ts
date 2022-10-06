@@ -9,6 +9,21 @@ import { environment } from '../../environments/environment';
 export class JobService {
   private apiUrl: string = environment.apiUrl;
 
+  public qualifications: { [key: number]: string } = {
+    0: 'NIL',
+    1: 'SSLC ',
+    2: 'PLUS TWO',
+    3: 'UG ',
+    4: 'PG ',
+  };
+
+  public status: { [key: number]: string } = {
+    0: 'PENDING',
+    1: 'APPROVED',
+    2: 'COMPLETED',
+    3: 'DELETED',
+  };
+
   constructor(private http: HttpClient) {}
 
   addJob(requestBody: any): Observable<any> {

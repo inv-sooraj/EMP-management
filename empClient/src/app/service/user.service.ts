@@ -9,6 +9,25 @@ import { environment } from '../../environments/environment';
 export class UserService {
   private apiUrl: string = environment.apiUrl;
 
+  public qualifications: { [key: number]: string } = {
+    0: 'NIL',
+    1: 'SSLC ',
+    2: 'PLUS TWO',
+    3: 'UG ',
+    4: 'PG ',
+  };
+
+  public role: { [key: number]: string } = {
+    0: 'EMPLOYEE',
+    1: 'EMPLOYER',
+    2: 'ADMIN',
+  };
+  public status: { [key: number]: string } = {
+    0: 'INACTIVE ',
+    1: 'ACTIVE',
+    2: 'DELETED ',
+  };
+
   constructor(private http: HttpClient) {}
 
   getCurrentUser(): Observable<any> {
@@ -29,6 +48,10 @@ export class UserService {
 
   updateUser(userId: number, body: any): Observable<any> {
     return this.http.put(this.apiUrl + '/users/user-update/' + userId, body);
+  }
+
+  changePassword(body: any): Observable<any> {
+    return this.http.put(this.apiUrl + '/users/change-password', body);
   }
   deleteUser(userId: number): Observable<any> {
     return this.http.put(this.apiUrl + '/users/delete/' + userId, {});
@@ -52,5 +75,9 @@ export class UserService {
     return this.http.get(this.apiUrl + '/users/profile', {
       responseType: 'blob',
     });
+  }
+
+  getRoleStat(): Observable<any> {
+    return this.http.get(this.apiUrl + '/users/role-stat');
   }
 }

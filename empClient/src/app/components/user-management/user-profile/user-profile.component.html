@@ -6,16 +6,16 @@
                     <div class="row g-0">
                         <div class="col-md-4 gradient-custom text-center text-white"
                             style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-                            <img id="profilePicture" src="../../../../assets/User-Profile.png"
-                                alt="Avatar" class="img-fluid my-5"  style="border-radius: 50%;height: 120px;width: 120px;" />
-                            <div> 
+                            <img id="profilePicture" src="../../../../assets/User-Profile.png" alt="Avatar"
+                                class="img-fluid my-5" style="border-radius: 50%;height: 120px;width: 120px;" />
+                            <div>
                                 <button ngbTooltip="Edit Profile Picture" class="btn" (click)="profilePic.click()">
                                     <em class="bi bi-pencil-fill"></em>
                                 </button>
 
-                                <input #profilePic type="file"  (change)="onChange($event)" accept=".png" hidden>
+                                <input #profilePic type="file" (change)="onChange($event)" accept=".png" hidden>
 
-                            </div>  
+                            </div>
                             <h5>{{userDetails.name}}</h5>
                             <p> Username :
                                 <em>{{userDetails.userName}}</em>
@@ -25,6 +25,10 @@
                             <button ngbTooltip="Edit Profile" (click)="open(formModule)" class="btn">
                                 <em class="bi bi-pencil-square"></em>
                             </button>
+
+                            <div class="container">
+                                <button (click)="open(changePasswordModal)" class="btn text-white">Change Password</button>
+                            </div>
 
 
                         </div>
@@ -85,5 +89,90 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark"
             (click)="userEdit.editUser();modal.close('Save click')">Save</button>
+    </div>
+</ng-template>
+
+
+
+
+<ng-template #changePasswordModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Change Password</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <div class="card-body">
+
+            <div class="container pt-2">
+    
+                <form [formGroup]="changePasswordForm" class="row g-3">
+    
+                    <div class="col-md-12">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="text" formControlName="currentPassword" class="form-control"
+                            [ngClass]="{'is-invalid':(changePasswordForm.controls['currentPassword'].touched||changePasswordForm.controls['currentPassword'].dirty) && changePasswordForm.controls['currentPassword'].errors}">
+    
+                        <div *ngIf="(changePasswordForm.controls['currentPassword'].touched||changePasswordForm.controls['currentPassword'].dirty)"
+                            class="is-invalid">
+    
+                            <div class="text-danger" *ngIf="changePasswordForm.controls['currentPassword'].errors?.['required']">
+                                Current Password is required.
+                            </div>
+                            <div class="text-danger" *ngIf="changePasswordForm.controls['currentPassword'].errors?.['pattern']">
+                                Password must be eight characters including one uppercase letter, one special character and
+                                alphanumeric characters
+                            </div>
+                        </div>
+                    </div>
+                 
+                    <div class="col-md-12">
+                        <label for="newPassword" class="form-label">Current Password</label>
+                        <input type="text" formControlName="newPassword" class="form-control"
+                            [ngClass]="{'is-invalid':(changePasswordForm.controls['newPassword'].touched||changePasswordForm.controls['newPassword'].dirty) && changePasswordForm.controls['newPassword'].errors}">
+    
+                        <div *ngIf="(changePasswordForm.controls['newPassword'].touched||changePasswordForm.controls['newPassword'].dirty)"
+                            class="is-invalid">
+    
+                            <div class="text-danger" *ngIf="changePasswordForm.controls['newPassword'].errors?.['required']">
+                                New Password is required.
+                            </div>
+                            <div class="text-danger" *ngIf="changePasswordForm.controls['newPassword'].errors?.['pattern']">
+                                Password must be eight characters including one uppercase letter, one special character and
+                                alphanumeric characters
+                            </div>
+                        </div>
+                    </div>
+    
+    
+    
+                    <div class="col-md-12">
+                        <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                        <input type="text" formControlName="confirmNewPassword" class="form-control"
+                            [ngClass]="{'is-invalid':(changePasswordForm.controls['confirmNewPassword'].touched||changePasswordForm.controls['confirmNewPassword'].dirty) && changePasswordForm.controls['confirmNewPassword'].errors}">
+    
+                        <div *ngIf="(changePasswordForm.controls['confirmNewPassword'].touched||changePasswordForm.controls['confirmNewPassword'].dirty)"
+                            class="is-invalid">
+    
+                            <div class="text-danger"
+                                *ngIf="changePasswordForm.controls['confirmNewPassword'].errors?.['required']">
+                                Re-enter New Password.
+                            </div>
+    
+                            <div class="text-danger"
+                                *ngIf="changePasswordForm.controls['confirmNewPassword'].value != changePasswordForm.controls['newPassword'].value">
+                                Password Should match
+                            </div>
+    
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="changePassword()">Save</button>
     </div>
 </ng-template>

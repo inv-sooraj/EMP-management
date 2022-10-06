@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +65,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobView getJob(Integer jobId) {
-        return new JobView(jobRepository.findByjobId(jobId).orElseThrow(NotFoundException::new));
+        return new JobView(jobRepository.findByJobId(jobId).orElseThrow(NotFoundException::new));
     }
 
     @Override
@@ -76,12 +77,13 @@ public class JobServiceImpl implements JobService {
         }
 
         return new JobView(jobRepository
-                .save(jobRepository.findByjobId(jobId).orElseThrow(BadRequestException::new).update(form)));
+                .save(jobRepository.findByJobId(jobId).orElseThrow(BadRequestException::new).update(form)));
 
     }
 
     @Override
-    public Pager<JobView> list(Integer page, Integer limit, String sortBy, String search, Integer selectedStatus) {
+    public Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc, String search,
+            Integer selectedStatus) {
 
         if (!jobRepository.findColumns().contains(sortBy)) {
             sortBy = "job_id";
@@ -104,8 +106,10 @@ public class JobServiceImpl implements JobService {
             Byte qualification = userRepository.findByUserId(SecurityUtil.getCurrentUserId())
                     .orElseThrow(NotFoundException::new).getQualification();
 
-            jobs = jobRepository.findAllByStatusAndQualification(status,qualification,
-                    search, PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+            jobs = jobRepository.findAllByStatusAndQualification(status, qualification,
+                    search, PageRequest.of(page - 1, limit, Sort.by(
+                            desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
 
         } else if (SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
             ArrayList<Byte> status = new ArrayList<>();
@@ -114,7 +118,9 @@ public class JobServiceImpl implements JobService {
             status.add(Job.Status.PENDING.value);
 
             jobs = jobRepository.findAllByUserIdStatus(SecurityUtil.getCurrentUserId(), status,
-                    search, PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+                    search, PageRequest.of(page - 1, limit, Sort.by(
+                            desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
 
         } else {
 
@@ -131,7 +137,9 @@ public class JobServiceImpl implements JobService {
             }
 
             jobs = jobRepository.findAllByStatus(status, search,
-                    PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+                    PageRequest.of(page - 1, limit, Sort.by(
+                            desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
 
         }
 
@@ -154,7 +162,7 @@ public class JobServiceImpl implements JobService {
             throw new BadRequestException("Illegal Access");
         }
 
-        Job job = jobRepository.findByjobId(jobId).orElseThrow(BadRequestException::new);
+        Job job = jobRepository.findByJobId(jobId).orElseThrow(BadRequestException::new);
         job.setStatus(Job.Status.DELETED.value);
         job.setUpdateDate(new Date());
         jobRepository.save(job);
@@ -171,7 +179,7 @@ public class JobServiceImpl implements JobService {
 
         for (Integer jobId : jobIds) {
 
-            Optional<Job> job = jobRepository.findByjobId(jobId);
+            Optional<Job> job = jobRepository.findByJobId(jobId);
 
             if (job.isPresent()) {
                 jobRepository.save(job.get().delete());
@@ -208,7 +216,7 @@ public class JobServiceImpl implements JobService {
             throw new BadRequestException("Illegal Access");
         }
 
-        Job job = jobRepository.findByjobId(jobId).orElseThrow(NotFoundException::new);
+        Job job = jobRepository.findByJobId(jobId).orElseThrow(NotFoundException::new);
 
         if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
 
@@ -237,7 +245,7 @@ public class JobServiceImpl implements JobService {
 
         for (Integer jobId : jobIds) {
 
-            Optional<Job> job = jobRepository.findByjobId(jobId);
+            Optional<Job> job = jobRepository.findByJobId(jobId);
 
             if (job.isPresent()) {
                 Job job2 = job.get();

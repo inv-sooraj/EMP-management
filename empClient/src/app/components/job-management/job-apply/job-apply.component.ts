@@ -26,12 +26,7 @@ export class JobApplyComponent implements OnInit {
 
   // tableHeight: number = 73 * (this.limit + 1);
 
-  qualifications: { [key: number]: string } = {
-    0: 'SSLC ',
-    1: 'PLUS TWO',
-    2: 'UG ',
-    3: 'PG ',
-  };
+  qualifications = this.jobService.qualifications;
 
   ngOnInit(): void {
     this.listJobs();

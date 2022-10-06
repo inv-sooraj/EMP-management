@@ -27,6 +27,7 @@ import com.innovaturelabs.training.employee.management.form.UserProfilePicForm;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.Pager;
+import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
@@ -112,6 +113,11 @@ public class UsersController {
     @PutMapping("/change-password")
     public UserView changePassword(@RequestBody ChangePasswordForm form) {
         return userService.changePassword(form);
+    }
+
+    @GetMapping("/role-stat")
+    public Collection<StatusView> count() {
+        return userService.getRoleStat();
     }
 
 }
