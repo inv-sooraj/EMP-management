@@ -7,6 +7,7 @@ import { JobRequestListComponent } from './components/job-request-management/job
 import { UserEditComponent } from './components/user-management/user-edit/user-edit.component';
 import { UserListComponent } from './components/user-management/user-list/user-list.component';
 import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
+import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { RegisterComponent } from './core/components/register/register.component';
 
@@ -34,7 +35,8 @@ const routes: Routes = [
   {
     path: 'job-list',
     component: JobListComponent,
-  },{
+  },
+  {
     path: 'job-apply',
     component: JobApplyComponent,
   },
@@ -43,10 +45,13 @@ const routes: Routes = [
     component: JobRequestListComponent,
   },
   {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent,
+  },
+  {
     path: '**',
     component: LoginComponent,
   },
-
 ];
 
 @NgModule({

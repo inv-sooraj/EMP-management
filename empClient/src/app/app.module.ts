@@ -18,6 +18,7 @@ import { JobRequestListComponent } from './components/job-request-management/job
 import { JobApplyComponent } from './components/job-management/job-apply/job-apply.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AdminUserEditComponent } from './components/user-management/admin-user-edit/admin-user-edit.component';
+import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { AdminUserEditComponent } from './components/user-management/admin-user-
     JobApplyComponent,
     HeaderComponent,
     AdminUserEditComponent,
+    ForgotPasswordComponent,
   ],
 
   imports: [

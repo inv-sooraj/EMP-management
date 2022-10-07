@@ -5,6 +5,7 @@ import static com.innovaturelabs.training.employee.management.security.AccessTok
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -47,11 +51,14 @@ import com.innovaturelabs.training.employee.management.security.util.TokenGenera
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.CsvDownload;
+import com.innovaturelabs.training.employee.management.util.Email;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
+
+import net.bytebuddy.utility.RandomString;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -69,6 +76,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SecurityConfig securityConfig;
+
+    @Autowired
+    private Email emailService;
+
+    private TextEncryptor textEncryptor;
 
     @Override
     public UserView add(UserForm form) {
@@ -377,6 +389,80 @@ public class UserServiceImpl implements UserService {
         }
 
         throw new BadRequestException("Illegal");
+    }
+
+    @Override
+    public void forgotPassword(String email) {
+        User user = userRepository.findByEmailAndStatus(email, User.Status.ACTIVE.value)
+                .orElseThrow(() -> new BadRequestException("User Not Found"));
+
+        textEncryptor = Encryptors.text(
+                securityConfig.getTokenGeneratorPassword(),
+                securityConfig.getTokenGeneratorSalt());
+
+        Long currentTime = System.currentTimeMillis();
+
+        String token = RandomString.make(10) + "#" + user.getUserId() + "#" + currentTime;
+
+        user.setPasswordResetRequest(true);
+
+        userRepository.save(user);
+
+        String url = "http://localhost:4200/forgot-password?token=" + textEncryptor.encrypt(token);
+
+        String subject = "Employee Management : Reset Password";
+        String body = "<h3>Reset password </h3>"
+                + "<a href=" + url + ">Click here to reset password</a>";
+        try {
+            emailService.sendEmail(email, subject, body);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            e.printStackTrace();
+            throw new BadRequestException("Email Service Temporarily Unavailable");
+        }
+
+    }
+
+    @Override
+    public void resetPassword(String token, String password) {
+
+        textEncryptor = Encryptors.text(
+                securityConfig.getTokenGeneratorPassword(),
+                securityConfig.getTokenGeneratorSalt());
+
+        String[] parts = textEncryptor.decrypt(token).split("#");
+
+        if (parts.length != 3) {
+            throw new InvalidTokenException("Token content is invalid");
+        }
+
+        Integer userId;
+        long keyTime;
+        try {
+            userId = Integer.parseInt(parts[1]);
+            keyTime = Long.parseLong(parts[2]);
+        } catch (NumberFormatException e) {
+            throw new InvalidTokenException("Token content is invalid", e);
+        }
+
+        if (System.currentTimeMillis() - keyTime >= 1000 * 60 * 10) {
+            throw new BadRequestException("Token Expired");
+        }
+
+        User user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
+                .orElseThrow(() -> new NotFoundException("Invalid Data"));
+
+        if (!user.isPasswordResetRequest()) {
+            throw new BadRequestException("Invalid Request");
+        }
+
+        user.setPassword(passwordEncoder.encode(password));
+
+        user.setPasswordResetRequest(false);
+
+        user.setUpdateDate(new Date());
+
+        userRepository.save(user);
+
     }
 
 }

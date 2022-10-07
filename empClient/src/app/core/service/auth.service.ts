@@ -25,4 +25,12 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('name');
   }
+
+  forgotPassword(body: any): Observable<any> {
+    return this.http.put(environment.apiUrl + '/login/forgot-password', body);
+  }
+
+  resetPassword(token: string, body: any): Observable<any> {
+    return this.http.put(environment.apiUrl + '/login/reset-password/'+token, body);
+  }
 }

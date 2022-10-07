@@ -59,4 +59,8 @@ public interface UserService {
 
     Collection<StatusView> getRoleStat();
 
+    void forgotPassword(String email);
+
+    void resetPassword(String token, String password);
+
 }

@@ -76,6 +76,8 @@ public class User {
     private byte role;
     private byte qualification;
 
+    private boolean passwordResetRequest;
+
     private String profilePic;
 
     @Column(length = 255)
@@ -246,5 +248,15 @@ public class User {
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
+
+    public boolean isPasswordResetRequest() {
+        return passwordResetRequest;
+    }
+
+    public void setPasswordResetRequest(boolean passwordResetRequest) {
+        this.passwordResetRequest = passwordResetRequest;
+    }
+
+    
 
 }
