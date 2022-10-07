@@ -11,14 +11,16 @@ import { UserService } from 'src/app/services/user-services/user.service';
 })
 export class UserListComponent implements OnInit {
   users: any
-  userData:any
+  userData: any
   count: any
   total: any
 
-  page:number = 1
-  limit:number=5;
-  sortBy:string='user_Id'
-  search:string='';
+  page: number = 1
+  limit: number = 5;
+  sortBy: string = 'user_Id'
+  search: string = '';
+  filter: number = 5;
+  sortDesc: boolean = false;
 
   title = 'appBootstrap';
 
@@ -32,16 +34,18 @@ export class UserListComponent implements OnInit {
 
   usersList() {
     let queryParams = new HttpParams()
-    .append('page', this.page)
-    .append('limit', this.limit)
-    .append('sortBy', this.sortBy)
-    .append('search', this.search);
+      .append('page', this.page)
+      .append('limit', this.limit)
+      .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
+      .append('filter', this.filter)
+      .append('search', this.search);
     this.userService.getUsers(queryParams).subscribe({
       next: (response: any) => {
         if (response) {
           console.log(response);
           this.users = response;
-          this.userData=response.result;
+          this.userData = response.result;
           this.count = response.result.length;
           this.total = response.numItems;
         }
@@ -91,8 +95,22 @@ export class UserListComponent implements OnInit {
     this.usersList();
   }
   setSort(sortBy: string) {
+
+    if (this.users.result.length <= 1) {
+      return;
+    }
+
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
     this.sortBy = sortBy;
     this.page = 1;
+    this.usersList();
+  }
+  setFilter() {
+    console.log(this.limit);
     this.usersList();
   }
 
@@ -143,20 +161,39 @@ export class UserListComponent implements OnInit {
   checked: Array<number> = [];
 
   checkedUser(event: any) {
-    console.log(event.target.checked);
-    console.log(event.target.attributes.value.value);
-
     if (event.target.checked) {
-      this.checked.push(event.target.attributes.value.value);
+      this.checked.push(Number(event.target.attributes.value.value));
+
+      if (this.users.result.length == this.checked.length) {
+        (document.getElementById('selectAll') as HTMLInputElement).checked =
+          true;
+      }
     } else {
       this.checked.splice(
-        this.checked.indexOf(event.target.attributes.value.value),
+        this.checked.indexOf(Number(event.target.attributes.value.value)),
         1
       );
+      (document.getElementById('selectAll') as HTMLInputElement).checked =
+        false;
     }
 
-    console.log(this.checked.indexOf(5));
+    console.log(this.checked);
+  }
 
+  checkAll(event: any) {
+    this.users.result.forEach((element: any) => {
+      (
+        document.getElementById('checkbox' + element.userId) as HTMLInputElement
+      ).checked = event.target.checked;
+
+      if (event.target.checked) {
+        if (!this.checked.includes(element.userId)) {
+          this.checked.push(element.userId);
+        }
+      } else {
+        this.checked.splice(this.checked.indexOf(element.userId), 1);
+      }
+    });
     console.log(this.checked);
   }
 
@@ -176,15 +213,4 @@ export class UserListComponent implements OnInit {
 
     document.getElementById('selectAll')?.click();
   }
-
-  abcd(event: any) {
-    console.log(event);
-
-    this.users.result.forEach((element: any) => {
-      console.log(element.jobId);
-
-      document.getElementById('checkbox' + element.jobId)?.click();
-    });
-  }
-
 }

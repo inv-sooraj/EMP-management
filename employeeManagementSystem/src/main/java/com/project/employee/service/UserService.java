@@ -16,7 +16,6 @@ import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
 import com.project.employee.features.Pager;
 import com.project.employee.form.ChangePasswordForm;
-import com.project.employee.form.ForgotPasswordForm;
 import com.project.employee.form.ImageForm;
 import com.project.employee.form.LoginForm;
 import com.project.employee.form.UserDetailForm;
@@ -29,7 +28,7 @@ import com.project.employee.view.UserView;
 public interface UserService {
 //	Collection<User> list();
 
-	Pager<UserView> list(Integer page, Integer limit, String sortBy, String search);
+	Pager<UserView> list(Integer page, Integer limit, String sortBy,Boolean desc,String filter, String search);
 
 	UserView add(@Valid UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException;
 
@@ -51,7 +50,7 @@ public interface UserService {
 
 	HttpEntity<byte[]> getImg();
 
-	void forgotPassword(String token, ForgotPasswordForm form);
+	void forgotPassword(String token,String email);
 
 	void resetPswd(String token, String password);
 

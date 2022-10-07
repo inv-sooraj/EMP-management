@@ -26,6 +26,8 @@ export class ForgotPasswordComponent implements OnInit {
     this.resetToken=this.activatedRouter.snapshot.params['url'];
   }
   resetPassword() {
+    console.log(this.resetToken);
+    
     if (this.resetPasswordForm.valid) {
       let newPswd = {
         password: this.resetPasswordForm.controls['password'].value
@@ -38,7 +40,7 @@ export class ForgotPasswordComponent implements OnInit {
         },
         error: (error: any) => {
           console.log(error);
-          alert(error.error.message);
+          alert(error.error.message );
         }
 
       });

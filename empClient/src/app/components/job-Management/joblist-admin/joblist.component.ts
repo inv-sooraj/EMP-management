@@ -21,6 +21,7 @@ export class JoblistComponent implements OnInit {
   search:string='';
   filter:number=5;
 
+  sortDesc: boolean = false;
 
   title = 'appBootstrap';
 
@@ -57,6 +58,7 @@ export class JoblistComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
       .append('filter',this.filter)
       .append('search', this.search);
 
@@ -107,6 +109,15 @@ export class JoblistComponent implements OnInit {
     this.jobList();
   }
   setSort(sortBy: string) {
+    if (this.jobs.result.length <= 1) {
+      return;
+    }
+    
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
     this.sortBy = sortBy;
     this.page = 1;
     this.jobList();

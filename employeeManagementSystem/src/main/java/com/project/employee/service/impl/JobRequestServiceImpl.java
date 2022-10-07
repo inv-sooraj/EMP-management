@@ -3,6 +3,7 @@ package com.project.employee.service.impl;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -15,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
+import com.project.employee.entity.Job;
 import com.project.employee.entity.JobRequest;
 import com.project.employee.exception.BadRequestException;
 import com.project.employee.exception.NotFoundException;
@@ -74,6 +77,15 @@ public class JobRequestServiceImpl implements JobRequestService {
 
 		JobRequest jobRequest = jobRequestRepository.findById(reqId).orElseThrow(NotFoundException::new);
 		jobRequest.update(status);
+		System.out.println(status);
+		
+		if(status==1) {
+			
+			System.out.println("hkooooooooo");
+		Job job=	jobRequest.getJob();
+		job.setNoOfOpenings(job.getNoOfOpenings()-1);
+		jobRepository.save(job);
+		}else {System.out.println("in funct"+status);}
 
 		if (status == 1) {
 			String emailId = jobRequest.getUserId().getEmail();
@@ -122,7 +134,7 @@ public class JobRequestServiceImpl implements JobRequestService {
 	}
 
 	@Override
-	public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search) {
+	public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy,Boolean desc,String filter, String search) {
 
 		if (!jobRequestRepository.findColumns().contains(sortBy)) {
 			sortBy = "req_id";
@@ -131,9 +143,26 @@ public class JobRequestServiceImpl implements JobRequestService {
 		if (page <= 0) {
 			page = 1;
 		}
+		
+		
+			ArrayList<Byte> status = new ArrayList<>();
+			if (filter.equals("0")) {
+				status.add(JobRequest.RequestStatus.PENDING.value);
+			} else if (filter.equals("1")) {
+				status.add(JobRequest.RequestStatus.APPROVED.value);
+			} else if (filter.equals("2")) {
+				status.add(JobRequest.RequestStatus.REJECTED.value);
+			} else {
+				
+				status.add(JobRequest.RequestStatus.PENDING.value);
+				status.add(JobRequest.RequestStatus.APPROVED.value);
+				status.add(JobRequest.RequestStatus.REJECTED.value);
+			}
+		
 
-		Page<JobRequest> jobRequests = jobRequestRepository.findAllByUserUserId(SecurityUtil.getCurrentUserId(), search,
-				PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+		Page<JobRequest> jobRequests = jobRequestRepository.findAllByUserUserId(status,SecurityUtil.getCurrentUserId(), search,
+				PageRequest.of(page - 1, limit, Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                        sortBy)));
 		Pager<JobRequestView> jobRequestViews = new Pager<JobRequestView>(limit, (int) jobRequests.getTotalElements(),
 				page);
 

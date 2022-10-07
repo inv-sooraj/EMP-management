@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.employee.entity.User;
 import com.project.employee.features.Pager;
 import com.project.employee.form.ChangePasswordForm;
-import com.project.employee.form.ForgotPasswordForm;
 import com.project.employee.form.ImageForm;
 import com.project.employee.form.ResetPasswordForm;
 import com.project.employee.form.UserDetailForm;
@@ -42,71 +41,78 @@ public class UsersController {
 
 //	api for adding user
 	@PostMapping
-	public UserView add(@Valid @RequestBody UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException {
-		return userService.add(form);
-	}
-	
-	@PostMapping("/admin")
-	public UserView adminAdd(@Valid @RequestBody UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException {
+	public UserView add(@Valid @RequestBody UserRegistrationForm form)
+			throws UnsupportedEncodingException, MessagingException {
 		return userService.add(form);
 	}
 
-//	api for listing all active users
+	@PostMapping("/admin")
+	public UserView adminAdd(@Valid @RequestBody UserRegistrationForm form)
+			throws UnsupportedEncodingException, MessagingException {
+		return userService.add(form);
+	}
+
+//	api for paginated listing all  users
 	@GetMapping
 	public Pager<UserView> list(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
 			@RequestParam(name = "sortBy", required = false, defaultValue = "job_id") String sortBy,
+			@RequestParam(name = "desc", required = false, defaultValue = "false") Boolean desc,
+			@RequestParam(name = "filter", required = false, defaultValue = "") String filter,
 			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
-		return userService.list(page, limit, sortBy, search);
+		return userService.list(page, limit, sortBy, desc, filter, search);
 	}
 
+//	detailed view of current logged in user
 	@GetMapping("/detail")
 	public UserDetailView detailView() {
 		return userService.detailView();
 	}
 
+//	csv download of all users
 	@GetMapping("/download")
 	public void csvUser(HttpServletResponse httpServletResponse) {
 		userService.csvUser(httpServletResponse);
 	}
 
+//	get active users count
 	@GetMapping("/count")
 	public long userCount() {
 		return userService.userCount();
 	}
-	
-	//to find user with email
-		@PostMapping("/resetPswdEmail")
-		public void validateEmail(@Valid @RequestBody ForgotPasswordForm form) {
-			String token= RandomString.make(45);
-			 userService.forgotPassword(token,form);
-		}
-		
-//		// to reset password
-		@PostMapping("/forgotPswd/{token}")
-		public void resetPassword(@PathVariable("token") String token, @Valid @RequestBody ResetPasswordForm form) {
-			 userService.resetPswd(token,form.getPassword());
-		}
+
+//	find user by email for forgot password
+	@PostMapping("/resetPswdEmail")
+	public void validateEmail(@Valid @RequestBody String email) {
+		String token = RandomString.make(45);
+		userService.forgotPassword(token, email);
+	}
+
+// to reset password
+	@PostMapping("/forgotPswd/{token}")
+
+	public void resetPassword(@PathVariable("token") String token, @Valid @RequestBody ResetPasswordForm form) {
+		userService.resetPswd(token, form.getPassword());
+	}
 
 //	api for adding or updating  user details
 	@PutMapping()
 	public UserView updateUser(@Valid @RequestBody UserDetailForm form) {
 		return userService.update(form);
 	}
-	
+//  for changing password 
 	@PutMapping("/changepswd")
 	public UserView changePassword(@Valid @RequestBody ChangePasswordForm form) {
 		return userService.changePassword(form);
 	}
-	
-	
 
+//	for uploading profile picture
 	@PutMapping("/profilePic")
 	public User add(@ModelAttribute ImageForm form) throws Exception {
 		System.out.println(form.getProfilePhoto().getOriginalFilename());
 		return userService.uploadImage(form);
 	}
-
+//  fetch profile picture
 	@GetMapping("/getImg")
 	public HttpEntity<byte[]> getImg() {
 		return userService.getImg();
@@ -117,7 +123,7 @@ public class UsersController {
 	public void delete(@RequestBody Integer userId) {
 		userService.delete(userId);
 	}
-
+//	logical deletion of multiple users
 	@PutMapping("/delete/selected")
 	public void deleteSelected(@RequestBody Collection<Integer> jobIds) {
 		userService.deleteSelected(jobIds);

@@ -15,18 +15,17 @@ public class EmailSenderService {
 	@Autowired
 	private JavaMailSender mailSender;
 
-	public void sendEmail(String toEmail, String subject, String body)throws UnsupportedEncodingException, MessagingException {
+	public void sendEmail(String toEmail, String subject, String content)throws UnsupportedEncodingException, MessagingException {
 		
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 		
-		helper.setFrom("joyal.jos@gmail.com","JobFinder");
+		helper.setFrom("empmanagemenet@gmail.com","JobFinder");
 		helper.setBcc("stejojosemon4@gmail.com");
 		helper.setTo(toEmail);
 		helper.setSubject(subject);
-		helper.setText(body);
+		helper.setText(content,true);
 		
 		mailSender.send(message);
-		
 	}
 }

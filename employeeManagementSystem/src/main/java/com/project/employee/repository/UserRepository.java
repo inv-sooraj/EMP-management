@@ -40,8 +40,8 @@ public interface UserRepository extends Repository<User, Integer> {
 	@Query(value = "SELECT `COLUMN_NAME`  FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='user'", nativeQuery = true)
 	ArrayList<String> findColumns();
 
-	@Query(value = "SELECT * FROM user  WHERE status = ?1 AND (user_name LIKE %?2% OR email LIKE %?2% OR name LIKE %?2% )", nativeQuery = true)
-	Page<User> findAllByStatus(Byte status, String search, Pageable page);
+	@Query(value = "SELECT * FROM user  WHERE ROLE IN ?1 AND (user_name LIKE %?2% OR email LIKE %?2% OR name LIKE %?2% )", nativeQuery = true)
+	Page<User> findAllByStatus(ArrayList<Byte> status, String search, Pageable page);
 
 	@Query(value = "SELECT COUNT(*) FROM user  WHERE status = ?1 AND (user_name LIKE %?2% OR email LIKE %?2% OR name LIKE %?2%)", nativeQuery = true)
 	Long countJobList(Byte status, String search);

@@ -30,14 +30,24 @@
             <option [ngValue]=4>4</option>
             <option [ngValue]=5>5</option>
         </select>
+
+        Filter :
+
+        <select [(ngModel)]="filter" (change)="setFilter()">
+          <option selected="selected" [ngValue]=5>All</option>
+          <option [ngValue]=0>ADMIN</option>
+          <option [ngValue]=2>EMPLOYER</option>
+          <option [ngValue]=1>EMPLOYEE</option>
+        </select>
     <table class="table table-striped table-hover">
       <thead>
         <tr>
-           <th id="">
+          <th scope="col">
             <span class="custom-checkbox">
-                <input type="checkbox" id="selectAll" (change)="abcd($event)">
+                <input type="checkbox" id="selectAll" (change)="checkAll($event)" />
                 <label for="selectAll"></label>
             </span>
+        </th>
             <th id="" (click)="setSort('user_id')">Id<i class="fa fa-sort"></i></th>
             <th id="" (click)="setSort('user_name')">Username<i class="fa fa-sort"></i></th>
             <th id="" (click)="setSort('email')">Email<i class="fa fa-sort"></i></th>

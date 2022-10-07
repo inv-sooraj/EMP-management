@@ -17,8 +17,10 @@ export class ListJobRequestComponent implements OnInit {
 
   page: number = 1
   limit: number = 5;
-  sortBy: string = 'job_Id'
+  sortBy: string = 'req_id'
   search: string = '';
+  filter: number = 5;
+  sortDesc: boolean = false;
 
   role: any
   showSpinner: boolean = false
@@ -66,6 +68,8 @@ export class ListJobRequestComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
+      .append('filter', this.filter)
       .append('search', this.search);
     this.service.getJobRequests(queryParams).subscribe({
       next: (response: any) => {
@@ -114,8 +118,21 @@ export class ListJobRequestComponent implements OnInit {
     this.reqList();
   }
   setSort(sortBy: string) {
+    if (this.requests.result.length <= 1) {
+      return;
+    }
+
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
     this.sortBy = sortBy;
     this.page = 1;
+    this.reqList();
+  }
+  setFilter() {
+    console.log(this.limit);
     this.reqList();
   }
 
@@ -148,21 +165,41 @@ export class ListJobRequestComponent implements OnInit {
   }
   checked: Array<number> = [];
 
-  checkedUser(event: any) {
-    console.log(event.target.checked);
-    console.log(event.target.attributes.value.value);
-
+  
+  checkedReq(event: any) {
     if (event.target.checked) {
-      this.checked.push(event.target.attributes.value.value);
+      this.checked.push(Number(event.target.attributes.value.value));
+
+      if (this.requests.result.length == this.checked.length) {
+        (document.getElementById('selectAll') as HTMLInputElement).checked =
+          true;
+      }
     } else {
       this.checked.splice(
-        this.checked.indexOf(event.target.attributes.value.value),
+        this.checked.indexOf(Number(event.target.attributes.value.value)),
         1
       );
+      (document.getElementById('selectAll') as HTMLInputElement).checked =
+        false;
     }
 
-    console.log(this.checked.indexOf(5));
+    console.log(this.checked);
+  }
 
+  checkAll(event: any) {
+    this.requests.result.forEach((element: any) => {
+      (
+        document.getElementById('checkbox' + element.reqId) as HTMLInputElement
+      ).checked = event.target.checked;
+
+      if (event.target.checked) {
+        if (!this.checked.includes(element.reqId)) {
+          this.checked.push(element.reqId);
+        }
+      } else {
+        this.checked.splice(this.checked.indexOf(element.reqId), 1);
+      }
+    });
     console.log(this.checked);
   }
 
@@ -182,15 +219,4 @@ export class ListJobRequestComponent implements OnInit {
 
     document.getElementById('selectAll')?.click();
   }
-
-  abcd(event: any) {
-    console.log(event);
-
-    this.requests.result.forEach((element: any) => {
-      console.log(element.jobId);
-
-      document.getElementById('checkbox' + element.jobId)?.click();
-    });
-  }
-
 }

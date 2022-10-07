@@ -35,6 +35,7 @@ public class LoginController {
 		return userService.login(form, errors);
 	}
 
+//	for getting a new accesstoken without logout
 	@PutMapping
 	public LoginView refresh(@RequestBody String refreshToken) {
 		return userService.refresh(refreshToken);

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvBeanWriter;
@@ -45,7 +46,7 @@ public class JobServiceImpl implements JobService {
 		return jobRepository.findAll().stream().map((job) -> new JobView(job)).collect(Collectors.toList());
 	}
 
-	public Pager<JobView> list(Integer page, Integer limit, String sortBy, String filter, String search) {
+	public Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc,String filter, String search) {
 		User user = userRepository.findByUserId(SecurityUtil.getCurrentUserId());
 
 		if (!jobRepository.findColumns().contains(sortBy)) {
@@ -72,7 +73,9 @@ public class JobServiceImpl implements JobService {
 				status.add(Job.JobStatus.REJECTED.value);
 			}
 			jobs = jobRepository.findAllByStatus(status, search,
-					PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+					PageRequest.of(page - 1, limit, Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
+
 		} else if (user.getRole() == 1) {
 
 			jobs = jobRepository.findAllByUserIdAndStatus(SecurityUtil.getCurrentUserId(), Job.Status.ACTIVE.value,

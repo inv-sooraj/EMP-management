@@ -34,14 +34,23 @@
       <option [ngValue]=4>4</option>
       <option [ngValue]=5>5</option>
     </select>
+    Filter :
+
+        <select [(ngModel)]="filter" (change)="setFilter()">
+          <option selected="selected" [ngValue]=5>All</option>
+          <option [ngValue]=0>PENDING</option>
+          <option [ngValue]=1>APPROVED</option>
+          <option [ngValue]=2>REJECTED</option>
+        </select>
     <table class="table table-striped table-hover">
       <thead>
         <tr>
-          <th id="">
+          <th scope="col">
             <span class="custom-checkbox">
-              <input type="checkbox" id="selectAll" (change)="abcd($event)">
-              <label for="selectAll"></label>
+                <input type="checkbox" id="selectAll" (change)="checkAll($event)" />
+                <label for="selectAll"></label>
             </span>
+        </th>
           <th id="" (click)="setSort('req_id')">Id<i class="fa fa-sort"></i></th>
           <th id="" (click)="setSort('remark')">Remark<i class="fa fa-sort"></i></th>
           <th id="" (click)="setSort('job_id')">Requested Job<i class="fa fa-sort"></i></th>
@@ -58,7 +67,7 @@
         <tr *ngFor="let req of requestData">
           <td>
             <span class="custom-checkbox">
-              <input type="checkbox" id="checkbox{{req.reqId}}" value="{{req.reqId}}" (change)="checkedUser($event)">
+              <input type="checkbox" id="checkbox{{req.reqId}}" value="{{req.reqId}}" (change)="checkedReq($event)">
               <label for="checkbox{{req.reqId}}"></label>
             </span>
           </td>

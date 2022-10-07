@@ -33,18 +33,15 @@ public class JobController {
 		return jobService.add(form);
 	}
 
-//	api for listing  all jobs
-
-//	public Collection<JobView> list() {
-//		return jobService.list();
-//	}
+//	api for paginated listing  of all jobs
 	@GetMapping
 	public Pager<JobView> list(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
 			@RequestParam(name = "sortBy", required = false, defaultValue = "job_id") String sortBy,
+			@RequestParam(name = "desc", required = false,	defaultValue = "false") Boolean desc,
 			@RequestParam(name = "filter", required = false, defaultValue = "") String filter,
 			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
-		return jobService.list(page, limit, sortBy, filter,search);
+		return jobService.list(page, limit, sortBy, desc, filter,search);
 	}
 
 //	api for downloading csv file of jobs
@@ -53,22 +50,26 @@ public class JobController {
 		jobService.csvJob(httpServletResponse);
 	}
 
+	
+//	api for fetching job count
 	@GetMapping("/count")
 	public long jobCount() {
 		return jobService.jobCount();
 	}
 
+//	api for fetching details of a job by id
 	@GetMapping("/{jobId}")
 	public JobView getJob(@PathVariable("jobId") Integer jobId) {
 		return jobService.getJob(jobId);
 	}
 
-//	api for logicaly deleting a job
+//	for editing job details
 	@PutMapping("/{jobId}")
 	public JobView update(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobForm form) {
 		return jobService.update(jobId, form);
 	}
 	
+//	for approving/rejecing a job
 	@PutMapping("/approve/{jobId}")
 	public JobView approve(@PathVariable("jobId") Integer jobId, @RequestBody Integer status) {
 		return jobService.approve(jobId, status);
@@ -79,6 +80,8 @@ public class JobController {
 	public void delete(@RequestBody Integer jobId) {
 		jobService.delete(jobId);
 	}
+	
+//	logical deletion of multiple jobs
 	@PutMapping("/delete/selected")
 	public void deleteSelected(@RequestBody Collection<Integer> jobIds) {
 		jobService.deleteSelected(jobIds);

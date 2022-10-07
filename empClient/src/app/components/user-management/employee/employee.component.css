@@ -14,6 +14,19 @@ body{
     background-color: #fbfcfd !important;
 }
 
+.w3-col.m2 {
+    width: 16.66666%;
+    margin-top: -9.5%;
+}
+.w3-col.m3, .w3-quarter {
+  width: 24.99999%;
+  margin-top: 1%;
+}
+.w3-col.m7 {
+  width: 58.33333%;
+  margin-top: 1%;
+}
+
 .ss{
     margin-left: 28%;
     margin-top: 10%;
@@ -49,7 +62,7 @@ body{
   }
 
   .card-counter.primary{
-    background-color: #007bff;
+    background-color: #435d7d;
     color: #FFF;
   }
 

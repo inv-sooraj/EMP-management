@@ -20,7 +20,7 @@ public interface JobRequestService {
 
 	Collection<Integer> listByUserId();
 
-	Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search);
+	Pager<JobRequestView> list(Integer page, Integer limit, String sortBy,Boolean desc,String filter, String search);
 
 	JobRequestView add(Integer jobId, @Valid JobRequestForm form);
 

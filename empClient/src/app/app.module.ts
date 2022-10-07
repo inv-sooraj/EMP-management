@@ -24,7 +24,6 @@ import { UpdateUserComponent } from './components/user-management/update-User-De
 import { EmployeeHeaderComponent } from './components/user-management/employee/employee-header/employee-header.component';
 import { EmpJobReqComponent } from './components/job-Request-Management/emp-job-req/emp-job-req.component';
 import { EmplyrHeaderComponent } from './components/user-management/employer/emplyr-header/emplyr-header.component';
-import { EmplyrJobReqtsComponent } from './components/job-Request-Management/emplyr-job-reqts/emplyr-job-reqts.component';
 import { JoblistEmplyrComponent } from './components/job-Management/joblist-emplyr/joblist-emplyr.component';
 import { JoblistEmployeeComponent } from './components/job-Management/joblist-emp/joblist-employee.component';
 import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
@@ -46,7 +45,6 @@ import { ForgotPasswordComponent } from './core/components/forgot-password/forgo
     EmployeeHeaderComponent,
     EmpJobReqComponent,
     EmplyrHeaderComponent,
-    EmplyrJobReqtsComponent,
     JoblistEmplyrComponent,
     JoblistEmployeeComponent,
     ForgotPasswordComponent

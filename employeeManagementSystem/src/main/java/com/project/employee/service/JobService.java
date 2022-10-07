@@ -16,7 +16,7 @@ import com.project.employee.view.JobView;
 public interface JobService {
 	Collection<JobView> list();
 
-	Pager<JobView> list(Integer page, Integer limit, String sortBy,String filter, String search);
+	Pager<JobView> list(Integer page, Integer limit, String sortBy,Boolean desc,String filter, String search);
 
 	JobView add(@Valid JobForm form);
 

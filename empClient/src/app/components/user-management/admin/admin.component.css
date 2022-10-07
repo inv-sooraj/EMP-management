@@ -14,9 +14,11 @@
 /* @import url("//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"); */
 
 body{
-    margin-top: -3%;
-    background-color: white;
+    /* margin-top: 0%; */
+    
+    background-color: rgb(221, 177, 18);
     /* background-image:"assets/build.jpg" ; */
+    /* background - image: url("../../assets/images/back2.jpg"); */
 
 }
 .w3-theme-l5 {
@@ -34,6 +36,20 @@ element.style {
     flex: 0 0 auto;
     width: 100%;
 }
+
+.w3-col.m2 {
+  width: 16.66666%;
+  margin-top: -11%;
+}
+.w3-col.m3, .w3-quarter {
+width: 24.99999%;
+margin-top: 1%;
+}
+.w3-col.m7 {
+width: 58.33333%;
+margin-top: 0.5%;
+}
+
 
 
 .ss{
@@ -109,4 +125,8 @@ element.style {
     display: block;
     font-size: 18px;
   }
+
+  .w3-row-padding, .w3-row-padding>.w3-half, .w3-row-padding>.w3-third, .w3-row-padding>.w3-twothird, .w3-row-padding>.w3-threequarter, .w3-row-padding>.w3-quarter, .w3-row-padding>.w3-col {
+    padding: 5px 5px;
+}
 

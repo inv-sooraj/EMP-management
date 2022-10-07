@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -44,7 +46,6 @@ import com.project.employee.exception.UserNotFoundException;
 import com.project.employee.features.EmailSenderService;
 import com.project.employee.features.Pager;
 import com.project.employee.form.ChangePasswordForm;
-import com.project.employee.form.ForgotPasswordForm;
 import com.project.employee.form.ImageForm;
 import com.project.employee.form.LoginForm;
 import com.project.employee.form.UserDetailForm;
@@ -71,12 +72,11 @@ public class UserServiceImpl implements UserService {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private TokenGenerator tokenGenerator;
-	
+
 	@Autowired
 	private EmailSenderService emailService;
-	
-	private TextEncryptor textEncryptor;
 
+	private TextEncryptor textEncryptor;
 
 	@Autowired
 	private SecurityConfig securityConfig;
@@ -90,15 +90,14 @@ public class UserServiceImpl implements UserService {
 		if (userRepository.findByEmail(form.getEmail()).isPresent()) {
 			throw new BadRequestException("Email Already Exists");
 		}
-		User user=userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+		User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
 				.orElseThrow(NotFoundException::new);
-		if(user.getRole()==0) {
+		if (user.getRole() == 0) {
 			String emailId = form.getEmail();
 			System.out.println(emailId);
 			String subject = "Login Credentials";
-			String body = "Your Username and Password to log on to the JobFinder are: \n"
-					+ "\n Username : "+form.getUserName()
-					+ "\n Password : "+form.getPassword();
+			String body = "Your Username and Password to log on to the JobFinder are: \n" + "\n Username : "
+					+ form.getUserName() + "\n Password : " + form.getPassword();
 			emailService.sendEmail(emailId, subject, body);
 		}
 		return new UserView(userRepository.save(new User(form.getUserName(), form.getEmail(),
@@ -193,6 +192,7 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		user.setImagePath(fileName);
+		user.setUpdateDate(new Date());
 		userRepository.save(user);
 		return user;
 	}
@@ -224,7 +224,7 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(NotFoundException::new);
 
 		user.setStatus(User.Status.INACTIVE.value);
-
+		user.setUpdateDate(new Date());
 		userRepository.save(user);
 
 		return;
@@ -251,7 +251,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search) {
+	public Pager<UserView> list(Integer page, Integer limit, String sortBy, Boolean desc, String filter,
+			String search) {
 		if (!userRepository.findColumns().contains(sortBy)) {
 			sortBy = "user_id";
 		}
@@ -260,8 +261,22 @@ public class UserServiceImpl implements UserService {
 			page = 1;
 		}
 
-		Page<User> users = userRepository.findAllByStatus(User.Status.ACTIVE.value, search,
-				PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+		ArrayList<Byte> status = new ArrayList<>();
+		if (filter.equals("0")) {
+			status.add(User.Role.ADMIN.value);
+		} else if (filter.equals("1")) {
+			status.add(User.Role.EMPLOYER.value);
+		} else if (filter.equals("2")) {
+			status.add(User.Role.EMPLOYEE.value);
+		} else {
+
+			status.add(User.Role.ADMIN.value);
+			status.add(User.Role.EMPLOYER.value);
+			status.add(User.Role.EMPLOYEE.value);
+		}
+
+		Page<User> users = userRepository.findAllByStatus(status, search,
+				PageRequest.of(page - 1, limit, Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC, sortBy)));
 		Pager<UserView> userViews = new Pager<UserView>(limit, (int) users.getTotalElements(), page, limit);
 
 		userViews.setResult(users.getContent().stream().map(UserView::new).collect(Collectors.toList()));
@@ -324,57 +339,56 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void forgotPassword(String token, ForgotPasswordForm form) {
-		System.out.println(form.getEmail());
-				User user = userRepository.findByEmail(form.getEmail()).orElseThrow(NotFoundException::new);
-				if(user != null) {
-					
-					long t = System.currentTimeMillis();
-					Duration passwordResetTokenExpiry=Duration.ofMinutes(10);
-					textEncryptor = Encryptors.text("7C481ADD4AF55AB8", "374195D5E3080DC1");
-					String tokenBfrEncript = token+"#"+t+"#"+passwordResetTokenExpiry.toMillis();
-					String finalToken=textEncryptor.encrypt(tokenBfrEncript);
-					user.setResetPswdToken(token);
-					userRepository.save(user);
-							
-		
-					String url="http://localhost:4200/resetpswd/"+finalToken;
-					String emailId=user.getEmail();
-					String subject="Reset your password";
-					String body= "<h3>Click the link to reset the password </h3>"
-							+"<a href="+url+">Click here to reset password</a>";
-					try {
-						emailService.sendEmail(emailId, subject, body);
-					} catch (UnsupportedEncodingException | MessagingException e) {
-						e.printStackTrace();
-					}
-					
-				} 
-		
+	public void forgotPassword(String token, String email) {
+		User user = userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+		if (user != null) {
+
+			long t = System.currentTimeMillis();
+			Duration passwordResetTokenExpiry = Duration.ofMinutes(10);
+			textEncryptor = Encryptors.text("7C481ADD4AF55AB8", "374195D5E3080DC1");
+			String tokenBfrEncript = token + "#" + t + "#" + passwordResetTokenExpiry.toMillis();
+			String finalToken = textEncryptor.encrypt(tokenBfrEncript);
+			user.setResetPswdToken(token);
+			userRepository.save(user);
+
+			String url = "http://localhost:4200/resetpswd/" + finalToken;
+			String emailId = user.getEmail();
+			String subject = "Reset your password";
+			String content = "Please click the link below to change password:<br>"
+					+ "<h3><a href=\"[[URL]]\" target=\"_self\">forgot password</a></h3>" + "Thank you,<br>";
+			content = content.replace("[[URL]]", url);
+			try {
+				emailService.sendEmail(emailId, subject, content);
+			} catch (UnsupportedEncodingException | MessagingException e) {
+				e.printStackTrace();
+			}
+
+		}
+
 	}
 
 	@Override
 	public void resetPswd(String token, String password) {
+		textEncryptor = Encryptors.text("7C481ADD4AF55AB8", "374195D5E3080DC1");
 		String decryptedToken = textEncryptor.decrypt(token);
-        String[] parts = decryptedToken.split("#");
-        String tokenFromUrl=parts[0];
-        long createTime=Long.parseLong(parts[1]);
-        long tokenExpiry=Long.parseLong(parts[2]);
-        long currentTime=System.currentTimeMillis();
-        long timeDiff=currentTime-createTime;
-        
-        if(timeDiff>=tokenExpiry) {
-        	throw new TokenExpiredException("Reset link expired");
-        }
-        else {
-        	
-        		User user = userRepository.findByResetPswdToken(tokenFromUrl).orElseThrow(NotFoundException::new);
-        		user.setPassword(passwordEncoder.encode(password));
-        		user.setResetPswdToken(token);
-        		System.out.println("employee ex");
-        		userRepository.save(user);
-        	}
-		
+		String[] parts = decryptedToken.split("#");
+		String tokenFromUrl = parts[0];
+		long createTime = Long.parseLong(parts[1]);
+		long tokenExpiry = Long.parseLong(parts[2]);
+		long currentTime = System.currentTimeMillis();
+		long timeDiff = currentTime - createTime;
+
+		if (timeDiff >= tokenExpiry) {
+			throw new TokenExpiredException("Reset link expired");
+		} else {
+
+			User user = userRepository.findByResetPswdToken(tokenFromUrl).orElseThrow(NotFoundException::new);
+			user.setPassword(passwordEncoder.encode(password));
+			user.setUpdateDate(new Date());
+			user.setResetPswdToken("null");
+			userRepository.save(user);
+		}
+
 	}
 
 }

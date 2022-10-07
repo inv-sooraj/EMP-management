@@ -35,10 +35,8 @@ const routes: Routes = [
   {path:"joblistemp",component:JoblistEmployeeComponent,canActivate:[AuthGuard],pathMatch:"full"},
   {path:"joblistemplyr",component:JoblistEmplyrComponent,canActivate:[AuthGuard],pathMatch:"full"},
 
-
   {path:"req",component:ListJobRequestComponent,canActivate:[AuthGuard],pathMatch:"full"},
   {path:"reqlistemp",component:EmpJobReqComponent,canActivate:[AuthGuard],pathMatch:"full"},
-
 
 ];
 

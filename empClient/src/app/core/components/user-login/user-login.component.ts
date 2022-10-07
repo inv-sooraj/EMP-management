@@ -67,9 +67,7 @@ export class UserLoginComponent implements OnInit {
   forgotPswd(){
     if(this.forgotPswdForm.valid){
       this.showSpinner=true
-      let data = {
-        email: this.forgotPswdForm.controls['email'].value
-      }
+      let data =this.forgotPswdForm.controls['email'].value;
       this.service.forgotPswd(data).subscribe({
         next: (response: any) => {
           this.showSpinner=false;

@@ -73,5 +73,7 @@ mwl-gauge.three > .gauge > .value-text {
   overflow: visible;
   
 }
-html, body { height: 100%; }
+html, body { height: 100%;
+  /* background-image:"/assets/build.jpg" ; */
+ }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
