@@ -26,6 +26,9 @@ export class JobApplyComponent implements OnInit {
 
   // tableHeight: number = 73 * (this.limit + 1);
 
+  sortDesc: boolean = false;
+
+
   qualifications = this.jobService.qualifications;
 
   ngOnInit(): void {
@@ -56,7 +59,14 @@ export class JobApplyComponent implements OnInit {
     if (this.jobList.result.length <= 1) {
       return;
     }
-    console.log('sort by : ', sortBy);
+
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
+
+    console.log('sort by : ', sortBy, ', desc : ', this.sortDesc);
 
     this.sortBy = sortBy;
     this.page = 1;
@@ -81,6 +91,8 @@ export class JobApplyComponent implements OnInit {
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
       .append('view', '5')
+      .append('desc', this.sortDesc)
+      .append('apply', true)
       .append('search', this.search);
 
     this.jobService.getJobs(queryParams).subscribe({
@@ -90,18 +102,6 @@ export class JobApplyComponent implements OnInit {
       },
       error: (err: any) => {
         console.error(err);
-      },
-    });
-  }
-
-  deleteJob(jobId: number) {
-    this.jobService.deleteJob(jobId).subscribe({
-      next: (response: any) => {
-        console.log('deleted', jobId, response);
-        this.listJobs();
-      },
-      error(err) {
-        console.log(err);
       },
     });
   }

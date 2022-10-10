@@ -11,6 +11,7 @@ body {
     margin: 30px 0;
     border-radius: 3px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    min-width: 1000px;
 }
 
 .table-title {
@@ -164,4 +165,8 @@ table.table .avatar {
     margin-top: .5%;
     font-size: 15px;
 
+}
+
+.btn-sort{
+    border: 0px;
 }

@@ -24,6 +24,12 @@ export class JobService {
     3: 'DELETED',
   };
 
+  public employerStatus: { [key: number]: string } = {
+    0: 'PENDING',
+    1: 'APPROVED',
+    2: 'COMPLETED',
+  };
+
   constructor(private http: HttpClient) {}
 
   addJob(requestBody: any): Observable<any> {
@@ -40,14 +46,6 @@ export class JobService {
 
   editJob(jobId: number, requestBody: any): Observable<any> {
     return this.http.put(this.apiUrl + '/job/' + jobId, requestBody);
-  }
-
-  deleteJob(jobId: number): Observable<any> {
-    return this.http.put(this.apiUrl + '/job/delete/' + jobId, {});
-  }
-
-  deleteJobs(jobIds: Array<number>): Observable<any> {
-    return this.http.put(this.apiUrl + '/job/delete/selected', jobIds);
   }
 
   changeJobStatus(jobId: number, status: number): Observable<any> {

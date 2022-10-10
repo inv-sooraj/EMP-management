@@ -19,6 +19,10 @@
                         <div class="text-danger" *ngIf="userEditForm.controls['name'].errors?.['required']">
                             Name is required.
                         </div>
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['name'].errors?.['maxlength']">
+                             Name Should be less than 50 characters.
+                        </div>
                     </div>
                 </div>
 
@@ -33,6 +37,10 @@
 
                         <div class="text-danger" *ngIf="userEditForm.controls['userName'].errors?.['required']">
                             User Name is required.
+                        </div>
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['userName'].errors?.['maxlength']">
+                            User Name Should be less than 50 characters.
                         </div>
                     </div>
                 </div>

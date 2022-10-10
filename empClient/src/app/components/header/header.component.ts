@@ -8,13 +8,18 @@ import { Component, OnInit } from '@angular/core';
 export class HeaderComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {
-    this.getName();
+  ngOnInit(): void {}
+
+  getName(): string {
+    return localStorage.getItem('name') as string;
   }
 
-  getName(): void {
-    this.name = localStorage.getItem('name') as string;
+  getRole(): number {
+    return parseInt(localStorage.getItem('role') as string);
   }
 
-  name: string = '';
+  getStat(): string {
+    if (localStorage.getItem('accessToken')) return 'Logout';
+    else return 'Login';
+  }
 }

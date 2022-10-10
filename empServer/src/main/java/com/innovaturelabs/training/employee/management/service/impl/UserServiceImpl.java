@@ -4,30 +4,22 @@ package com.innovaturelabs.training.employee.management.service.impl;
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.encrypt.Encryptors;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -35,6 +27,7 @@ import org.springframework.validation.Errors;
 import com.innovaturelabs.training.employee.management.entity.User;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.exception.NotFoundException;
+import com.innovaturelabs.training.employee.management.form.AdminAddUserForm;
 import com.innovaturelabs.training.employee.management.form.ChangePasswordForm;
 import com.innovaturelabs.training.employee.management.form.LoginForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
@@ -51,7 +44,11 @@ import com.innovaturelabs.training.employee.management.security.util.TokenGenera
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.CsvDownload;
-import com.innovaturelabs.training.employee.management.util.Email;
+import com.innovaturelabs.training.employee.management.util.EmailUtil;
+import com.innovaturelabs.training.employee.management.util.FileUtil;
+import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator;
+import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator.PasswordStatus;
+import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator.PasswordToken;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
@@ -78,9 +75,10 @@ public class UserServiceImpl implements UserService {
     private SecurityConfig securityConfig;
 
     @Autowired
-    private Email emailService;
+    private EmailUtil emailService;
 
-    private TextEncryptor textEncryptor;
+    @Autowired
+    private ForgotPasswordTokenGenerator forgotPasswordTokenGenerator;
 
     @Override
     public UserView add(UserForm form) {
@@ -97,11 +95,6 @@ public class UserServiceImpl implements UserService {
 
         if (form.getRole() == User.Role.EMPLOYER.value) {
             role = User.Role.EMPLOYER.value;
-        }
-
-        if (SecurityUtil.getCurrentUserRole() != null && SecurityUtil.getCurrentUserRole().equals("ADMIN")
-                && form.getRole() == User.Role.ADMIN.value) {
-            role = User.Role.ADMIN.value;
         }
 
         return new UserView(userRepository.save(new User(
@@ -190,9 +183,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search) {
+    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc) {
 
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+        if (!SecurityUtil.isAdmin()) {
             throw new BadRequestException("Illegal Access");
         }
 
@@ -210,7 +203,9 @@ public class UserServiceImpl implements UserService {
         status.add(User.Status.INACTIVE.value);
 
         Page<User> users = userRepository.findAllByStatus(status, search,
-                PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+                PageRequest.of(page - 1, limit,Sort.by(
+                    desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                    sortBy)));
 
         Pager<UserView> userViews = new Pager<>(limit, (int) users.getTotalElements(), page);
 
@@ -273,7 +268,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void userCsv(HttpServletResponse httpServletResponse) {
 
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+        if (!SecurityUtil.isAdmin()) {
             throw new BadRequestException("permission Denied");
         }
 
@@ -320,22 +315,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new);
 
-        String uploadDir = "profile_pics/";
-        String fileName;
-        fileName = user.getUserId().toString() + ".png";
+        String fileName = user.getUserId().toString() + ".png";
 
-        Path uploadPath = Paths.get("src/main/resources/static/" + uploadDir);
-
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        try (InputStream inputStream = form.getProfilePic().getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ioe) {
-            throw new IOException("Could not save file");
-        }
+        FileUtil.saveProfilePic(fileName, form.getProfilePic());
 
         user.setProfilePic(fileName);
 
@@ -350,12 +332,8 @@ public class UserServiceImpl implements UserService {
 
         String profilePic = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new).getProfilePic();
-        byte[] file;
-        try {
-            file = Files.readAllBytes(Path.of("src/main/resources/static/profile_pics/" + profilePic));
-        } catch (IOException e) {
-            throw new BadRequestException("File Not Found");
-        }
+
+        byte[] file = FileUtil.getProfilePic(profilePic);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
@@ -384,7 +362,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<StatusView> getRoleStat() {
 
-        if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+        if (SecurityUtil.isAdmin()) {
             return userRepository.countUserRoles();
         }
 
@@ -396,73 +374,79 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndStatus(email, User.Status.ACTIVE.value)
                 .orElseThrow(() -> new BadRequestException("User Not Found"));
 
-        textEncryptor = Encryptors.text(
-                securityConfig.getTokenGeneratorPassword(),
-                securityConfig.getTokenGeneratorSalt());
+        String data = String.format("%010d", user.getUserId());
 
-        Long currentTime = System.currentTimeMillis();
+        PasswordToken token = forgotPasswordTokenGenerator.create(data);
 
-        String token = RandomString.make(10) + "#" + user.getUserId() + "#" + currentTime;
+        emailService.sendForgotPasswordRequest(token, email);
 
         user.setPasswordResetRequest(true);
 
         userRepository.save(user);
-
-        String url = "http://localhost:4200/forgot-password?token=" + textEncryptor.encrypt(token);
-
-        String subject = "Employee Management : Reset Password";
-        String body = "<h3>Reset password </h3>"
-                + "<a href=" + url + ">Click here to reset password</a>";
-        try {
-            emailService.sendEmail(email, subject, body);
-        } catch (UnsupportedEncodingException | MessagingException e) {
-            e.printStackTrace();
-            throw new BadRequestException("Email Service Temporarily Unavailable");
-        }
 
     }
 
     @Override
     public void resetPassword(String token, String password) {
 
-        textEncryptor = Encryptors.text(
-                securityConfig.getTokenGeneratorPassword(),
-                securityConfig.getTokenGeneratorSalt());
-
-        String[] parts = textEncryptor.decrypt(token).split("#");
-
-        if (parts.length != 3) {
-            throw new InvalidTokenException("Token content is invalid");
+        PasswordStatus status;
+        try {
+            status = forgotPasswordTokenGenerator.verify(token);
+        } catch (InvalidTokenException e) {
+            throw new BadRequestException("Invalid token", e);
+        } catch (TokenExpiredException e) {
+            throw new BadRequestException("Token expired", e);
         }
 
         Integer userId;
-        long keyTime;
         try {
-            userId = Integer.parseInt(parts[1]);
-            keyTime = Long.parseLong(parts[2]);
+            userId = Integer.parseInt(status.data.substring(0, 10));
         } catch (NumberFormatException e) {
-            throw new InvalidTokenException("Token content is invalid", e);
+            throw new BadRequestException("Invalid token", e);
         }
 
-        if (System.currentTimeMillis() - keyTime >= 1000 * 60 * 10) {
-            throw new BadRequestException("Token Expired");
+        User user = userRepository.findByUserIdAndStatusAndPasswordResetRequest(userId, User.Status.ACTIVE.value, true)
+                .orElseThrow(() -> new BadRequestException("Invalid Request"));
+
+        userRepository.save(user.resetPassword(passwordEncoder.encode(password)));
+
+    }
+
+    @Override
+    public UserView adminAdd(AdminAddUserForm form) {
+
+        if (!SecurityUtil.isAdmin()) {
+            throw new BadRequestException("Illegal Access");
         }
 
-        User user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
-                .orElseThrow(() -> new NotFoundException("Invalid Data"));
-
-        if (!user.isPasswordResetRequest()) {
-            throw new BadRequestException("Invalid Request");
+        if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+            throw new BadRequestException("Username Already Exists");
         }
 
-        user.setPassword(passwordEncoder.encode(password));
+        if (userRepository.findByEmail(form.getEmail()).isPresent()) {
+            throw new BadRequestException("Email Already Exists");
+        }
 
-        user.setPasswordResetRequest(false);
+        Byte role = User.Role.EMPLOYEE.value;
 
-        user.setUpdateDate(new Date());
+        if (form.getRole() == User.Role.EMPLOYER.value) {
+            role = User.Role.EMPLOYER.value;
+        }
 
-        userRepository.save(user);
+        if (form.getRole() == User.Role.ADMIN.value) {
+            role = User.Role.ADMIN.value;
+        }
 
+        String password = form.getUserName() + "#" + form.getRole() + RandomString.make(6);
+
+        System.out.println("Paaaasword : " + password);
+
+        return new UserView(userRepository.save(new User(
+                form.getName(),
+                form.getUserName(),
+                form.getEmail(),
+                passwordEncoder.encode(password),
+                role)));
     }
 
 }

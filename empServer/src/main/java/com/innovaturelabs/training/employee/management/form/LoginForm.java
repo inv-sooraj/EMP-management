@@ -9,7 +9,7 @@ import com.innovaturelabs.training.employee.management.form.validaton.Password;
 public class LoginForm {
 
     @NotBlank
-    @Size(max = 255)
+    @Size(max = 50)
     private String userName;
     @Password
     private String password;

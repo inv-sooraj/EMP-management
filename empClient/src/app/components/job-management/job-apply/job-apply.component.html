@@ -7,13 +7,6 @@
                     <div class="col-sm-6">
                         <h2>Manage <strong>Jobs</strong></h2>
                     </div>
-                    <div class="col-sm-6">
-                        <!-- <button placement="bottom" ngbTooltip="Download job list as Csv" (click)="downloadCsv()"
-                            class="btn btn-secondary">
-                            <em class="bi bi-download"></em>
-                            &nbsp;Download
-                        </button> -->
-                    </div>
                 </div>
             </div>
 
@@ -40,28 +33,39 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <!-- <th scope="col">
-                            <span class="custom-checkbox">
-                                <input type="checkbox" id="selectAll" (change)="checkAll($event)" />
-                                <label for="selectAll"></label>
-                            </span>
+                        <th scope="col" (click)="setSort('job_id')">Id <button [disabled]="sortBy!='job_id'"
+                                class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                        </th>
+                        <th scope="col" (click)="setSort('title')">Title
+                            <button [disabled]="sortBy!='title'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
+                        </th>
+                        <th scope="col" (click)="setSort('description')">Description
+                            <button [disabled]="sortBy!='description'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
+
+                        </th>
+                        <th scope="col" (click)="setSort('qualification')">Qualification
+                            <button [disabled]="sortBy!='qualification'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                        </th>
+
+
+                        <th scope="col" (click)="setSort('openings')">Openings
+                            <button [disabled]="sortBy!='openings'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+
+                        </th>
+                        <th scope="col">Employer</th>
+                        <th scope="col">User</th>
+                        <!-- <th scope="col" (click)="setSort('update_date')">Last Modified
+                            <button [disabled]="sortBy!='update_date'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+
                         </th> -->
 
-                        <th scope="col" (click)="setSort('job_id')">Id <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col" (click)="setSort('title')">Title <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col" (click)="setSort('description')">Description <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col" (click)="setSort('qualification')">Qualification <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col" (click)="setSort('openings')">Openings <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col">User</th>
-                        <th scope="col" (click)="setSort('update_date')">Last Modified <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
-                        <th scope="col" (click)="setSort('status')">Status <span
-                                class="glyphicon glyphicon-triangle-bottom"></span></th>
+                        <th scope="col" (click)="setSort('status')">Status</th>
                     </tr>
                 </thead>
 
@@ -72,13 +76,7 @@
                         </th>
                     </tr>
                     <tr *ngFor="let job of jobList.result">
-                        <!-- <td>
-                            <span class="custom-checkbox">
-                                <input type="checkbox" id="checkbox{{ job.jobId }}" value="{{ job.jobId }}"
-                                    (change)="checkedUser($event)" />
-                                <label for="checkbox{{ job.jobId }}"></label>
-                            </span>
-                        </td> -->
+
                         <td>{{ job.jobId }}</td>
                         <td>{{ job.title }}</td>
                         <td>{{ job.description }}</td>
@@ -89,8 +87,14 @@
                         <td>{{ job.status }}</td>
 
                         <td>
-                            <button *ngIf="!appliedJobs.includes(job.jobId)" (click)="applyJob(job.jobId)" class="btn btn-outline-dark" placement="top" ngbTooltip='Apply for job "{{job.title}}"'>Apply</button>
-                            <button *ngIf="appliedJobs.includes(job.jobId)" disabled class="btn btn-outline-dark">Applied</button>
+                            <button *ngIf="!job.eligible" disabled class="btn btn-outline-dark">Not Eligible</button>
+
+                            <button *ngIf="!appliedJobs.includes(job.jobId) && job.eligible"
+                                (click)="applyJob(job.jobId)" class="btn btn-outline-dark" placement="top"
+                                ngbTooltip='Apply for job "{{job.title}}"'>Apply</button>
+
+                            <button *ngIf="appliedJobs.includes(job.jobId)" disabled
+                                class="btn btn-outline-dark">Applied</button>
                             &nbsp;
 
                         </td>

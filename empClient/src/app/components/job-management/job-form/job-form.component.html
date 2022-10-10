@@ -22,6 +22,10 @@
                             Title is required.
                         </div>
 
+                        <div class="text-danger" *ngIf="jobForm.controls['title'].errors?.['maxlength']">
+                            Title Should be less than 50 characters.
+                        </div>
+
                     </div>
                     <label for="title" class="text-danger pt-1"></label>
                 </div>
@@ -37,6 +41,10 @@
 
                         <div class="text-danger" *ngIf="jobForm.controls['description'].errors?.['required']">
                             Description is required.
+                        </div>
+
+                        <div class="text-danger" *ngIf="jobForm.controls['description'].errors?.['maxlength']">
+                            Description Should be less than 255 characters.
                         </div>
 
                     </div>
@@ -63,6 +71,8 @@
                             Qualification is required.
                         </div>
 
+                        
+
                     </div>
                     <label for="qualification" class="text-danger pt-1"></label>
                 </div>
@@ -77,6 +87,14 @@
 
                         <div class="text-danger" *ngIf="jobForm.controls['openings'].errors?.['required']">
                             Openings is required.
+                        </div>
+
+                        <div class="text-danger" *ngIf="jobForm.controls['openings'].errors?.['max']">
+                            Openings Should be less than 2147483647 characters.
+                        </div>
+
+                        <div class="text-danger" *ngIf="jobForm.controls['openings'].errors?.['min']">
+                            Minimum 1 Openings Should be Present.
                         </div>
 
                     </div>

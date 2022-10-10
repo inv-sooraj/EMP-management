@@ -16,7 +16,7 @@ export class UserProfileComponent implements OnInit {
 
   userDetails: any = {};
 
-  role = this.userService.role;
+  role = this.userService.roles;
 
   qualifications = this.userService.qualifications;
 
@@ -24,19 +24,19 @@ export class UserProfileComponent implements OnInit {
     currentPassword: new FormControl('', [
       Validators.required,
       Validators.pattern(
-        '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        '^(?=.*?[A-Z])(?=.*?[a-z])(?=)(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}'
       ),
     ]),
     newPassword: new FormControl('', [
       Validators.required,
       Validators.pattern(
-        '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        '^(?=.*?[A-Z])(?=.*?[a-z])(?=)(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}'
       ),
     ]),
     confirmNewPassword: new FormControl('', [
       Validators.required,
       Validators.pattern(
-        '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        '^(?=.*?[A-Z])(?=.*?[a-z])(?=)(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}'
       ),
     ]),
   });
@@ -50,7 +50,10 @@ export class UserProfileComponent implements OnInit {
       next: (response: any) => {
         console.log(response);
         this.userDetails = response;
-        this.getProfilePic();
+
+        if (response.hasProfilePic) {
+          this.getProfilePic();
+        }
       },
       error(err) {
         console.log(err);
@@ -104,6 +107,14 @@ export class UserProfileComponent implements OnInit {
     if (!this.changePasswordForm.valid) {
       console.log('Validation Failed');
       this.changePasswordForm.markAllAsTouched();
+      return;
+    }
+
+    if (
+      this.changePasswordForm.controls['newPassword'].value !=
+      this.changePasswordForm.controls['confirmNewPassword'].value
+    ) {
+      alert('Password Should Match');
       return;
     }
 

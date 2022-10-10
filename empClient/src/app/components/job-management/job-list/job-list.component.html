@@ -1,7 +1,9 @@
+
+
 <div class="container mt-4">
     <div class="col">
         <div class="row">
-            <div class="col-3" *ngFor=" let sta of statusCount|keyvalue">
+            <div class="col-xl-3 col-lg-6" *ngFor=" let sta of statusCount|keyvalue">
                 <div class="card">
                     <div class="card-statistic-3 p-2">
                         <div class="m-4">
@@ -14,7 +16,7 @@
                                 </h2>
                             </div>
                             <div class="col-4 text-right">
-                                <span>{{sta.value*100/(statusCount["PENDING"]+statusCount["APPROVED"]+statusCount["COMPLETED"]+statusCount["DELETED"])}}
+                                <span>{{(sta.value*100/(statusCount["PENDING"]+statusCount["APPROVED"]+statusCount["COMPLETED"]+statusCount["DELETED"])).toFixed(2)}}
                                     % </span>
 
 
@@ -50,15 +52,21 @@
                     </div>
                     <div class="col-sm-6" *ngIf="role==2 || role==1">
 
+                        <button placement="bottom" ngbTooltip="Delete selected jobs from table"
+                            (click)="changeJobsStatus(2)" class="btn btn-secondary" [disabled]="!checkedJobIds.size">
+                            <em class="bi-c-circle"></em>
+                            &nbsp;Completed
+                        </button>
+
 
                         <button placement="bottom" ngbTooltip="Delete selected jobs from table"
-                            (click)="changeJobsStatus(3)" class="btn btn-danger" [disabled]="!checked.length">
+                            (click)="changeJobsStatus(3)" class="btn btn-danger" [disabled]="!checkedJobIds.size">
                             <em class="bi-trash-fill"></em>
                             &nbsp;Delete Jobs
                         </button>
 
                         <button *ngIf="role==2" placement="bottom" ngbTooltip="Approve selected jobs from table"
-                            (click)="changeJobsStatus(1)" class="btn btn-success" [disabled]="!checked.length">
+                            (click)="changeJobsStatus(1)" class="btn btn-success" [disabled]="!checkedJobIds.size">
                             <em class="bi-check-square"></em>
                             &nbsp;Approve Jobs
                         </button>
@@ -92,7 +100,7 @@
                 </div>
 
 
-                <div class="col-3">
+                <div class="col-3" *ngIf="role==2">
                     <label for="filter">
 
                         <em class="bi bi-funnel-fill"></em>
@@ -120,27 +128,46 @@
                     <tr>
                         <th scope="col">
                             <span class="custom-checkbox">
-                                <input type="checkbox" id="selectAll" (change)="checkAll($event)" />
+                                <input type="checkbox" id="selectAll" (change)="checkAll($event)"
+                                    [checked]="checkAllButton()" />
+
                                 <label for="selectAll"></label>
                             </span>
                         </th>
 
-                        <th scope="col" (click)="setSort('job_id')">Id <span class="bi bi-sort-numeric-down"></span>
+                        <th scope="col" (click)="setSort('job_id')">Id <button [disabled]="sortBy!='job_id'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
-                        <th scope="col" (click)="setSort('title')">Title <span class="bi bi-sort-alpha-down"></span>
+                        <th scope="col" (click)="setSort('title')">Title
+                            <button [disabled]="sortBy!='title'"  class="btn btn-sort bi " 
+                                [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
                         </th>
-                        <th scope="col" (click)="setSort('description')">Description <span
-                                class="bi bi-sort-alpha-down"></span></th>
-                        <th scope="col" (click)="setSort('qualification')">Qualification <span
-                                class="bi bi-sort-alpha-down"></span></th>
-                        <th scope="col" (click)="setSort('openings')">Openings <span
-                                class="bi bi-sort-numeric-down"></span>
+                        <th scope="col" (click)="setSort('description')">Description
+                            <button [disabled]="sortBy!='description'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
+
+                        </th>
+                        <th scope="col" (click)="setSort('qualification')">Qualification
+                            <button [disabled]="sortBy!='qualification'" class="btn btn-sort bi "
+                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                        </th>
+                        <th scope="col" (click)="setSort('openings')">Openings
+                            <button [disabled]="sortBy!='openings'" class="btn btn-sort bi "
+                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+
                         </th>
                         <th scope="col">User</th>
-                        <th scope="col" (click)="setSort('update_date')">Last Modified <span
-                                class="bi bi-sort-alpha-down"></span></th>
-                        <th scope="col" (click)="setSort('status')">Status <span class="bi bi-sort-alpha-down"></span>
+                        <th scope="col" (click)="setSort('update_date')">Last Modified
+                            <button [disabled]="sortBy!='update_date'" class="btn btn-sort bi "
+                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+
                         </th>
+                        <th scope="col" (click)="setSort('status')">Status
+                            <button [disabled]="sortBy!='status'" class="btn btn-sort bi "
+                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                        </th>
+
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
 
@@ -154,7 +181,7 @@
                         <td>
                             <span class="custom-checkbox">
                                 <input type="checkbox" id="checkbox{{ job.jobId }}" value="{{ job.jobId }}"
-                                    (change)="checkedUser($event)" />
+                                    (change)="checkedUser($event)" [checked]="checkedJobIds.has(job.jobId)" />
                                 <label for="checkbox{{ job.jobId }}"></label>
                             </span>
                         </td>
@@ -168,7 +195,7 @@
                         <td>{{ job.updateDate }}</td>
                         <td>{{ status[job.status] }}</td>
 
-                        <td *ngIf="role==2 || role==1">
+                        <td *ngIf="role==2 || (role==1 && job.status!=2 ) ">
                             <button placement="top" ngbTooltip="Edit job" class="btn"
                                 (click)="open(formModule,job.jobId)"><a class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
@@ -181,6 +208,12 @@
                             <button *ngIf="role==2" [disabled]="job.status==1" placement="top" ngbTooltip="Approve job"
                                 class="btn" (click)="changeJobStatus(job.jobId,1)">
                                 <em class="bi bi-check2-square"></em>
+                            </button>
+
+                            &nbsp;
+                            <button [disabled]="job.status==2" placement="top" ngbTooltip="Mark as Compled" class="btn"
+                                (click)="changeJobStatus(job.jobId,2)">
+                                <em class="bi bi-c-circle-fill"></em>
                             </button>
 
 

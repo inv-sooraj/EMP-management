@@ -33,10 +33,34 @@ public final class SecurityUtil {
 
     }
 
-    public static String getCurrentUserRole() {
+    private static String getCurrentUserRole() {
 
         AccessTokenUserDetails principal = getToken();
 
         return principal != null ? principal.userRole : null;
+    }
+
+    public static boolean isAdmin() {
+
+        String role = getCurrentUserRole();
+
+        return (role != null && role.equals("ADMIN"));
+
+    }
+
+    public static boolean isEmployer() {
+
+        String role = getCurrentUserRole();
+
+        return (role != null && role.equals("EMPLOYER"));
+
+    }
+
+    public static boolean isEmployee() {
+
+        String role = getCurrentUserRole();
+
+        return (role != null && role.equals("EMPLOYEE"));
+
     }
 }

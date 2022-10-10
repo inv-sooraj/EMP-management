@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 
 public class JobRequestForm {
 
-    @Size(max = 100)
+    @Size(max = 255)
     private String remark;
 
     private Byte status;

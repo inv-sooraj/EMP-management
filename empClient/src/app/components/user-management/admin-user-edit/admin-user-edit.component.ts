@@ -19,11 +19,11 @@ export class AdminUserEditComponent implements OnInit {
   }
 
   userEditForm: FormGroup = new FormGroup({
-    name: new FormControl('', Validators.required),
-    userName: new FormControl('', Validators.required),
+    name: new FormControl('', [Validators.required,Validators.maxLength(50)]),
+    userName: new FormControl('', [Validators.required,Validators.maxLength(50)]),
     email: new FormControl('', [
       Validators.required,
-      Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}'),
+      Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}'),
     ]),
   });
 

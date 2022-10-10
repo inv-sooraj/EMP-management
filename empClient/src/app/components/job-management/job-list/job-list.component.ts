@@ -35,7 +35,6 @@ export class JobListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobs();
-    this.getStat();
   }
 
   numSeq(n: number): Array<number> {
@@ -61,14 +60,14 @@ export class JobListComponent implements OnInit {
     if (this.jobList.result.length <= 1) {
       return;
     }
-    
+
     if (this.sortBy == sortBy) {
       this.sortDesc = this.sortDesc ? false : true;
     } else {
       this.sortDesc = false;
     }
-    
-    console.log('sort by : ', sortBy,", desc : ",this.sortDesc);
+
+    console.log('sort by : ', sortBy, ', desc : ', this.sortDesc);
 
     this.sortBy = sortBy;
     this.page = 1;
@@ -108,72 +107,44 @@ export class JobListComponent implements OnInit {
     });
   }
 
-  deleteJob(jobId: number) {
-    this.jobService.deleteJob(jobId).subscribe({
-      next: (response: any) => {
-        console.log('deleted', jobId, response);
-        this.listJobs();
-      },
-      error(err) {
-        console.log(err);
-      },
-    });
-  }
+  checkedJobIds: Set<number> = new Set();
 
-  checked: Array<number> = [];
+  checkAllButton(): boolean {
+    let temp = true;
+
+    if (this.jobList) {
+      this.jobList.result.forEach((val: any) => {
+        if (!this.checkedJobIds.has(val.jobId)) {
+          temp = false;
+        }
+      });
+    }
+
+    return temp;
+  }
 
   checkedUser(event: any) {
     if (event.target.checked) {
-      this.checked.push(Number(event.target.attributes.value.value));
-
-      if (this.jobList.result.length == this.checked.length) {
-        (document.getElementById('selectAll') as HTMLInputElement).checked =
-          true;
-      }
+      this.checkedJobIds.add(parseInt(event.target.attributes.value.value));
     } else {
-      this.checked.splice(
-        this.checked.indexOf(Number(event.target.attributes.value.value)),
-        1
-      );
-      (document.getElementById('selectAll') as HTMLInputElement).checked =
-        false;
+      this.checkedJobIds.delete(parseInt(event.target.attributes.value.value));
     }
 
-    console.log(this.checked);
+    console.log(this.checkedJobIds);
   }
 
   checkAll(event: any) {
     this.jobList.result.forEach((element: any) => {
-      (
-        document.getElementById('checkbox' + element.jobId) as HTMLInputElement
-      ).checked = event.target.checked;
-
       if (event.target.checked) {
-        if (!this.checked.includes(element.jobId)) {
-          this.checked.push(element.jobId);
+        if (!this.checkedJobIds.has(element.jobId)) {
+          this.checkedJobIds.add(element.jobId);
         }
       } else {
-        this.checked.splice(this.checked.indexOf(element.jobId), 1);
+        this.checkedJobIds.delete(element.jobId);
       }
     });
-    console.log(this.checked);
-  }
 
-  deleteJobs(): void {
-    if (this.checked.length <= 0) {
-      return;
-    }
-    this.jobService.deleteJobs(this.checked).subscribe({
-      next: (response: any) => {
-        console.log('deleted', this.checked, response);
-        this.listJobs();
-      },
-      error(err) {
-        console.log(err);
-      },
-    });
-
-    (document.getElementById('selectAll') as HTMLInputElement).checked = false;
+    console.log(this.checkedJobIds);
   }
 
   downloadCsv(): void {
@@ -212,21 +183,21 @@ export class JobListComponent implements OnInit {
   }
 
   changeJobsStatus(status: number): void {
-    if (this.checked.length <= 0) {
+    if (this.checkedJobIds.size <= 0) {
       return;
     }
 
-    this.jobService.changeJobsStatus(this.checked, status).subscribe({
-      next: (response: any) => {
-        console.log('Updated', this.checked, ' : ', status, response);
-        this.listJobs();
-      },
-      error(err) {
-        console.log(err);
-      },
-    });
-
-    (document.getElementById('selectAll') as HTMLInputElement).checked = false;
+    this.jobService
+      .changeJobsStatus(Array.from(this.checkedJobIds), status)
+      .subscribe({
+        next: (response: any) => {
+          console.log('Updated', this.checkedJobIds, ' : ', status, response);
+          this.listJobs();
+        },
+        error(err) {
+          console.log(err);
+        },
+      });
   }
 
   getStat(): void {

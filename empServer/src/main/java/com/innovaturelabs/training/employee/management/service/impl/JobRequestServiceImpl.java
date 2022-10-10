@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.innovaturelabs.training.employee.management.entity.Job;
@@ -40,17 +41,12 @@ public class JobRequestServiceImpl implements JobRequestService {
     @Autowired
     private UserRepository userRepository;
 
-    // @Override
-    // public JobRequestView add(JobRequestForm form, Integer jobId) {
-
-    // return new JobRequestView(
-    // jobRequestRepository.save(new JobRequest(form,
-    // SecurityUtil.getCurrentUserId(), jobId)));
-
-    // }
-
     @Override
     public JobRequestView add(Integer jobId) {
+
+        if (!SecurityUtil.isEmployee()) {
+            throw new BadRequestException("Need Employee Account For Applying Job");
+        }
 
         Job job = jobRepository.findByJobIdAndStatus(jobId, Job.Status.APPROVED.value)
                 .orElseThrow(NotFoundException::new);
@@ -70,7 +66,7 @@ public class JobRequestServiceImpl implements JobRequestService {
     }
 
     @Override
-    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search) {
+    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc) {
 
         if (!jobRequestRepository.findColumns().contains(sortBy)) {
             sortBy = "job_request_id";
@@ -84,17 +80,21 @@ public class JobRequestServiceImpl implements JobRequestService {
         byte[] status = { JobRequest.Status.PENDING.value, JobRequest.Status.APPROVED.value,
                 JobRequest.Status.REJECT.value };
 
-        if (SecurityUtil.getCurrentUserRole().equals("EMPLOYER") || SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+        if (SecurityUtil.isEmployer() || SecurityUtil.isAdmin()) {
 
             jobRequests = jobRequestRepository.findAllByUserIdStatus(SecurityUtil.getCurrentUserId(),
                     status, search,
-                    PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+                    PageRequest.of(page - 1, limit, Sort.by(
+                    desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                    sortBy)));
 
-        } else if (SecurityUtil.getCurrentUserRole().equals("EMPLOYEE")) {
+        } else if (SecurityUtil.isEmployee()) {
 
             jobRequests = jobRequestRepository.findAllByUserUserIdStatus(SecurityUtil.getCurrentUserId(),
                     status, search,
-                    PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+                    PageRequest.of(page - 1, limit, Sort.by(
+                    desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                    sortBy)));
         } else {
             throw new BadRequestException("Illegal Access");
 
@@ -116,15 +116,13 @@ public class JobRequestServiceImpl implements JobRequestService {
     @Override
     public void jobRequestCsv(HttpServletResponse httpServletResponse) {
 
-        String role = SecurityUtil.getCurrentUserRole();
-
-        if (role.equals("EMPLOYEE")) {
+        if (SecurityUtil.isEmployee()) {
             throw new BadRequestException("Access Denied");
         }
 
         Collection<JobRequestView> exportlist;
 
-        if (role.equals("ADMIN")) {
+        if (SecurityUtil.isAdmin()) {
             exportlist = jobRequestRepository.findAll().stream().map(JobRequestView::new)
                     .collect(Collectors.toList());
         } else {
@@ -145,7 +143,7 @@ public class JobRequestServiceImpl implements JobRequestService {
     @Override
     public JobRequestView update(Integer jobRequestId, JobRequestForm form) {
 
-        if (SecurityUtil.getCurrentUserRole() == null || SecurityUtil.getCurrentUserRole().equals("EMPLOYEE")) {
+        if (SecurityUtil.isEmployee()) {
             throw new BadRequestException("Illegal Access");
         }
 
@@ -154,16 +152,30 @@ public class JobRequestServiceImpl implements JobRequestService {
 
         Job job = jobRequest.getJob();
 
+        if (job.getStatus() != Job.Status.APPROVED.value) {
+            throw new BadRequestException("Invalid Operation");
+        }
+
         if (!jobRequest.getStatus().equals(JobRequest.Status.APPROVED.value)
                 && form.getStatus().equals(JobRequest.Status.APPROVED.value)) {
 
             job.setOpenings(job.getOpenings() - 1);
 
+            if (job.getOpenings() <= 0) {
+                job.setStatus(Job.Status.COMPLETED.value);
+            }
+
             jobRepository.save(job);
 
         } else if (jobRequest.getStatus().equals(JobRequest.Status.APPROVED.value)
                 && !form.getStatus().equals(JobRequest.Status.APPROVED.value)) {
+
+            if (job.getOpenings() == 0) {
+                job.setStatus(Job.Status.APPROVED.value);
+            }
+
             job.setOpenings(job.getOpenings() + 1);
+
             jobRepository.save(job);
         }
 

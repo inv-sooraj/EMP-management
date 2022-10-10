@@ -23,6 +23,7 @@ import com.innovaturelabs.training.employee.management.security.AccessTokenProce
 import com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService;
 import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator;
+import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator;
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -105,5 +106,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @ConfigurationProperties("app.security.configuration")
     public TokenGenerator tokenGenerator(SecurityConfig securityConfig) {
         return new TokenGenerator(securityConfig.getTokenGeneratorPassword(), securityConfig.getTokenGeneratorSalt());
+    }
+
+    @Bean
+    @ConfigurationProperties("app.security.configuration")
+    public ForgotPasswordTokenGenerator forgotPasswordTokenGenerator(SecurityConfig securityConfig) {
+        return new ForgotPasswordTokenGenerator(securityConfig.getTokenGeneratorPassword(),
+                securityConfig.getTokenGeneratorSalt());
     }
 }

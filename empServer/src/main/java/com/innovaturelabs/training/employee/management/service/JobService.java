@@ -20,13 +20,10 @@ public interface JobService {
 
     JobView updateStatus(Integer jobId, Byte status);
 
-    void delete(Integer jobId);
-
-    void deleteSelected(Collection<Integer> jobIds);
-
     void changeSelectedStatus(Collection<Integer> jobIds, Byte status);
 
-    Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc,String search, Integer data);
+    Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc, String search, Integer data,
+            Boolean apply);
 
     void jobCsv(HttpServletResponse httpServletResponse);
 

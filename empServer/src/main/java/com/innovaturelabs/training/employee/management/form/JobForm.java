@@ -10,7 +10,7 @@ public class JobForm {
     @Size(max = 50)
     private String title;
 
-    @Size(max = 50)
+    @Size(max = 225)
     private String description;
 
     private Byte qualification;

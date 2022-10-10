@@ -10,7 +10,16 @@ import { environment } from '../../environments/environment';
 export class JobRequestService {
   apiUrl: string = environment.apiUrl;
 
+
+  public status: { [key: number]: string } = {
+    0: 'PENDING',
+    1: 'APPROVED',
+    2: 'REJECTED',
+  };
+
   constructor(private http: HttpClient) {}
+
+
 
   addJobRequests(jobId: number): Observable<any> {
     return this.http.post(this.apiUrl + '/job-request/' + jobId, '');

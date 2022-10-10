@@ -24,6 +24,7 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('name');
+    localStorage.removeItem('role');
   }
 
   forgotPassword(body: any): Observable<any> {

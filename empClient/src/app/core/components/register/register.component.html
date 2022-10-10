@@ -42,6 +42,10 @@
                         <div class="text-danger" *ngIf="registrationForm.controls['name'].errors?.['required']">
                             Name is required.
                         </div>
+
+                        <div class="text-danger" *ngIf="registrationForm.controls['name'].errors?.['maxlength']">
+                            Name Should be less than 50 characters.
+                        </div>
                     </div>
                 </div>
 
@@ -55,7 +59,11 @@
                         class="is-invalid">
 
                         <div class="text-danger" *ngIf="registrationForm.controls['userName'].errors?.['required']">
-                            User Name is required.
+                            UserName is required.
+                        </div>
+
+                        <div class="text-danger" *ngIf="registrationForm.controls['userName'].errors?.['maxlength']">
+                            User Name Should be less than 50 characters.
                         </div>
                     </div>
                 </div>
@@ -90,7 +98,7 @@
                             Password is required.
                         </div>
                         <div class="text-danger" *ngIf="registrationForm.controls['password'].errors?.['pattern']">
-                            Password must be eight characters including one uppercase letter, one special character and
+                            Password must be 8 - 20 characters including one uppercase letter, one special character and
                             alphanumeric characters
                         </div>
                     </div>

@@ -20,7 +20,7 @@ public interface JobRequestService {
 
     Collection<Integer> appliedJobs();
 
-    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search);
+    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc);
 
     void jobRequestCsv(HttpServletResponse httpServletResponse);
 

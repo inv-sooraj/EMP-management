@@ -41,8 +41,9 @@ public class JobController {
             @RequestParam(name = "sortBy", defaultValue = "job_id") String sortBy,
             @RequestParam(name = "desc", defaultValue = "false") Boolean desc,
             @RequestParam(name = "filter", defaultValue = "5") Integer data,
+            @RequestParam(name = "apply", defaultValue = "false") Boolean apply,
             @RequestParam(name = "search", defaultValue = "") String search) {
-        return jobService.list(page, limit, sortBy,desc, search, data);
+        return jobService.list(page, limit, sortBy, desc, search, data, apply);
     }
 
     @GetMapping("/{jobId}")
@@ -66,16 +67,6 @@ public class JobController {
         jobService.changeSelectedStatus(jobIds, status);
     }
 
-    @PutMapping("/delete/{jobId}")
-    public void delete(@PathVariable("jobId") Integer jobId) {
-        jobService.delete(jobId);
-    }
-
-    @PutMapping("/delete/selected")
-    public void deleteSelected(@RequestBody Collection<Integer> jobIds) {
-        jobService.deleteSelected(jobIds);
-    }
-
     @GetMapping("/download")
     public void jobCsv(HttpServletResponse httpServletResponse) {
         jobService.jobCsv(httpServletResponse);
@@ -83,7 +74,6 @@ public class JobController {
 
     @GetMapping("/stat")
     public Collection<StatusView> count() {
-
         return jobService.getStat();
     }
 }

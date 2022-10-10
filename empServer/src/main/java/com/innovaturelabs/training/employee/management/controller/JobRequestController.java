@@ -28,13 +28,6 @@ public class JobRequestController {
     @Autowired
     private JobRequestService jobRequestService;
 
-    // @PostMapping("/{jobId}")
-    // public JobRequestView add(@PathVariable("jobId") Integer jobId, @Valid
-    // @RequestBody JobRequestForm form) {
-
-    // return jobRequestService.add(form, jobId);
-    // }
-
     @PostMapping("/{jobId}")
     public JobRequestView add(@PathVariable("jobId") Integer jobId) {
 
@@ -50,10 +43,11 @@ public class JobRequestController {
     public Pager<JobRequestView> list(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(name = "desc", defaultValue = "false") Boolean desc,
             @RequestParam(name = "sortBy", defaultValue = "job_request_id") String sortBy,
             @RequestParam(name = "search", defaultValue = "") String search) {
 
-        return jobRequestService.list(page, limit, sortBy, search);
+        return jobRequestService.list(page, limit, sortBy, search,desc);
     }
 
     @GetMapping("/applied")

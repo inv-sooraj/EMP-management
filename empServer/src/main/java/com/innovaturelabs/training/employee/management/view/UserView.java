@@ -19,6 +19,7 @@ public class UserView {
     @Json.DateTimeFormat
     private final Date updateDate;
 
+
     public UserView(User user) {
         this.userId = user.getUserId();
         this.name = user.getName();
@@ -28,6 +29,7 @@ public class UserView {
         this.role = user.getRole();
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();
+
     }
 
     public int getUserId() {
@@ -61,5 +63,9 @@ public class UserView {
     public short getRole() {
         return role;
     }
+
+  
+
+    
 
 }

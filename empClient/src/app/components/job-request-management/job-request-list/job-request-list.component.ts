@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobRequestService } from 'src/app/service/job-request.service';
 import { JobService } from 'src/app/service/job.service';
@@ -12,7 +13,6 @@ import { JobService } from 'src/app/service/job.service';
 export class JobRequestListComponent implements OnInit {
   constructor(
     private jobRequestService: JobRequestService,
-    private jobService: JobService,
     private modalService: NgbModal
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
@@ -28,9 +28,11 @@ export class JobRequestListComponent implements OnInit {
 
   search: string = '';
 
+  sortDesc: boolean = false;
+
   // tableHeight: number = 73 * (this.limit + 1);
 
-  status = this.jobService.status;
+  status = this.jobRequestService.status;
 
   role: number;
 
@@ -61,7 +63,14 @@ export class JobRequestListComponent implements OnInit {
     if (this.jobList.result.length <= 1) {
       return;
     }
-    console.log('sort by : ', sortBy);
+
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
+
+    console.log('sort by : ', sortBy, ', desc : ', this.sortDesc);
 
     this.sortBy = sortBy;
     this.page = 1;
@@ -85,6 +94,7 @@ export class JobRequestListComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
       .append('search', this.search);
 
     this.jobRequestService.getJobRequests(queryParams).subscribe({
@@ -99,9 +109,11 @@ export class JobRequestListComponent implements OnInit {
   }
 
   updateStatus(jobRequestId: number, status: number): void {
+    console.log(this.remark);
+
     let body = {
       status: status,
-      remark: this.remark,
+      remark: this.remark.value,
     };
 
     this.jobRequestService.updateStatus(jobRequestId, body).subscribe({
@@ -111,15 +123,20 @@ export class JobRequestListComponent implements OnInit {
       },
       error: (err: any) => {
         console.error(err);
+        if (err.error.status == 400) {
+          if (err.error.message == 'Invalid Operation') {
+            alert('Job Already Completed');
+          } else alert(err.error.message);
+        }
       },
     });
   }
 
-  remark: string = '';
-
   jobRequestId: number = 0;
 
   action: number = 1;
+
+  remark: FormControl = new FormControl('', [Validators.maxLength(50)]);
 
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });

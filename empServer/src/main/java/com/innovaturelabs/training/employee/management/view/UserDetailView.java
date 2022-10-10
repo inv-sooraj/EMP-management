@@ -24,6 +24,8 @@ public class UserDetailView {
     @Json.DateTimeFormat
     private final Date updateDate;
 
+    private final boolean hasProfilePic;
+
     public UserDetailView(User user) {
         this.userId = user.getUserId();
         this.name = user.getName();
@@ -31,7 +33,7 @@ public class UserDetailView {
         this.email = user.getEmail();
         this.status = user.getStatus();
 
-        this.role=user.getRole();
+        this.role = user.getRole();
 
         this.qualification = user.getQualification();
 
@@ -41,6 +43,9 @@ public class UserDetailView {
 
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();
+
+        this.hasProfilePic = (user.getProfilePic() != null);
+
     }
 
     public int getUserId() {
@@ -85,6 +90,10 @@ public class UserDetailView {
 
     public short getRole() {
         return role;
+    }
+
+    public boolean isHasProfilePic() {
+        return hasProfilePic;
     }
 
 }

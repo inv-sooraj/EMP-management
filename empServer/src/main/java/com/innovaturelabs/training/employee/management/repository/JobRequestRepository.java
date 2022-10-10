@@ -22,16 +22,13 @@ public interface JobRequestRepository extends Repository<JobRequest, Integer> {
 
     Optional<JobRequest> findByJobRequestId(Integer jobRequestId);
 
-    @Query(value = "SELECT * FROM job_request_tbl  WHERE status IN ?1 AND (feedback LIKE %?2% OR remark LIKE %?2%)", nativeQuery = true)
+    @Query(value = "SELECT * FROM job_request_tbl  WHERE status IN ?1 AND  remark LIKE %?2%", nativeQuery = true)
     Page<JobRequest> findAllByStatus(byte[] status, String search, Pageable page);
 
-
-
-
-    @Query(value = "SELECT * FROM job_request_tbl  WHERE job_id IN (select job_id from job_tbl where user_id=?1) AND status IN ?2 AND (feedback LIKE %?3% OR remark LIKE %?3%)", nativeQuery = true)
+    @Query(value = "SELECT * FROM job_request_tbl  WHERE job_id IN (select job_id from job_tbl where user_id=?1) AND status IN ?2 AND  remark LIKE %?3%", nativeQuery = true)
     Page<JobRequest> findAllByUserIdStatus(Integer userId, byte[] status, String search, Pageable page);
-    
-    @Query(value = "SELECT * FROM job_request_tbl  WHERE user_id=?1 AND status IN ?2 AND (feedback LIKE %?3% OR remark LIKE %?3%)", nativeQuery = true)
+
+    @Query(value = "SELECT * FROM job_request_tbl  WHERE user_id=?1 AND status IN ?2 AND  remark LIKE %?3%", nativeQuery = true)
     Page<JobRequest> findAllByUserUserIdStatus(Integer userId, byte[] status, String search, Pageable page);
 
     @Query(value = "SELECT `COLUMN_NAME`  FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='job_request_tbl'", nativeQuery = true)

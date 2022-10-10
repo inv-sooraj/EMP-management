@@ -3,18 +3,16 @@ package com.innovaturelabs.training.employee.management.util;
 import java.security.SecureRandom;
 import java.time.Duration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.util.Assert;
 
-import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
 import com.innovaturelabs.training.employee.management.security.util.InvalidTokenException;
 import com.innovaturelabs.training.employee.management.security.util.TokenExpiredException;
 
 public class ForgotPasswordTokenGenerator {
 
-    public static final class Token {
+    public static final class PasswordToken {
 
         public final String data;
 
@@ -22,29 +20,26 @@ public class ForgotPasswordTokenGenerator {
 
         public final long expiry;
 
-        private Token(String data, long time, long expiry) {
+        private PasswordToken(String data, long time, long expiry) {
             this.data = data;
             this.time = time;
             this.expiry = expiry;
         }
     }
 
-    public static final class Status {
+    public static final class PasswordStatus {
 
         public final String data;
 
         public final long time;
         public final long expiry;
 
-        private Status(String data, long time, long expiry) {
+        private PasswordStatus(String data, long time, long expiry) {
             this.data = data;
             this.time = time;
             this.expiry = expiry;
         }
     }
-
-    @Autowired
-    private SecurityConfig securityConfig;
 
     private final SecureRandom random = new SecureRandom();
 
@@ -54,14 +49,13 @@ public class ForgotPasswordTokenGenerator {
 
     private final Duration expiry = Duration.ofMinutes(10);
 
-    public ForgotPasswordTokenGenerator() {
+    public ForgotPasswordTokenGenerator(String password, String salt) {
 
-        textEncryptor = Encryptors.text(securityConfig.getTokenGeneratorPassword(),
-                securityConfig.getTokenGeneratorSalt());
+        textEncryptor = Encryptors.text(password, salt);
 
     }
 
-    public Token create(String data) {
+    public PasswordToken create(String data) {
 
         Assert.notNull(data, "data cannot be null");
 
@@ -71,10 +65,10 @@ public class ForgotPasswordTokenGenerator {
 
         String token = data + SEPARATOR + currentTime + SEPARATOR + exp + SEPARATOR + rand;
 
-        return new Token(textEncryptor.encrypt(token), currentTime, exp);
+        return new PasswordToken(textEncryptor.encrypt(token), currentTime, currentTime + exp);
     }
 
-    public Status verify(String token) {
+    public PasswordStatus verify(String token) throws InvalidTokenException, TokenExpiredException {
 
         String value;
 
@@ -107,7 +101,7 @@ public class ForgotPasswordTokenGenerator {
             }
         }
 
-        return new Status(parts[1], keyTime, keyTime + exp);
+        return new PasswordStatus(parts[0], keyTime, keyTime + exp);
 
     }
 

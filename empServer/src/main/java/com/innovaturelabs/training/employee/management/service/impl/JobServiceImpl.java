@@ -43,14 +43,14 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobView add(JobForm form) {
 
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")
-                && !SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
+        if (!SecurityUtil.isAdmin()
+                && !SecurityUtil.isEmployer()) {
             throw new BadRequestException("Illegal Access");
         }
 
         Byte status = Job.Status.PENDING.value;
 
-        if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+        if (SecurityUtil.isAdmin()) {
             status = Job.Status.APPROVED.value;
         }
 
@@ -71,51 +71,49 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobView update(JobForm form, Integer jobId) {
 
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")
-                && !SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
-            throw new BadRequestException("Illegal Access");
+        if (SecurityUtil.isEmployer()) {
+
+            return new JobView(jobRepository
+                    .save(jobRepository.findByJobIdAndUserUserId(jobId, SecurityUtil.getCurrentUserId())
+                            .orElseThrow(() -> new BadRequestException("Invalid JobId : " + jobId)).update(form)));
+
         }
 
-        return new JobView(jobRepository
-                .save(jobRepository.findByJobId(jobId).orElseThrow(BadRequestException::new).update(form)));
+        else if (SecurityUtil.isAdmin()) {
+
+            return new JobView(jobRepository.save(jobRepository.findByJobId(jobId)
+                    .orElseThrow(() -> new NotFoundException("Job Not Found for JobId : " + jobId)).update(form)));
+        }
+
+        throw new BadRequestException("Illegal Access");
 
     }
 
     @Override
     public Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc, String search,
-            Integer selectedStatus) {
+            Integer selectedStatus, Boolean apply) {
 
-        if (!jobRepository.findColumns().contains(sortBy)) {
-            sortBy = "job_id";
-        }
+        sortBy = jobRepository.findColumns().contains(sortBy) ? sortBy : "job_id";
 
-        if (page <= 0) {
-            page = 1;
-        }
+        page = page <= 0 ? 1 : page;
 
         Page<Job> jobs;
 
-        if (SecurityUtil.getCurrentUserRole().equals("EMPLOYEE")) {
+        if (SecurityUtil.isEmployee() || apply.booleanValue()) {
 
-            ArrayList<Byte> status = new ArrayList<>();
+            byte[] status = { Job.Status.APPROVED.value };
 
-            // status.add(Job.Status.PENDING.value);
-            status.add(Job.Status.APPROVED.value);
-            // status.add(Job.Status.COMPLETED.value);
-
-            Byte qualification = userRepository.findByUserId(SecurityUtil.getCurrentUserId())
-                    .orElseThrow(NotFoundException::new).getQualification();
-
-            jobs = jobRepository.findAllByStatusAndQualification(status, qualification,
+            jobs = jobRepository.findAllByStatusAndOpenings(status,
                     search, PageRequest.of(page - 1, limit, Sort.by(
                             desc.booleanValue() ? Direction.DESC : Direction.ASC,
                             sortBy)));
 
-        } else if (SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
-            ArrayList<Byte> status = new ArrayList<>();
-
-            status.add(Job.Status.APPROVED.value);
-            status.add(Job.Status.PENDING.value);
+        } else if (SecurityUtil.isEmployer()) {
+            byte[] status = {
+                    Job.Status.APPROVED.value,
+                    Job.Status.PENDING.value,
+                    Job.Status.COMPLETED.value
+            };
 
             jobs = jobRepository.findAllByUserIdStatus(SecurityUtil.getCurrentUserId(), status,
                     search, PageRequest.of(page - 1, limit, Sort.by(
@@ -131,7 +129,7 @@ public class JobServiceImpl implements JobService {
             } else {
 
                 status.addAll(
-                        Arrays.asList(Job.Qualification.values()).stream().map(q -> q.value)
+                        Arrays.asList(Job.Status.values()).stream().map(q -> q.value)
                                 .collect(Collectors.toList()));
 
             }
@@ -149,44 +147,11 @@ public class JobServiceImpl implements JobService {
         // Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
         // search).intValue(),page);
 
-        jobViews.setResult(jobs.getContent().stream().map(JobView::new).collect(Collectors.toList()));
+        jobViews.setResult(jobs.getContent().stream()
+                .map(job -> new JobView(job, userRepository.findByUserId(SecurityUtil.getCurrentUserId()).get()))
+                .collect(Collectors.toList()));
 
         return jobViews;
-    }
-
-    @Override
-    public void delete(Integer jobId) {
-
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")
-                && !SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
-            throw new BadRequestException("Illegal Access");
-        }
-
-        Job job = jobRepository.findByJobId(jobId).orElseThrow(BadRequestException::new);
-        job.setStatus(Job.Status.DELETED.value);
-        job.setUpdateDate(new Date());
-        jobRepository.save(job);
-
-    }
-
-    @Override
-    public void deleteSelected(Collection<Integer> jobIds) {
-
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")
-                && !SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
-            throw new BadRequestException("Illegal Access");
-        }
-
-        for (Integer jobId : jobIds) {
-
-            Optional<Job> job = jobRepository.findByJobId(jobId);
-
-            if (job.isPresent()) {
-                jobRepository.save(job.get().delete());
-            }
-
-        }
-
     }
 
     @Override
@@ -195,7 +160,7 @@ public class JobServiceImpl implements JobService {
 
         Collection<JobView> exportlist;
 
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+        if (SecurityUtil.isAdmin()) {
             exportlist = jobRepository.findAll().stream().map(JobView::new)
                     .collect(Collectors.toList());
         } else {
@@ -212,20 +177,27 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobView updateStatus(Integer jobId, Byte status) {
 
-        if (SecurityUtil.getCurrentUserRole() == null || SecurityUtil.getCurrentUserRole().equals("EMPLOYEE")) {
+        if (SecurityUtil.isEmployee()) {
             throw new BadRequestException("Illegal Access");
         }
 
         Job job = jobRepository.findByJobId(jobId).orElseThrow(NotFoundException::new);
 
-        if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
+        if (job.getStatus() == Job.Status.COMPLETED.value && !SecurityUtil.isAdmin()) {
+
+            throw new BadRequestException("Completed Job Cant be Updated");
+
+        }
+
+        if (SecurityUtil.isAdmin()) {
 
             job.setStatus(status);
 
             job.setUpdateDate(new Date());
-        } else if (SecurityUtil.getCurrentUserRole().equals("EMPLOYER") && status == Job.Status.COMPLETED.value) {
+        } else if (SecurityUtil.isEmployer()
+                && (status == Job.Status.DELETED.value || status == Job.Status.COMPLETED.value)) {
 
-            job.setStatus(Job.Status.COMPLETED.value);
+            job.setStatus(status);
 
             job.setUpdateDate(new Date());
 
@@ -238,8 +210,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public void changeSelectedStatus(Collection<Integer> jobIds, Byte status) {
-        if (!SecurityUtil.getCurrentUserRole().equals("ADMIN")
-                && !SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
+        if (!SecurityUtil.isAdmin()
+                && !SecurityUtil.isEmployer()) {
             throw new BadRequestException("Illegal Access");
         }
 
@@ -250,9 +222,8 @@ public class JobServiceImpl implements JobService {
             if (job.isPresent()) {
                 Job job2 = job.get();
 
-                if (SecurityUtil.getCurrentUserRole().equals("ADMIN")
-                        || (SecurityUtil.getCurrentUserRole().equals("EMPLOYER")
-                                && (status == Job.Status.DELETED.value || status == Job.Status.COMPLETED.value))) {
+                if (SecurityUtil.isAdmin() || (SecurityUtil.isEmployer()
+                        && (status == Job.Status.DELETED.value || status == Job.Status.COMPLETED.value))) {
                     job2.setStatus(status);
                     job2.setUpdateDate(new Date());
                 }
@@ -268,10 +239,9 @@ public class JobServiceImpl implements JobService {
     @Override
     public Collection<StatusView> getStat() {
 
-        if (SecurityUtil.getCurrentUserRole().equals("ADMIN")) {
-
+        if (SecurityUtil.isAdmin()) {
             return jobRepository.countStatus();
-        } else if (SecurityUtil.getCurrentUserRole().equals("EMPLOYER")) {
+        } else if (SecurityUtil.isEmployer()) {
             return jobRepository.countStatusByUserId(SecurityUtil.getCurrentUserId());
         }
 

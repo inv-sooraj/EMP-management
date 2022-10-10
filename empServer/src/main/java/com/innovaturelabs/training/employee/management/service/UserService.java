@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.exception.NotFoundException;
+import com.innovaturelabs.training.employee.management.form.AdminAddUserForm;
 import com.innovaturelabs.training.employee.management.form.ChangePasswordForm;
 import com.innovaturelabs.training.employee.management.form.LoginForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
@@ -26,6 +27,8 @@ import com.innovaturelabs.training.employee.management.view.UserView;
 public interface UserService {
 
     UserView add(UserForm form);
+
+    UserView adminAdd(AdminAddUserForm form);
 
     // UserView update(Integer userId, UserForm form) throws NotFoundException;
 
@@ -43,7 +46,7 @@ public interface UserService {
 
     LoginView refresh(String refreshToken) throws BadRequestException;
 
-    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search);
+    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc);
 
     UserDetailView updateUserDetails(UserDetailForm form);
 

@@ -78,6 +78,7 @@ public class User {
 
     private boolean passwordResetRequest;
 
+    @Column(length = 255)
     private String profilePic;
 
     @Column(length = 255)
@@ -91,11 +92,11 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
-    public User(Integer userId) {
-        this.userId = userId;
+    public User() {
     }
 
-    public User() {
+    public User(Integer userId) {
+        this.userId = userId;
     }
 
     public User(String name, String userName, String email, String password, byte role) {
@@ -132,6 +133,17 @@ public class User {
     public User delete() {
 
         this.status = User.Status.INACTIVE.value;
+
+        this.updateDate = new Date();
+
+        return this;
+    }
+
+    public User resetPassword(String newPassword) {
+
+        this.password = newPassword;
+
+        this.passwordResetRequest = false;
 
         this.updateDate = new Date();
 
@@ -256,7 +268,5 @@ public class User {
     public void setPasswordResetRequest(boolean passwordResetRequest) {
         this.passwordResetRequest = passwordResetRequest;
     }
-
-    
 
 }

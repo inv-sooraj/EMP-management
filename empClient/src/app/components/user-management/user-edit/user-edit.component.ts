@@ -18,10 +18,10 @@ export class UserEditComponent implements OnInit {
   qualifications =this.userService.qualifications
 
   userEditForm: FormGroup = new FormGroup({
-    name: new FormControl('', Validators.required),
-    phone: new FormControl(''),
-    address: new FormControl(''),
-    qualification: new FormControl('', Validators.required),
+    name: new FormControl('', [Validators.required,Validators.maxLength(50)]),
+    phone: new FormControl('',Validators.maxLength(13)),
+    address: new FormControl('',Validators.maxLength(255)),
+    qualification: new FormControl('', [Validators.required,Validators.maxLength(1)]),
   });
 
   ngOnInit(): void {

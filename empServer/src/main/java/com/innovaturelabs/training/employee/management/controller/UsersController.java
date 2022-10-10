@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.innovaturelabs.training.employee.management.form.AdminAddUserForm;
 import com.innovaturelabs.training.employee.management.form.ChangePasswordForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 import com.innovaturelabs.training.employee.management.form.UserEditForm;
@@ -43,6 +44,11 @@ public class UsersController {
         return userService.add(form);
     }
 
+    @PostMapping("/admin-register")
+    public UserView adminAdd(@Valid @RequestBody AdminAddUserForm form) {
+        return userService.adminAdd(form);
+    }
+
     @GetMapping()
     public UserDetailView currentUser() {
         return userService.currentUser();
@@ -57,10 +63,11 @@ public class UsersController {
     public Pager<UserView> list(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(name = "desc", defaultValue = "false") Boolean desc,
             @RequestParam(name = "sortBy", defaultValue = "user_id") String sortBy,
             @RequestParam(name = "search", defaultValue = "") String search) {
 
-        return userService.list(page, limit, sortBy, search);
+        return userService.list(page, limit, sortBy, search,desc);
     }
 
     @PutMapping("/username")

@@ -17,7 +17,7 @@ export class UserService {
     4: 'PG ',
   };
 
-  public role: { [key: number]: string } = {
+  public roles: { [key: number]: string } = {
     0: 'EMPLOYEE',
     1: 'EMPLOYER',
     2: 'ADMIN',
@@ -29,6 +29,10 @@ export class UserService {
   };
 
   constructor(private http: HttpClient) {}
+
+  registerUser(body: any): Observable<any> {
+    return this.http.post(environment.apiUrl + '/users/admin-register', body);
+  }
 
   getCurrentUser(): Observable<any> {
     return this.http.get(this.apiUrl + '/users/');

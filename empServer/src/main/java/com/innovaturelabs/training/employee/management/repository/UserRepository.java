@@ -17,6 +17,9 @@ public interface UserRepository extends Repository<User, Integer> {
 
     Optional<User> findByUserIdAndStatus(Integer userId, Byte status);
 
+    Optional<User> findByUserIdAndStatusAndPasswordResetRequest(Integer userId, Byte status,
+            Boolean passwordResetRequest);
+
     @Query(value = "SELECT * FROM user_tbl  WHERE status IN ?1 AND (name LIKE %?2% OR email LIKE %?2% OR address LIKE %?2% )", nativeQuery = true)
     Page<User> findAllByStatus(ArrayList<Byte> status, String search, Pageable page);
 
@@ -28,7 +31,8 @@ public interface UserRepository extends Repository<User, Integer> {
     Optional<User> findByUserIdAndPassword(Integer userId, String password);
 
     Optional<User> findByEmail(String email);
-    Optional<User> findByEmailAndStatus(String email,Byte status);
+
+    Optional<User> findByEmailAndStatus(String email, Byte status);
 
     Optional<User> findByUserName(String userName);
 

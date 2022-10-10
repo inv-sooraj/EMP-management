@@ -1,11 +1,15 @@
 package com.innovaturelabs.training.employee.management.form;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class UserDetailForm {
 
+    @NotBlank
+    @Size(max = 50)
     private String name;
 
+    @Size(max = 13)
     private String phone;
 
     @Size(max = 255)

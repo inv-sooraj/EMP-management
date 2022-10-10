@@ -1,0 +1,94 @@
+<div class="card m-auto">
+
+    <div class="card-body">
+
+        <div class="container pt-2">
+
+            <form [formGroup]="userAddForm" class="row g-3">
+
+                <label>
+                    Register As
+                </label>
+
+                <div class="col-4 text-center">
+                    <input class="form-check-input mx-3" type="radio" name="role" id="admin" value=2
+                        formControlName="role">
+                    <label class="form-check-label" for="admin">
+                        Admin
+                    </label>
+                </div>
+
+                <div class="col-4 text-center">
+                    <input class="form-check-input mx-3" type="radio" name="role" id="employee" value=0
+                        formControlName="role">
+                    <label class="form-check-label" for="employee">
+                        Employee
+                    </label>
+                </div>
+                <div class="col-4 text-center">
+                    <input class="form-check-input mx-3" type="radio" name="role" id="employer" value=1
+                        formControlName="role">
+                    <label class="form-check-label" for="employer">
+                        Employer
+                    </label>
+                </div>
+
+
+                <hr>
+
+                <div class="col-12 mt-0">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" formControlName="name" class="form-control"
+                        [ngClass]="{'is-invalid':(userAddForm.controls['name'].touched||userAddForm.controls['name'].dirty) && userAddForm.controls['name'].errors}">
+
+                    <div *ngIf="userAddForm.controls['name'].touched||userAddForm.controls['name'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userAddForm.controls['name'].errors?.['required']">
+                            Name is required.
+                        </div>
+
+                        <div class="text-danger" *ngIf="userAddForm.controls['name'].errors?.['maxlength']">
+                            Name Should be less than 50 characters.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12">
+                    <label for="userName" class="form-label">User Name</label>
+                    <input type="text" formControlName="userName" class="form-control"
+                        [ngClass]="{'is-invalid':(userAddForm.controls['userName'].touched||userAddForm.controls['userName'].dirty) && userAddForm.controls['userName'].errors}">
+
+                    <div *ngIf="userAddForm.controls['userName'].touched||userAddForm.controls['userName'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userAddForm.controls['userName'].errors?.['required']">
+                            UserName is required.
+                        </div>
+
+                        <div class="text-danger" *ngIf="userAddForm.controls['userName'].errors?.['maxlength']">
+                            User Name Should be less than 50 characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" formControlName="email" class="form-control"
+                        [ngClass]="{'is-invalid':(userAddForm.controls['email'].touched||userAddForm.controls['email'].dirty) && userAddForm.controls['email'].errors}">
+
+                    <div *ngIf="(userAddForm.controls['email'].touched)" class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userAddForm.controls['email'].errors?.['required']">
+                            Email is required.
+                        </div>
+                        <div class="text-danger" *ngIf="userAddForm.controls['email'].errors?.['pattern']">
+                            Invalid email.
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

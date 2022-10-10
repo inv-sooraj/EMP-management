@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class JobRequest {
 
     private Byte status;
 
-    private String feedback;
+    @Column(length = 255)
     private String remark;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -58,33 +59,7 @@ public class JobRequest {
         this.job = new Job(jobId);
         this.status = JobRequest.Status.PENDING.value;
 
-        this.feedback = "";
         this.remark = "";
-
-        Date date = new Date();
-        this.createDate = date;
-        this.updateDate = date;
-    }
-
-    // public JobRequest(JobRequestForm form, Integer userId, Integer jobId) {
-    // this.user = new User(userId);
-    // this.job = new Job(jobId);
-    // this.setStatus(form.getStatus());
-    // this.remark = form.getRemark();
-
-    // Date date = new Date();
-    // this.createDate = date;
-    // this.updateDate = date;
-    // }
-
-    public JobRequest(Integer jobRequestId, Integer userId, Integer jobId, Byte status, String feedback,
-            String remark) {
-        this.jobRequestId = jobRequestId;
-        this.user = new User(userId);
-        this.job = new Job(jobId);
-        this.status = status;
-        this.feedback = feedback;
-        this.remark = remark;
 
         Date date = new Date();
         this.createDate = date;
@@ -129,13 +104,7 @@ public class JobRequest {
         }
     }
 
-    public String getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
-    }
+  
 
     public String getRemark() {
         return remark;

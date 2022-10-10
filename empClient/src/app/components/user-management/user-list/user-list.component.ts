@@ -13,7 +13,7 @@ export class UserListComponent implements OnInit {
 
   status = this.userService.status;
 
-  roles = this.userService.role;
+  roles = this.userService.roles;
 
   roleStatusCount: { [key: string]: number } = {};
 
@@ -36,6 +36,8 @@ export class UserListComponent implements OnInit {
   limit: number = 5;
 
   search: string = '';
+
+  sortDesc: boolean = false;
 
   userList: any = {};
 
@@ -62,7 +64,14 @@ export class UserListComponent implements OnInit {
     if (this.userList.result.length <= 1) {
       return;
     }
-    console.log('sort by : ', sortBy);
+
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
+
+    console.log('sort by : ', sortBy, ', desc : ', this.sortDesc);
 
     this.sortBy = sortBy;
     this.page = 1;
@@ -85,6 +94,7 @@ export class UserListComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
       .append('search', this.search);
 
     this.userService.getUsers(queryParams).subscribe({
