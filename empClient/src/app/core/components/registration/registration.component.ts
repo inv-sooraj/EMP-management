@@ -42,6 +42,7 @@ export class RegistrationComponent implements OnInit {
         },
         error: (error: any) => {
           console.log(error);
+          alert("Username already exists");
         },
       });
     }

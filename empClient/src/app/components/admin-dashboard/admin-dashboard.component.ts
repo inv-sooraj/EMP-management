@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserManagementService } from 'src/app/services/user-management.service';
 
 @Component({
@@ -10,6 +11,7 @@ import { UserManagementService } from 'src/app/services/user-management.service'
 })
 export class AdminDashboardComponent implements OnInit {
   details: any;
+
   qualifications: { [key: number]: string } = {
     0: 'SSLC ',
     1: 'PLUS TWO',
@@ -23,7 +25,11 @@ export class AdminDashboardComponent implements OnInit {
     2: 'Employee ',
   };
 
-  constructor(private route: Router, private service: UserManagementService) {}
+  constructor(
+    private route: Router,
+    private service: UserManagementService,
+    private modalService: NgbModal
+  ) {}
 
   page: number = 1;
   search: string = '';
@@ -46,7 +52,7 @@ export class AdminDashboardComponent implements OnInit {
   // }
 
   editUser(info: any) {
-    this.service.userId=info;
+    this.service.userId = info;
     this.route.navigate(['editUser']);
   }
 
@@ -130,10 +136,72 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  limit: number = 5;
-setLimit() {
+  limit: number = 4;
+  setLimit() {
     console.log(this.limit);
     this.page = 1;
     this.pagination();
+  }
+
+  userId: number = 0;
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
+
+  checked: Array<number> = [];
+  
+
+  checkedUser(event: any) {
+    if (event.target.checked) {
+      this.checked.push(Number(event.target.attributes.value.value));
+
+      if (this.details.result.length == this.checked.length) {
+        (document.getElementById('selectAll') as HTMLInputElement).checked =
+          true;
+      }
+    } else {
+      this.checked.splice(
+        this.checked.indexOf(Number(event.target.attributes.value.value)),
+        1
+      );
+      (document.getElementById('selectAll') as HTMLInputElement).checked =
+        false;
+    }
+
+    console.log(this.checked);
+  }
+
+  checkAll(event: any) {
+    this.details.result.forEach((element: any) => {
+      (
+        document.getElementById('checkbox' + element.userId) as HTMLInputElement
+      ).checked = event.target.checked;
+
+      if (event.target.checked) {
+        if (!this.checked.includes(element.userId)) {
+          this.checked.push(element.userId);
+        }
+      } else {
+        this.checked.splice(this.checked.indexOf(element.userId), 1);
+      }
+    });
+    console.log(this.checked);
+  }
+
+  deleteUsers(): void {
+    if (this.checked.length <= 0) {
+      return;
+    }
+    this.service.deleteUsers(this.checked).subscribe({
+      next: (response: any) => {
+        console.log('deleted', this.checked, response);
+        this.pagination();
+      },
+      error(error: any) {
+        console.log(error);
+      },
+    });
+
+    (document.getElementById('selectAll') as HTMLInputElement).checked = false;
   }
 }

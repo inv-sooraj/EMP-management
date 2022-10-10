@@ -44,8 +44,8 @@ public class JobController {
     }
 
     @PutMapping("/delete/{jobId}")
-    public void delete(@PathVariable("jobId") Integer jobId,@RequestBody Integer flag) {
-        jobService.delete(jobId,flag);
+    public void delete(@PathVariable("jobId") Integer jobId, @RequestBody Integer flag) {
+        jobService.delete(jobId, flag);
     }
 
     @PutMapping("/{jobId}")
@@ -64,20 +64,22 @@ public class JobController {
             @RequestParam(value = "limit", required = false, defaultValue = "16") String limit,
             @RequestParam(value = "sort", required = false, defaultValue = "update_date") String sort,
             @RequestParam(value = "filter", required = false, defaultValue = "ALL") String filter
-    // @RequestParam(value = "type", required = false, defaultValue = "false")
-    // boolean type
+  
     ) {
 
-        return jobService.listItem(search, limit, sort, page,filter);
+        return jobService.listItem(search, limit, sort, page, filter);
     }
 
-    // ...............................................................
+    // csv download................
 
     @GetMapping("/download")
     public void jobCsv(HttpServletResponse httpServletResponse) {
         jobService.jobCsv(httpServletResponse);
     }
 
-
+    @PutMapping("/deleteall")
+    public void deleteAll(@RequestBody Collection<Integer> Ids) {
+        jobService.deleteAll(Ids);
+    }
 
 }

@@ -57,6 +57,7 @@ public class User {
     private String userName;
     private String password;
     private byte status;
+    @Column(unique = true)
     private String email;
     private String name;
     private String address;
@@ -68,6 +69,7 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
+    private String image;
     public User() {
     }
 
@@ -101,13 +103,13 @@ public class User {
         this.updateDate = dt;
     }
 
-    public User(String userName, String name, String email,String password, String address, String phone,
+    public User(String userName, String name, String email, String password, String address, String phone,
             byte qualification, Byte role) {
         this.userName = userName;
         this.name = name;
         this.email = email;
         this.address = address;
-        this.password=password;
+        this.password = password;
         this.phone = phone;
         this.qualification = qualification;
         this.status = Status.ACTIVE.value;
@@ -117,7 +119,7 @@ public class User {
         this.updateDate = dt;
     }
 
-        public Integer getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
@@ -217,5 +219,28 @@ public class User {
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
+
+    public User delete() {
+
+        this.status = User.Status.DELETED.value;
+
+        this.updateDate = new Date();
+
+        return this;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public User update(String fileName) {
+        this.image=fileName;
+        return this;
+    }
+    
 
 }

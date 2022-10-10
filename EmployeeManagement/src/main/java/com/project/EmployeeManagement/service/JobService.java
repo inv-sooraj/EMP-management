@@ -27,4 +27,6 @@ public interface JobService {
 
     JobDetailView get(Integer jobId);
 
+    void deleteAll(Collection<Integer> ids);
+
 }

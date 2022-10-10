@@ -73,7 +73,7 @@ public class Job {
         this.jobTitle = form.getJobTitle();
         this.jobDescription = form.getJobDescription();
 
-        this.openings = form.getOpenings();
+        
 
         // if ((form.getQualification() < Qualification.values().length) &&
         // (form.getQualification() >= 0)) {
@@ -178,6 +178,13 @@ public class Job {
         this.setQualification(form.getQualification());
         Date dt = new Date();
         this.updateDate = dt;
+        return this;
+
+    }
+
+    public Job delete() {
+        this.status = Job.Status.DELETED.value;
+        this.updateDate = new Date();
         return this;
 
     }

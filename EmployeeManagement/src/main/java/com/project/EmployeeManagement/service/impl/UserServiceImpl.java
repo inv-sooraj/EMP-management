@@ -3,13 +3,22 @@ package com.project.EmployeeManagement.service.impl;
 import static com.project.EmployeeManagement.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +34,11 @@ import org.supercsv.prefs.CsvPreference;
 import com.project.EmployeeManagement.entity.User;
 import com.project.EmployeeManagement.exception.BadRequestException;
 import com.project.EmployeeManagement.exception.NotFoundException;
+import com.project.EmployeeManagement.form.ChangePasswordForm;
 import com.project.EmployeeManagement.form.LoginForm;
 import com.project.EmployeeManagement.form.UserAddForm;
-import com.project.EmployeeManagement.form.UserDetailForm;
 import com.project.EmployeeManagement.form.UserForm;
+import com.project.EmployeeManagement.form.userProfilePictureForm;
 import com.project.EmployeeManagement.repository.UserRepository;
 import com.project.EmployeeManagement.security.config.SecurityConfig;
 import com.project.EmployeeManagement.security.util.InvalidTokenException;
@@ -41,6 +51,8 @@ import com.project.EmployeeManagement.service.UserService;
 import com.project.EmployeeManagement.util.Pager;
 import com.project.EmployeeManagement.view.LoginView;
 import com.project.EmployeeManagement.view.UserView;
+
+import net.bytebuddy.utility.RandomString;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -63,7 +75,10 @@ public class UserServiceImpl implements UserService {
     public UserView add(UserForm form) {
 
         if (userRepository.findByUserName(form.getUserName()).isPresent()) {
-            throw new BadRequestException("Already Exists");
+            throw new BadRequestException("UserName Already Exists");
+        }
+        if (userRepository.findByEmail(form.getEmail()).isPresent()) {
+            throw new BadRequestException("Email Already Exists");
         }
 
         return new UserView(userRepository.save(new User(
@@ -80,6 +95,9 @@ public class UserServiceImpl implements UserService {
         if (userRole.equals(User.Role.ADMIN.value)) {
 
             if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+                throw new BadRequestException("Already Exists");
+            }
+            if (userRepository.findByEmail(form.getEmail()).isPresent()) {
                 throw new BadRequestException("Already Exists");
             }
             return new UserView(userRepository.save(new User(
@@ -273,6 +291,86 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         } else
             throw new BadRequestException("illegal access");
+    }
+
+    @Override
+
+    public UserView change(@Valid ChangePasswordForm form) {
+
+        User user = userRepository.findByUserId(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new);
+
+        if (!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
+            throw new BadRequestException("failed");
+        }
+        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+
+        user.setUpdateDate(new Date());
+
+        return new UserView(userRepository.save(user));
+
+    }
+
+    @Override
+    public void deleteAll(Collection<Integer> ids) {
+        for (Integer userId : ids) {
+
+            Optional<User> user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value);
+
+            if (user.isPresent()) {
+
+                userRepository.save(user.get().delete());
+            }
+
+        }
+
+    }
+
+    // image upload ans view
+
+    @Override
+    public UserView addUserDetails(userProfilePictureForm form) throws Exception {
+        String uploadDir = "files/";
+        String fileName;
+        String randStr = RandomString.make(20);
+        fileName = new Date().getTime() + "_" + randStr + "."
+                + FilenameUtils.getExtension(form.getImage().getOriginalFilename());
+
+        Path uploadPath = Paths.get("src/main/resources/static/" + uploadDir);
+
+        if (!Files.exists(uploadPath)) {
+            try {
+                Files.createDirectories(uploadPath);
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+        }
+
+        try (InputStream inputStream = form.getImage().getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {
+            throw new IOException("Could not save file");
+        }
+
+        return new UserView(userRepository
+                .save(userRepository.findById(SecurityUtil.getCurrentUserId()).get()
+                        .update(fileName)));
+
+    }
+
+    @Override
+    public byte[] getFileData() {
+
+        String url = userRepository.findById(SecurityUtil.getCurrentUserId())
+                .orElseThrow(NotFoundException::new).getImage();
+
+        try {
+            return Files.readAllBytes(Path.of("src/main/resources/static/files/" + url));
+        } catch (IOException e) {
+            throw new BadRequestException("File Not Found");
+        }
+
     }
 
 }

@@ -13,10 +13,15 @@ export class JobViewComponent implements OnInit {
   details: any;
   page: number = 1;
 
-
-  flag:number=0;
+  flag: number = 0;
   search: string = '';
-  view:number=3;
+  view: number = 3;
+
+  userRole: number = 0;
+  jobId: number = 0;
+
+  // details: any = {};
+  checked: Array<number> = [];
   qualifications: { [key: number]: string } = {
     0: 'SSLC ',
     1: 'PLUS TWO',
@@ -30,6 +35,16 @@ export class JobViewComponent implements OnInit {
     2: 'Pending ',
     3: 'Rejected ',
   };
+
+  roleCheck() {
+    let role = Number(localStorage.getItem('key'));
+
+    if (role == 0) {
+      this.userRole = 1;
+    } else {
+      this.userRole = 0;
+    }
+  }
   constructor(
     private service: JobManagementService,
     private route: Router,
@@ -37,7 +52,7 @@ export class JobViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.jobView();
+    this.roleCheck();
     this.pagination();
   }
 
@@ -54,7 +69,7 @@ export class JobViewComponent implements OnInit {
   // }
 
   jobDelete(arg: any) {
-    this.service.deleteJob(arg,this.flag).subscribe({
+    this.service.deleteJob(arg, this.flag).subscribe({
       next: (response: any) => {
         console.log(response);
         // this.jobView();
@@ -86,9 +101,11 @@ export class JobViewComponent implements OnInit {
 
   setSearch() {
     this.page = 1;
-    this.pagination();
+    this.pagination();  
   }
   pagination() {
+
+    
     this.service.navPage(this.getParam()).subscribe({
       next: (response: any) => {
         console.log(response);
@@ -141,7 +158,7 @@ export class JobViewComponent implements OnInit {
     });
   }
 
-  limit: number = 5;
+  limit: number = 4;
   setLimit() {
     console.log(this.limit);
     this.page = 1;
@@ -157,8 +174,62 @@ export class JobViewComponent implements OnInit {
   }
 
   open(content: any) {
+    console.log("egwgwgg");
+    
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
 
-  jobId: number = 0;
+  checkedJob(event: any) {
+    if (event.target.checked) {
+      this.checked.push(Number(event.target.attributes.value.value));
+
+      if (this.details.result.length == this.checked.length) {
+        (document.getElementById('selectAll') as HTMLInputElement).checked =
+          true;
+      }
+    } else {
+      this.checked.splice(
+        this.checked.indexOf(Number(event.target.attributes.value.value)),
+        1
+      );
+      (document.getElementById('selectAll') as HTMLInputElement).checked =
+        false;
+    }
+
+    console.log(this.checked);
+  }
+
+  checkAll(event: any) {
+    this.details.result.forEach((element: any) => {
+      (
+        document.getElementById('checkbox' + element.jobId) as HTMLInputElement
+      ).checked = event.target.checked;
+
+      if (event.target.checked) {
+        if (!this.checked.includes(element.jobId)) {
+          this.checked.push(element.jobId);
+        }
+      } else {
+        this.checked.splice(this.checked.indexOf(element.jobId), 1);
+      }
+    });
+    console.log(this.checked);
+  }
+
+  deleteJobs(): void {
+    if (this.checked.length <= 0) {
+      return;
+    }
+    this.service.deleteJobs(this.checked).subscribe({
+      next: (response: any) => {
+        console.log('deleted', this.checked, response);
+        this.pagination();
+      },
+      error(error:any) {
+        console.log(error);
+      },
+    });
+
+    (document.getElementById('selectAll') as HTMLInputElement).checked = false;
+  }
 }

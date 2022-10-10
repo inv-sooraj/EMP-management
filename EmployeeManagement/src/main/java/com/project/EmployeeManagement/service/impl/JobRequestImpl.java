@@ -1,5 +1,6 @@
 package com.project.EmployeeManagement.service.impl;
 
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +9,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.project.EmployeeManagement.entity.Job;
 import com.project.EmployeeManagement.entity.JobRequest;
 import com.project.EmployeeManagement.entity.User;
 import com.project.EmployeeManagement.exception.BadRequestException;
 import com.project.EmployeeManagement.exception.NotFoundException;
 import com.project.EmployeeManagement.form.JobRequestForm;
+import com.project.EmployeeManagement.repository.JobRepository;
 import com.project.EmployeeManagement.repository.JobRequestRepository;
 import com.project.EmployeeManagement.repository.UserRepository;
 import com.project.EmployeeManagement.security.util.SecurityUtil;
@@ -25,6 +28,9 @@ public class JobRequestImpl implements JobRequestService {
 
         @Autowired
         private JobRequestRepository jobRequestRepository;
+
+        @Autowired
+        private JobRepository jobRepository;
 
         @Autowired
         private UserRepository userRepository;
@@ -83,7 +89,6 @@ public class JobRequestImpl implements JobRequestService {
                                                         .collect(Collectors.toList()));
 
                         return JobRequestViews;
-                        
 
                 } else
                         throw new BadRequestException("invalid");
@@ -95,11 +100,25 @@ public class JobRequestImpl implements JobRequestService {
 
                 JobRequest jobRequest = jobRequestRepository.findById(jobRequestId).orElseThrow(NotFoundException::new);
 
+                if ((form.getStatus() == 0)) {
+                        Job job = jobRequest.getJob();
+
+                        job.setOpenings(job.getOpenings() - 1);
+                        jobRepository.save(job);
+
+                }
+
                 jobRequest.changeStatus(form);
 
                 jobRequestRepository.save(jobRequest);
-
                 return new JobRequestView(jobRequest);
+
+        }
+
+        @Override
+        public Collection<Integer> appliedJobs() {
+
+                return jobRequestRepository.getAppliedJobs(SecurityUtil.getCurrentUserId());
 
         }
 

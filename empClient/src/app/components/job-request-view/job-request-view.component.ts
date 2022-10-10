@@ -16,6 +16,12 @@ export class JobRequestViewComponent implements OnInit {
   jobRequestId: any;
   role = Number(localStorage.getItem('key'));
 
+  // status: { [key: number]: string } = {
+  //   1: 'APPROVED ',
+  //   2: 'PENDING',
+  //   3: 'REJECTED ',
+  // };
+
   status: { [key: number]: string } = {
     0: 'APPROVED ',
     1: 'PENDING',
@@ -50,6 +56,12 @@ export class JobRequestViewComponent implements OnInit {
     this.pagination();
   }
 
+  limit: number = 5;
+  setLimit() {
+    console.log(this.limit);
+    this.page = 1;
+    this.pagination();
+  }
   // jobRequestView() {
   //   this.service.getJobRequest().subscribe({
   //     next: (response: any) => {
@@ -62,15 +74,12 @@ export class JobRequestViewComponent implements OnInit {
   //   });
   // }
 
-  logOut() {
-    localStorage.clear();
-    this.route.navigate(['login']);
-  }
+ 
 
   getParam(): HttpParams {
     return new HttpParams()
       .append('page', this.page)
-      .append('limit', 4)
+      .append('limit', this.limit)
       .append('sort', 'job_req_id')
       .append('search', this.search)
       .append('filter', 2);
@@ -112,4 +121,11 @@ export class JobRequestViewComponent implements OnInit {
       },
     });
   }
+
+  setSearch(){
+  this.page = 1;
+    this.pagination();
+  }
+
+  
 }

@@ -3,7 +3,9 @@ package com.project.EmployeeManagement.form;
 import javax.validation.constraints.Size;
 
 public class UserAddForm {
+    @Size(max=50)
     private String userName;
+    @Size(max=50)
     private String name;
     private String email;
     @Size(max = 225)

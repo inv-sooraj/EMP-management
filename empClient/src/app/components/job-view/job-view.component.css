@@ -286,3 +286,23 @@ body {
 	display: block;
 	color:rgb(120, 160, 95);
   }
+  .myDIV-2:hover + .hide {
+	display: block;
+	color:rgb(20, 194, 23);
+  }
+
+  .btns{
+	display: flex;
+	
+  }
+
+  td{
+	overflow: hidden;
+	max-width: 100px;
+  }
+  td:hover{
+	max-width: initial;
+  }
+
+
+  

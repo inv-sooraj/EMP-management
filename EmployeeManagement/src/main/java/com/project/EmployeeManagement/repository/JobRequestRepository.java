@@ -24,8 +24,10 @@ public interface JobRequestRepository extends Repository<JobRequest, Integer> {
 
     @Query(value = "SELECT * FROM job_request  WHERE job_id IN (select job_id from job where user_id=?1) AND (remarks LIKE %?2% )", nativeQuery = true)
     Page<JobRequest> findAllByUserUserId(Integer userId, String search, Pageable page);
-    
+
     @Query(value = "SELECT * FROM job_request  WHERE  user_id=?1 AND (remarks LIKE %?2% )", nativeQuery = true)
     Page<JobRequest> findByJobReqId(Integer userId, String search, PageRequest of);
 
+    @Query(value = "SELECT job_id FROM job_request   WHERE user_id=?1", nativeQuery = true)
+    Collection<Integer> getAppliedJobs(Integer userId);
 }

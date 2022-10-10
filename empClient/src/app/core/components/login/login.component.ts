@@ -27,16 +27,18 @@ export class LoginComponent implements OnInit {
           // Logged in user role saved to localstorage
           localStorage.setItem('key', response.role);
           // this.userService.userRole = response.role;
-          let role = Number(localStorage.getItem('key'));
-          if (role != 0) {
-            this.route.navigate(['userDashboard']);
-          } else {
-            this.route.navigate(['adminDashboard']);
-          }
+          // let role = Number(localStorage.getItem('key'));
+          // if (role != 0) {
+          this.route.navigate(['userDashboard']);
+          // } else {
+          //   this.route.navigate(['adminDashboard']);
+          // }
           localStorage.setItem('accessToken', response.accessToken.value),
             localStorage.setItem('refreshToken', response.refreshToken.value);
         },
-        error: (error: any) => console.log(error),
+        error: (error: any) => {
+          console.log(error), alert('Invalid Credentials');
+        },
       });
     }
   }

@@ -21,6 +21,8 @@
 
 </body>
 </html> -->
+<!-- <app-user-header></app-user-header> -->
+<app-header></app-header>
 
 <div class="container">
   <div class="main-body">
@@ -28,38 +30,41 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="main-breadcrumb" *ngIf="flag==1">
       <ol class="breadcrumb">
-        <!-- <li class="breadcrumb-item"><a href="index.html">Home</a></li> -->
-        <li class="breadcrumb-item active" aria-current="page">Home</li>
 
-        <li class="breadcrumb-item" routerLink="/userJobView">Jobs</li>
-        <li class="breadcrumb-item" routerLink="/jobRequestView">Applied Jobs</li>
-        <li class="breadcrumb-item" (click)="logout()">logout</li>
       </ol>
     </nav>
 
-    <nav aria-label="breadcrumb" class="main-breadcrumb" *ngIf="flag==0">
-      <ol class="breadcrumb">
-        <!-- <li class="breadcrumb-item"><a href="index.html">Home</a></li> -->
-        <li class="breadcrumb-item active" aria-current="page">Home</li>
-        <li class="breadcrumb-item" routerLink="/editJob">Add Job</li>
-        <li class="breadcrumb-item" routerLink="/jobView">View Jobs</li>
-        <li class="breadcrumb-item" routerLink="/jobRequestView">View Job Requests</li>
-        <li class="breadcrumb-item" (click)="logout()">logout</li>
-      </ol>
-    </nav>
-    <!-- /Breadcrumb -->
+
 
     <div class="row gutters-sm">
       <div class="col-md-4 mb-3">
         <div class="card">
           <div class="card-body">
             <div class="d-flex flex-column align-items-center text-center">
-              <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle"
-                width="150">
+              <img id="asd" src="" alt="Not Found" class="rounded-circle" width="150">
+
+
+              <form [formGroup]="img">
+                <!-- <label>photo:</label><br> -->
+                <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16" (click)="addPhoto.click()">
+                  <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                  <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54A.505.505 0 0 1 1 12.5v-9a.5.5 0 0 1 .5-.5h13z"/>
+                </svg> -->
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16" (click)="addPhoto.click()">
+                  <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"/>
+                  <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
+                </svg>
+                <!-- <button (click)="addPhoto.click()" >select</button> -->
+
+                <input #addPhoto hidden id="pass" formControlName="image" class="field_class" name="password_txt" type="file"
+                  (change)="onChange($event)"><br>
+                <button class="btn btn-outline-primary " (click)="update()">Add picture</button>
+              </form>
               <div class="mt-3" *ngIf="details">
                 <h4>{{details.userName}}</h4>
                 <!-- <p class="text-secondary mb-1">{{details.qualification}}</p> -->
-                <p class="text-muted font-size-sm">{{details.address}}</p>
+                <p class="text-muted font-size-sm">{{Roles[details.role]}}</p>
                 <!-- <button class="btn btn-primary">Follow</button> -->
                 <!-- <button class="btn btn-outline-primary">Message</button> -->
               </div>
@@ -68,9 +73,9 @@
         </div>
 
       </div>
-      <div class="col-md-8">
+      <div class="col-md-8" *ngIf="details">
         <div class="card mb-3">
-          <div class="card-body" *ngIf="details">
+          <div class="card-body">
             <div class="row">
               <div class="col-sm-3">
                 <h6 class="mb-0">Full Name</h6>
@@ -118,75 +123,103 @@
             <hr>
             <div class="row">
               <div class="col-sm-12">
-                <button class="btn btn-info " target="__blank" (click)="edit(details.userId)">Edit</button>
+                <!-- <button class="btn btn-info " target="__blank" (click)="edit(details.userId)">Edit</button>&nbsp; -->
+                <button class="btn btn-info " target="__blank"
+                  (click)="open(editUser);userId=details.userId;edit(details.userId)">Edit</button>&nbsp;
+                <!-- <button class="btn btn-outline-primary " target="__blank" (click)="changePassword()">Change password</button> -->
+                <!-- <button class="btn btn-secondary">change password</button> -->
+                <button class="btn btn-secondary" (click)="open(passwordmodal)">
+                  <i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i>
+                  Change password
+                </button>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- <div class="row gutters-sm">
-              <div class="col-sm-6 mb-3">
-                <div class="card h-100">
-                  <div class="card-body">
-                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                    <small>Web Design</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>Website Markup</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>One Page</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>Mobile Template</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>Backend API</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 mb-3">
-                <div class="card h-100">
-                  <div class="card-body">
-                    <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                    <small>Web Design</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>Website Markup</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>One Page</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>Mobile Template</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <small>Backend API</small>
-                    <div class="progress mb-3" style="height: 5px">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-
-
-
       </div>
     </div>
-
   </div>
 </div>
 
+<!-- change password  modal  -->
+<ng-template #passwordmodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Change Password</h4>
+    <!-- <button type="button" class="close" aria-label="Close" id="closeChangePswdModal"
+      (click)="modal.dismiss('Cross click')" (click)="currentUserView()">
+      <span aria-hidden="true">×</span>
+    </button> -->
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
+      <div class="form-outline mb-4">
+        <input type="text" id="form5Example2" class="form-control" formControlName="password"
+          [ngClass]="{'is-invalid': changePasswordForm.controls['password'].touched&& changePasswordForm.controls['password'].errors}" />
+        <label class="form-label" for="form5Example2">Current Password</label>
+        <div *ngIf="changePasswordForm.controls['password'].touched">
+          <div *ngIf="changePasswordForm.controls['password']?.errors?.['required']" class="text-danger"> Password
+            Required</div>
+          <div *ngIf="changePasswordForm.controls['password']?.errors?.['minlength']" class="text-danger"> Minimum 8
+            characters required</div>
+          <div *ngIf="changePasswordForm.controls['password']?.errors?.['pattern']" class="text-danger">Password
+            should contain atleast<br>
+            one uppercase,special character,number</div><br>
+        </div>
+      </div>
+      <div class="form-outline mb-4">
+        <input type="text" id="form5Example2" class="form-control" formControlName="newPassword"
+          [ngClass]="{'is-invalid': changePasswordForm.controls['newPassword'].touched&& changePasswordForm.controls['newPassword'].errors}" />
+        <label class="form-label" for="form5Example2">New Password</label>
+        <div *ngIf="changePasswordForm.controls['newPassword'].touched">
+          <div *ngIf="changePasswordForm.controls['newPassword']?.errors?.['required']" class="text-danger"> Password
+            Required</div>
+          <div *ngIf="changePasswordForm.controls['newPassword']?.errors?.['minlength']" class="text-danger"> Minimum 8
+            characters required</div>
+          <div *ngIf="changePasswordForm.controls['newPassword']?.errors?.['pattern']" class="text-danger">Password
+            should contain atleast<br>
+            one uppercase,special character,number</div><br>
+        </div>
+      </div>
+      <div class="form-outline mb-4">
+        <input type="text" id="form5Example2" class="form-control" formControlName="confirmPswd"
+          [ngClass]="{'is-invalid': changePasswordForm.controls['confirmPswd'].touched&& changePasswordForm.controls['confirmPswd'].errors}" />
+        <label class="form-label" for="form5Example2">Confirm Password</label>
+        <div
+          *ngIf="(changePasswordForm.controls['confirmPswd'].touched||changePasswordForm.controls['confirmPswd'].dirty)"
+          class="is-invalid">
+
+          <!-- <div class="text-danger" *ngIf="changePasswordForm.controls['confirmPswd'].errors?.['required']">
+            Re-enter Password.
+          </div> -->
+
+          <div class="text-danger"
+            *ngIf="changePasswordForm.controls['newPassword'].value != changePasswordForm.controls['confirmPswd'].value">
+            Password Should match
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block mb-4" (click)="modal.dismiss()">Change</button>
+    </form>
+  </div>
+</ng-template>
+
+<!-- #############Edit################ -->
+<ng-template #editUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit User</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <app-edit-user (completed)="currentUserView()" #EditUserComponent [userId]="userId"></app-edit-user>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-success" (click)="modal.dismiss();EditUserComponent.editUser()"> <label
+        *ngIf="userId">Edit</label></button>
+  </div>
+</ng-template>
 <app-footer></app-footer>

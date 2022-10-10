@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { JobManagementService } from 'src/app/services/job-management.service';
-import { UserManagementService } from 'src/app/services/user-management.service';
 
 @Component({
   selector: 'app-edit-job',
@@ -14,11 +13,7 @@ export class EditJobComponent implements OnInit {
 
   @Output() completed = new EventEmitter();
 
-  constructor(
-    private service: JobManagementService,
-    private route: Router,
-    private userService: UserManagementService
-  ) {}
+  constructor(private service: JobManagementService, private route: Router) {}
 
   ngOnInit(): void {
     this.getItemId();

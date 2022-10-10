@@ -1,7 +1,10 @@
 package com.project.EmployeeManagement.form;
 
+import javax.validation.constraints.Size;
+
 public class JobRequestForm {
 
+    @Size(max = 225)
     private String remarks;
     private byte status;
 

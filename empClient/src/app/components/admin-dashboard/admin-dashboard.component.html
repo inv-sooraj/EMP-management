@@ -6,14 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- <title>Bootstrap CRUD Data Table for Database with Modal Form</title> -->
-    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+
 </head>
 
 <body>
@@ -49,7 +42,8 @@
                             </button>
 
                             <input type="search" placeholder="search....." [(ngModel)]="search" (keyup)="userSearch()">
-
+                            <button class="btn btn-danger" *ngIf="checked.length!=0" (click)="deleteUsers()">Delete
+                                All</button>
                             <!-- <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a> -->
                         </div>
                     </div>
@@ -57,9 +51,9 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>
+                            <th scope="col">
                                 <span class="custom-checkbox">
-                                    <input type="checkbox" id="selectAll" />
+                                    <input type="checkbox" id="selectAll" (change)="checkAll($event)" />
                                     <label for="selectAll"></label>
                                 </span>
                             </th>
@@ -79,8 +73,9 @@
                         <tr *ngFor="let val of details.result">
                             <td>
                                 <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox1" name="options[]" value="1" />
-                                    <label for="checkbox1"></label>
+                                    <input type="checkbox" id="checkbox{{ val.userId }}" value="{{ val.userId }}"
+                                        (change)="checkedUser($event)" />
+                                    <label for="checkbox{{ val.userId }}"></label>
                                 </span>
                             </td>
                             <td>{{ val.userId }}</td>
@@ -93,44 +88,37 @@
                             <td>{{ role[val.role] }}</td>
 
                             <td>
+                                <div class="btns">
+                                    <div class="myDIV-1">
+                                        <!-- <button type="button" class="btn btn-warning" (click)="jobEdit(val.jobId)">edit</button> -->
 
-                                <div class="myDIV-1">
-                                    <!-- <button type="button" class="btn btn-warning" (click)="jobEdit(val.jobId)">edit</button> -->
+                                        <button class="btn">
 
-                                    <button class="btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="p-3 mb-2 bg-info text-white" class="bi bi-pen" viewBox="0 0 16 16"
+                                                (click)="open(editUser);userId=val.userId">
+                                                <path
+                                                    d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <!-- <div class="hide">Edit</div> -->
 
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="p-3 mb-2 bg-info text-white" class="bi bi-pen" viewBox="0 0 16 16"
-                                            (click)="editUser(val.userId)">
-                                            <path
-                                                d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
-                                        </svg>
-                                    </button>
+                                    <div class="myDIV">
+                                        <button class="btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
+                                                class="bi bi-trash" viewBox="0 0 16 16"
+                                                (click)="userDelete(val.userId)">
+                                                <path
+                                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                <path fill-rule="evenodd"
+                                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                            </svg></button>
+                                    </div>
+                                    <!-- <div class="hide">Delete</div> -->
+
                                 </div>
-                                <div class="hide">Edit</div>
 
-                                <div class="myDIV">
-                                    <button class="btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
-                                        class="bi bi-trash" viewBox="0 0 16 16" (click)="userDelete(val.userId)">
-                                        <path
-                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                        <path fill-rule="evenodd"
-                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                                    </svg></button>
-                                </div>
-                                <div class="hide">Delete</div>
-                                <!-- <button type="button" class="btn btn-warning" (click)="userEdit(val.userId)">
-                                    edit
-                                </button> -->
-                                <!-- <button type="button" class="btn btn-warning btn-sm"
-                                    (click)="editUser(val.userId)">
-                                    edit
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm" aria-setsize=""
-                                    (click)="userDelete(val.userId)">
-                                    delete
-                                </button> -->
                             </td>
                         </tr>
                     </tbody>
@@ -179,5 +167,25 @@
     </select>
     entries
 </div>
+
+
+<!-- waiting modal -->
+<ng-template #editUser let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Edit User</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <app-edit-user (completed)="pagination()" #EditUserComponent [userId]="userId"></app-edit-user>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-success" (click)="EditUserComponent.editUser();  modal.dismiss()"> <label
+                *ngIf="userId">Edit</label></button>
+    </div>
+</ng-template>
+
+
 
 <app-footer></app-footer>

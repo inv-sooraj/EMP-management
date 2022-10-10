@@ -27,13 +27,12 @@ public class UserView {
         this.userName = user.getUserName();
         this.name = user.getName();
         this.email = user.getEmail();
-        this.qualification=user.getQualification();
+        this.qualification = user.getQualification();
         this.status = user.getStatus();
-        this.address=user.getAddress();
-        this.phone=user.getPhone();
-        this.role=user.getRole();
-        
-        
+        this.address = user.getAddress();
+        this.phone = user.getPhone();
+        this.role = user.getRole();
+
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();
     }

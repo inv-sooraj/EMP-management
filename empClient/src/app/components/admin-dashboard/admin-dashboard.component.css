@@ -25,6 +25,14 @@ body {
 	border-radius: 3px;
 	min-width: 1000px;
 	box-shadow: 0 1px 1px rgba(0,0,0,.05);
+	
+}
+td{
+	overflow: hidden;
+	max-width: 100px;
+}
+td:hover{
+	max-width: initial;
 }
 .table-title {        
 	padding-bottom: 15px;
@@ -248,4 +256,8 @@ table.table .avatar {
   .myDIV-1:hover + .hide {
 	display: block;
 	color:rgb(120, 160, 95);
+  }
+
+  .btns{
+	display: flex;
   }

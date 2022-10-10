@@ -1,5 +1,6 @@
-<div *ngIf="role==0">
+
 <app-header></app-header>
+<div *ngIf="role==0">
 </div>
 <body>
     <div class="container-xl">
@@ -19,9 +20,10 @@
                         </div> -->
 
                         <div class="col-sm-6">
-                            <button class="btn btn-info" type="button" (click)="logOut()">
+                            
+                            <!-- <button class="btn btn-info" type="button" (click)="logOut()">
                                 Log Out
-                            </button>
+                            </button> -->
 
                             <!-- <button class="btn btn-success" type="button" (click)="addJob()" routerLink="/add">
                                 Add Job
@@ -31,10 +33,10 @@
                             </button> -->
 
 
-                            <!-- <div>
+                            <div>
 
                                 <input type="search" placeholder="Search.." [(ngModel)]="search" (keyup)="setSearch()">
-                            </div> -->
+                            </div>
 
 
 
@@ -45,15 +47,15 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>
+                            <!-- <th>
                                 <span class="custom-checkbox">
                                     <input type="checkbox" id="selectAll" />
                                     <label for="selectAll"></label>
                                 </span>
-                            </th>
+                            </th> -->
 
-                            <th>Job Id</th>
-                            <th>User Id</th>
+                            <th>Job Name</th>
+                            <th>Applied User</th>
                             <th>Remarks</th>
                             <th>Update Date</th>
                             <th>Status</th>
@@ -62,15 +64,15 @@
                     </thead>
                     <tbody *ngIf="details">
                         <tr *ngFor="let val of details.result">
-                            <td>
+                            <!-- <td>
                                 <span class="custom-checkbox">
                                     <input type="checkbox" id="checkbox1" name="options[]" value="1" />
                                     <label for="checkbox1"></label>
                                 </span>
-                            </td>
+                            </td> -->
 
-                            <td>{{ val.jobId }}</td>
-                            <td>{{ val.userId }}</td>
+                            <td>{{ val.jobName }}</td>
+                             <td>{{ val.userName }}</td>
                             <td>{{ val.remarks}}</td>
                             <td>{{ val.updateDate }}</td>
                             <td>{{ status[val.status] }}</td>
@@ -126,7 +128,15 @@
     </div>
     <!-- Edit Modal HTML -->
 </body>
-
+<div class="col-6">
+    Show
+    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="setLimit()">
+        <option selected="selected" [ngValue]="3">3</option>
+        <option [ngValue]="4">4</option>
+        <option [ngValue]="5">5</option>
+    </select>
+    entries
+</div>
 <!-- modal -->
 <ng-template #remarkModal let-modal>
     <div class="modal-header">

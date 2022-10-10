@@ -14,7 +14,7 @@
         </div>
 
         <!-- Login Form -->
-        <form [formGroup]="loginForm" (ngSubmit)="signIn()">
+        <form [formGroup]="loginForm" (ngSubmit)="signIn()" autocomplete="off">
             <input type="text" formControlName="userName" class="fadeIn second zero-raduis" name="uname"
                 placeholder="username" />
             <input type="text" formControlName="password" class="fadeIn third zero-raduis" name="login"
@@ -22,7 +22,7 @@
             <!-- <div id="formFooter">
                 <a class="underlineHover" href="#">Forgot Password?</a>
             </div> -->
-            <input type="submit" class="fadeIn fourth zero-raduis" value="login"  />
+            <input type="submit" class="fadeIn fourth zero-raduis" value="login" />
             <!-- <button type="submit" class="danger" [disabled]="loginForm.invalid">
                 Log In
             </button> -->

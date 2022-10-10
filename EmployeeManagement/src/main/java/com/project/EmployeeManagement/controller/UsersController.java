@@ -6,7 +6,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,9 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.EmployeeManagement.entity.User;
+import com.project.EmployeeManagement.form.ChangePasswordForm;
 import com.project.EmployeeManagement.form.UserAddForm;
-import com.project.EmployeeManagement.form.UserDetailForm;
 import com.project.EmployeeManagement.form.UserForm;
+import com.project.EmployeeManagement.form.userProfilePictureForm;
 import com.project.EmployeeManagement.security.util.SecurityUtil;
 import com.project.EmployeeManagement.service.UserService;
 import com.project.EmployeeManagement.util.Pager;
@@ -32,8 +37,6 @@ public class UsersController {
 
     @Autowired
     private UserService userService;
-
-
 
     // user registration
     @PostMapping
@@ -86,12 +89,42 @@ public class UsersController {
         return userService.listItem(search, limit, sort, page);
     }
 
-    // ................................CSV
-    // Download..................................
+    // ................................CSV_Download..................................
 
     @GetMapping("/download")
     public void jobCsv(HttpServletResponse httpServletResponse) {
         userService.jobCsv(httpServletResponse);
     }
 
+    @PutMapping("/changepassword")
+    public UserView change(@Valid @RequestBody ChangePasswordForm form) {
+        return userService.change(form);
+    }
+
+    @PutMapping("/deleteall")
+    public void deleteAll(@RequestBody Collection<Integer> Ids) {
+
+        userService.deleteAll(Ids);
+    }
+
+    // profilepicture upload
+    @PostMapping("/uploadimage")
+    public UserView addUserDetails(@ModelAttribute userProfilePictureForm form) throws Exception {
+
+        return userService.addUserDetails(form);
+
+    }
+
+    @GetMapping("/viewProfile")
+    public HttpEntity<byte[]> downloadFile() {
+
+        byte[] file = userService.getFileData();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentLength(file.length);
+
+        return new HttpEntity<>(file, headers);
+
+    }
 }

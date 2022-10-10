@@ -9,7 +9,9 @@ public class JobRequestView {
 
     private final int reqId;
     private final int userId;
+    private  String userName=null;
     private final int jobId;
+    private  String jobName=null;
     private final byte status;
     private String remarks;
     @Json.DateTimeFormat
@@ -20,7 +22,9 @@ public class JobRequestView {
     public JobRequestView(JobRequest jobRequest) {
         this.reqId = jobRequest.getJobReqId();
         this.userId = jobRequest.getUser().getUserId();
+        this.userName=jobRequest.getUser().getName();
         this.jobId = jobRequest.getJob().getJobId();
+        this.jobName=jobRequest.getJob().getJobTitle();
         this.remarks = jobRequest.getRemarks();
         this.createDate = jobRequest.getCreateDate();
         this.updateDate = jobRequest.getUpdateDate();
@@ -32,7 +36,7 @@ public class JobRequestView {
             Date updateDate) {
         this.reqId = reqId;
         this.remarks = remarks;
-        this.userId = userId;
+        this.userId = userId;        
         this.jobId = jobId;
         this.status = status;
         this.createDate = createDate;
@@ -45,6 +49,14 @@ public class JobRequestView {
 
     public int getUserId() {
         return userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getJobName() {
+        return jobName;
     }
 
     public int getJobId() {

@@ -6,6 +6,7 @@ import com.project.EmployeeManagement.form.validations.Password;
 
 public class UserDetailForm {
 
+    // private MultipartFile image;
     private String userName;
     private String name;
     private String email;
@@ -85,5 +86,13 @@ public class UserDetailForm {
     public void setRole(byte role) {
         this.role = role;
     }
+
+    // public MultipartFile getImage() {
+    // return image;
+    // }
+
+    // public void setImage(MultipartFile image) {
+    // this.image = image;
+    // }
 
 }

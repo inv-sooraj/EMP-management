@@ -8,7 +8,7 @@ import com.project.EmployeeManagement.form.validations.Password;
 public class LoginForm {
 
     @NotNull
-    @Size(max=50)
+    @Size(max = 50)
     private String userName;
 
     @Password
@@ -29,9 +29,5 @@ public class LoginForm {
     public void setPassword(String password) {
         this.password = password;
     }
-
-   
-
-    
 
 }

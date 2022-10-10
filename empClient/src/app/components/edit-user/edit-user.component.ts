@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserManagementService } from 'src/app/services/user-management.service';
@@ -9,7 +9,10 @@ import { UserManagementService } from 'src/app/services/user-management.service'
   styleUrls: ['./edit-user.component.css'],
 })
 export class EditUserComponent implements OnInit {
-  userId: any;
+  // userId: any;
+  @Input() userId: number = 0;
+  @Output() completed = new EventEmitter();
+
   constructor(private service: UserManagementService, private route: Router) {}
 
   ngOnInit(): void {
@@ -27,7 +30,7 @@ export class EditUserComponent implements OnInit {
   });
 
   getUserDetails() {
-    this.service.userDetails().subscribe({
+    this.service.userDetails(this.userId).subscribe({
       next: (response: any) => {
         console.log(response),
           this.editUserForm.patchValue({
@@ -54,18 +57,19 @@ export class EditUserComponent implements OnInit {
         email: this.editUserForm.controls['email'].value,
         phone: this.editUserForm.controls['phone'].value,
         address: this.editUserForm.controls['address'].value,
-        qualification: this.editUserForm.controls['qualification'].value
+        qualification: this.editUserForm.controls['qualification'].value,
       };
-      this.service.updateUser(formData).subscribe({
+      this.service.updateUser(this.userId,formData).subscribe({
         next: (response: any) => {
           console.log(response);
+          this.completed.emit();
 
-          let role = Number(localStorage.getItem('key'));
-          if (role == 0) {
-            this.route.navigate(['adminDashboard']);
-          } else {
-            this.route.navigate(['userDashboard']);
-          }
+          // let role = Number(localStorage.getItem('key'));
+          // if (role == 0) {
+          //   this.route.navigate(['adminDashboard']);
+          // } else {
+          this.route.navigate(['userDashboard']);
+          // }
         },
         error: (error: any) => {
           console.log(error);

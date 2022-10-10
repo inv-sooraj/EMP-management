@@ -14,8 +14,7 @@ public class JobView {
     private final byte qualification;
     private final byte status;
     private final int userId;
-
-
+    private String userName;
     @Json.DateTimeFormat
     private final Date createDate;
     @Json.DateTimeFormat
@@ -26,20 +25,18 @@ public class JobView {
         this.jobTitle = job.getJobTitle();
         this.jobDescription = job.getJobDescription();
         this.openings = job.getOpenings();
-        this.status=job.getStatus();
+        this.status = job.getStatus();
         this.qualification = job.getQualification();
         this.createDate = job.getCreateDate();
         this.updateDate = job.getUpdateDate();
-        this.userId=job.getUser().getUserId();
+        this.userId = job.getUser().getUserId();
+        this.userName=job.getUser().getName();
 
     }
-    
 
     public int getJobId() {
         return jobId;
     }
-
-   
 
     public JobView(int jobId, String jobTitle, String jobDescription, Integer openings, byte qualification, byte status,
             int userId, Date createDate, Date updateDate) {
@@ -53,7 +50,6 @@ public class JobView {
         this.createDate = createDate;
         this.updateDate = updateDate;
     }
-
 
     public String getJobTitle() {
         return jobTitle;
@@ -79,14 +75,16 @@ public class JobView {
         return updateDate;
     }
 
-
     public byte getStatus() {
         return status;
     }
 
-
     public int getUserId() {
         return userId;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
 }

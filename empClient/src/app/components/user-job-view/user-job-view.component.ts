@@ -26,7 +26,7 @@ export class UserJobViewComponent implements OnInit {
   page: number = 1;
   search: string = '';
   ngOnInit(): void {
-    // this.userJobView();
+    this.getAllIds();
     this.pagination();
   }
 
@@ -45,6 +45,8 @@ export class UserJobViewComponent implements OnInit {
     this.request.jobRequest(id).subscribe({
       next: (response: any) => {
         console.log(response);
+
+        this.getAllIds();
         // this.text="applied";
         // this.jobView();
       },
@@ -57,8 +59,8 @@ export class UserJobViewComponent implements OnInit {
   getParams() {
     return new HttpParams()
       .append('page', this.page)
-      .append('limit', 4)
-      .append('sort', 'user_id')
+      .append('limit', this.limit)
+      .append('sort', 'job_id')
       .append('search', this.search);
   }
   pagination() {
@@ -89,6 +91,26 @@ export class UserJobViewComponent implements OnInit {
   }
   gotoPage(page: number) {
     this.page = page;
+    this.pagination();
+  }
+
+  appliedJobs: Array<number> = [];
+  getAllIds() {
+    this.service.getAppliedJobIds().subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.appliedJobs = response;
+      },
+      error: (error: any) => {
+        console.log(error);
+      },
+    });
+  }
+
+  limit: number = 4;
+  setLimit() {
+    console.log(this.limit);
+    this.page = 1;
     this.pagination();
   }
 }

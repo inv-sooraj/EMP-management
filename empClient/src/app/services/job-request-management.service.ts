@@ -19,6 +19,7 @@ export class JobRequestManagementService {
     return this.http.get(environment.apiUrl + '/jobrequest');
   }
 
+  // Pagination
   navPage(info: any): Observable<any> {
     return this.http.get(environment.apiUrl + '/jobrequest/getjobrequest', {
       params: info,

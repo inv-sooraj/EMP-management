@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -18,11 +19,11 @@ export class JobManagementService {
     return this.http.post(environment.apiUrl + '/jobs', info);
   }
   //To edit job details
-  getJobById(id: any) {
+  getJobById(id: any): Observable<any> {
     return this.http.get(environment.apiUrl + '/jobs/' + id);
   }
   // To delete a user
-  deleteJob(arg: any,flag:number): Observable<any> {
+  deleteJob(arg: any, flag: number): Observable<any> {
     return this.http.put(environment.apiUrl + '/jobs/delete/' + arg, flag);
   }
 
@@ -36,10 +37,21 @@ export class JobManagementService {
     return this.http.get(environment.apiUrl + '/jobs/getjob', { params: info });
   }
 
-  downloadCsv() {
+  // Download job csv
+  downloadCsv(): Observable<any> {
     return this.http.get(environment.apiUrl + '/jobs/download', {
       responseType: 'blob',
       observe: 'response',
     });
+  }
+
+  // delete multiple jobs
+  deleteJobs(checked: number[]): Observable<any> {
+    return this.http.put(environment.apiUrl + '/jobs/deleteall', checked);
+  }
+
+  // To make button disable by checking applied values
+  getAppliedJobIds(): Observable<any> {
+    return this.http.get(environment.apiUrl + '/jobrequest/applied');
   }
 }

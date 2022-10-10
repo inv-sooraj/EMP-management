@@ -20,7 +20,6 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +34,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     JobRequestViewComponent,
     EditUserComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,15 +42,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    NgbModule
+    NgbModule,
   ],
   providers: [
     {
-      provide:HTTP_INTERCEPTORS,
-      useClass:AuthInterceptorService,
-      multi:true
-    }
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -14,6 +14,7 @@ public class UserForm {
     private String userName;
 
     @NotNull
+    @Size(max=50)
     private String name;
 
     @NotNull
