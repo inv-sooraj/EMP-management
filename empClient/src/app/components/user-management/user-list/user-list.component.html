@@ -93,7 +93,7 @@
                     <tr>
                         <th scope="col">
                             <span class="custom-checkbox">
-                                <input type="checkbox" id="selectAll" (change)="checkAll($event)" />
+                                <input type="checkbox" id="selectAll" (change)="checkAll($event)"  [checked]="checkAllButton()" />
                                 <label for="selectAll"></label>
                             </span>
                         </th>
@@ -150,7 +150,7 @@
                         <td>
                             <span class="custom-checkbox">
                                 <input type="checkbox" id="checkbox{{ user.userId }}" value="{{ user.userId }}"
-                                    (change)="checkedUser($event)" />
+                                    (change)="checkedUser($event)" [checked]="checkedUserIds.has(user.userId)" />
                                 <label for="checkbox{{ user.userId }}"></label>
                             </span>
                         </td>
@@ -175,10 +175,15 @@
                                     (click)="open(userEditModal);userId=user.userId"
                                     class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
-                            <button placement="top" ngbTooltip="Delete User" class="btn"
+                            <button *ngIf="user.status==1" placement="top" ngbTooltip="Delete User : {{user.name}}" class="btn"
                                 (click)="deleteUser(user.userId)">
                                 <a class="bi bi-trash-fill delete"></a>
                             </button>
+
+                            <button *ngIf="user.status==0" placement="top" ngbTooltip="Activate User : {{user.name}}" class="btn"
+                            (click)="deleteUser(user.userId)">
+                            <a class="bi bi-check2-square"></a>
+                        </button>
 
                         </td>
                     </tr>

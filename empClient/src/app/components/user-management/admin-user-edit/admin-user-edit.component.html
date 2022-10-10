@@ -39,6 +39,10 @@
                             User Name is required.
                         </div>
 
+                        <div class="text-danger" *ngIf="userEditForm.controls['userName'].errors?.['minlength']">
+                            User Name Should be Minimum 5 characters.
+                        </div>
+
                         <div class="text-danger" *ngIf="userEditForm.controls['userName'].errors?.['maxlength']">
                             User Name Should be less than 50 characters.
                         </div>

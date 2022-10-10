@@ -10,7 +10,7 @@ public class UserEditForm {
     private String name;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(min = 5, max = 50)
     private String userName;
 
     @NotBlank
@@ -42,5 +42,4 @@ public class UserEditForm {
         this.email = email;
     }
 
-    
 }

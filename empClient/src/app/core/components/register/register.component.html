@@ -62,6 +62,10 @@
                             UserName is required.
                         </div>
 
+                        <div class="text-danger" *ngIf="registrationForm.controls['userName'].errors?.['minlength']">
+                            User Name Should be minimum 5 characters.
+                        </div>
+
                         <div class="text-danger" *ngIf="registrationForm.controls['userName'].errors?.['maxlength']">
                             User Name Should be less than 50 characters.
                         </div>

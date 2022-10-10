@@ -22,7 +22,7 @@ export class JobRequestListComponent implements OnInit {
 
   page: number = 1;
 
-  sortBy: string = 'job_id';
+  sortBy: string = 'job_request_id';
 
   limit: number = 5;
 

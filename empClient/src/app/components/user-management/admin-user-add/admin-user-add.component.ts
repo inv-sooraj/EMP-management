@@ -17,6 +17,7 @@ export class AdminUserAddComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     userName: new FormControl('', [
       Validators.required,
+      Validators.minLength(5),
       Validators.maxLength(50),
     ]),
     email: new FormControl('', [

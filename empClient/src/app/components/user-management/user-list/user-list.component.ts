@@ -120,52 +120,53 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  checked: Array<number> = [];
+  checkedUserIds: Set<number> = new Set();
+
+  checkAllButton(): boolean {
+    let temp = true;
+
+    if (this.userList.result) {
+      this.userList.result.forEach((val: any) => {
+        if (!this.checkedUserIds.has(val.userId)) {
+          temp = false;
+        }
+      });
+    }
+
+    return temp;
+  }
 
   checkedUser(event: any) {
     if (event.target.checked) {
-      this.checked.push(Number(event.target.attributes.value.value));
-
-      if (this.userList.result.length == this.checked.length) {
-        (document.getElementById('selectAll') as HTMLInputElement).checked =
-          true;
-      }
+      this.checkedUserIds.add(parseInt(event.target.attributes.value.value));
     } else {
-      this.checked.splice(
-        this.checked.indexOf(Number(event.target.attributes.value.value)),
-        1
-      );
-      (document.getElementById('selectAll') as HTMLInputElement).checked =
-        false;
+      this.checkedUserIds.delete(parseInt(event.target.attributes.value.value));
     }
 
-    console.log(this.checked);
+    console.log(this.checkedUserIds);
   }
 
   checkAll(event: any) {
     this.userList.result.forEach((element: any) => {
-      (
-        document.getElementById('checkbox' + element.userId) as HTMLInputElement
-      ).checked = event.target.checked;
-
       if (event.target.checked) {
-        if (!this.checked.includes(element.userId)) {
-          this.checked.push(element.userId);
+        if (!this.checkedUserIds.has(element.userId)) {
+          this.checkedUserIds.add(element.userId);
         }
       } else {
-        this.checked.splice(this.checked.indexOf(element.userId), 1);
+        this.checkedUserIds.delete(element.userId);
       }
     });
-    console.log(this.checked);
+
+    console.log(this.checkedUserIds);
   }
 
   deleteUsers(): void {
-    if (this.checked.length <= 0) {
+    if (this.checkedUserIds.size <= 0) {
       return;
     }
-    this.userService.deleteUsers(this.checked).subscribe({
+    this.userService.deleteUsers(Array.from(this.checkedUserIds)).subscribe({
       next: (response: any) => {
-        console.log('deleted', this.checked, response);
+        console.log('deleted', this.checkedUserIds, response);
         this.listUsers();
       },
       error(err) {
@@ -173,7 +174,6 @@ export class UserListComponent implements OnInit {
       },
     });
 
-    (document.getElementById('selectAll') as HTMLInputElement).checked = false;
   }
 
   downloadCsv(): void {

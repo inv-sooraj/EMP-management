@@ -4,6 +4,7 @@ package com.innovaturelabs.training.employee.management.service.impl;
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -75,7 +76,7 @@ public class UserServiceImpl implements UserService {
     private SecurityConfig securityConfig;
 
     @Autowired
-    private EmailUtil emailService;
+    private EmailUtil emailUtil;
 
     @Autowired
     private ForgotPasswordTokenGenerator forgotPasswordTokenGenerator;
@@ -183,7 +184,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc) {
+    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc) {
 
         if (!SecurityUtil.isAdmin()) {
             throw new BadRequestException("Illegal Access");
@@ -203,9 +204,9 @@ public class UserServiceImpl implements UserService {
         status.add(User.Status.INACTIVE.value);
 
         Page<User> users = userRepository.findAllByStatus(status, search,
-                PageRequest.of(page - 1, limit,Sort.by(
-                    desc.booleanValue() ? Direction.DESC : Direction.ASC,
-                    sortBy)));
+                PageRequest.of(page - 1, limit, Sort.by(
+                        desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                        sortBy)));
 
         Pager<UserView> userViews = new Pager<>(limit, (int) users.getTotalElements(), page);
 
@@ -242,9 +243,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer userId) {
 
-        User user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(NotFoundException::new);
-        user.setStatus(User.Status.INACTIVE.value);
+
+        if (user.getStatus() == User.Status.INACTIVE.value) {
+            user.setStatus(User.Status.ACTIVE.value);
+        } else {
+            user.setStatus(User.Status.INACTIVE.value);
+        }
         user.setUpdateDate(new Date());
         userRepository.save(user);
 
@@ -378,7 +384,7 @@ public class UserServiceImpl implements UserService {
 
         PasswordToken token = forgotPasswordTokenGenerator.create(data);
 
-        emailService.sendForgotPasswordRequest(token, email);
+        emailUtil.sendForgotPasswordRequest(token, email);
 
         user.setPasswordResetRequest(true);
 
@@ -437,9 +443,15 @@ public class UserServiceImpl implements UserService {
             role = User.Role.ADMIN.value;
         }
 
-        String password = form.getUserName() + "#" + form.getRole() + RandomString.make(6);
+        SecureRandom rand = new SecureRandom();
+
+        String password = form.getUserName().substring(0, 5) + "#" + rand.nextInt(1000)
+                + (char) (rand.nextInt(26) + 'a') + (char) (rand.nextInt(26) + 'A')
+                + RandomString.make(5);
 
         System.out.println("Paaaasword : " + password);
+
+        // emailUtil.sendRegisterSuccess(form.getEmail(), form.getUserName(), password);
 
         return new UserView(userRepository.save(new User(
                 form.getName(),
