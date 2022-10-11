@@ -52,8 +52,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(PUT, "/login/reset-password/**").anonymous()
                 .antMatchers(PUT, "/login").anonymous()
                 .antMatchers(GET, "/job/page/**").hasAnyRole("EMPLOYER", "ADMIN", "EMPLOYEE")
-                .antMatchers(GET, "/users/page/**").hasAnyRole("EMPLOYER", "ADMIN")
+                .antMatchers(GET, "/users/page/**").hasAnyRole("ADMIN")
+                .antMatchers(GET, "/users/role-stat").hasAnyRole("ADMIN")
                 .antMatchers(PUT, "/users/delete/**").hasAnyRole("ADMIN")
+                .antMatchers(PUT, "/users/download").hasAnyRole("ADMIN")
                 // .antMatchers(GET, "/job/**").hasRole("ADMIN")
                 .antMatchers(OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();

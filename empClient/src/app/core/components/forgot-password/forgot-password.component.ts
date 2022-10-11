@@ -56,11 +56,10 @@ export class ForgotPasswordComponent implements OnInit {
   });
 
   sendEmail(): void {
-
     if (!this.userEmailForm.valid) {
       console.log('Validation Failed');
       this.userEmailForm.markAllAsTouched();
-      alert(this.userEmailForm)
+
       return;
     }
     let email: string = this.userEmailForm.controls['email'].value;
@@ -68,7 +67,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.service.forgotPassword(email).subscribe({
       next: (response: any) => {
         console.log(response);
-        alert("Email has been sent")
+        alert('Email has been sent');
       },
       error(err) {
         console.log(err);

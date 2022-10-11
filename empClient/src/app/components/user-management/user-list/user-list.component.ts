@@ -173,7 +173,6 @@ export class UserListComponent implements OnInit {
         console.log(err);
       },
     });
-
   }
 
   downloadCsv(): void {

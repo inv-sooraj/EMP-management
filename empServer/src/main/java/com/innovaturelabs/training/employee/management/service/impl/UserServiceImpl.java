@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserView add(UserForm form) {
 
-        if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+        if (userRepository.findByUserNameLike(form.getUserName()).isPresent()) {
             throw new BadRequestException("Username Already Exists");
         }
 

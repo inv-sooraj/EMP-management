@@ -93,7 +93,8 @@
                     <tr>
                         <th scope="col">
                             <span class="custom-checkbox">
-                                <input type="checkbox" id="selectAll" (change)="checkAll($event)"  [checked]="checkAllButton()" />
+                                <input type="checkbox" id="selectAll" (change)="checkAll($event)"
+                                    [checked]="checkAllButton()" />
                                 <label for="selectAll"></label>
                             </span>
                         </th>
@@ -134,7 +135,7 @@
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
 
-                        <th scope="col">Actions</th>
+                        <th scope="col" style="min-width:130px ;">Actions</th>
 
 
                     </tr>
@@ -175,15 +176,15 @@
                                     (click)="open(userEditModal);userId=user.userId"
                                     class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
-                            <button *ngIf="user.status==1" placement="top" ngbTooltip="Delete User : {{user.name}}" class="btn"
-                                (click)="deleteUser(user.userId)">
+                            <button *ngIf="user.status==1" placement="top" ngbTooltip="Delete User : {{user.name}}"
+                                class="btn" (click)="deleteUser(user.userId)">
                                 <a class="bi bi-trash-fill delete"></a>
                             </button>
 
-                            <button *ngIf="user.status==0" placement="top" ngbTooltip="Activate User : {{user.name}}" class="btn"
-                            (click)="deleteUser(user.userId)">
-                            <a class="bi bi-check2-square"></a>
-                        </button>
+                            <button *ngIf="user.status==0" placement="top" ngbTooltip="Activate User : {{user.name}}"
+                                class="btn" (click)="deleteUser(user.userId)">
+                                <a class="bi bi-check2-square"></a>
+                            </button>
 
                         </td>
                     </tr>

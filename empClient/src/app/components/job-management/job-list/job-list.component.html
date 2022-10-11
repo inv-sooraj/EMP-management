@@ -1,5 +1,3 @@
-
-
 <div class="container mt-4">
     <div class="col">
         <div class="row">
@@ -135,11 +133,12 @@
                             </span>
                         </th>
 
-                        <th scope="col" (click)="setSort('job_id')">Id <button [disabled]="sortBy!='job_id'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('job_id')">Id <button [disabled]="sortBy!='job_id'"
+                                class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
                         <th scope="col" (click)="setSort('title')">Title
-                            <button [disabled]="sortBy!='title'"  class="btn btn-sort bi " 
+                            <button [disabled]="sortBy!='title'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
                         </th>
                         <th scope="col" (click)="setSort('description')">Description
@@ -149,25 +148,25 @@
                         </th>
                         <th scope="col" (click)="setSort('qualification')">Qualification
                             <button [disabled]="sortBy!='qualification'" class="btn btn-sort bi "
-                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
                         <th scope="col" (click)="setSort('openings')">Openings
                             <button [disabled]="sortBy!='openings'" class="btn btn-sort bi "
-                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
 
                         </th>
                         <th scope="col">User</th>
                         <th scope="col" (click)="setSort('update_date')">Last Modified
                             <button [disabled]="sortBy!='update_date'" class="btn btn-sort bi "
-                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
 
                         </th>
                         <th scope="col" (click)="setSort('status')">Status
                             <button [disabled]="sortBy!='status'" class="btn btn-sort bi "
-                               [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
 
-                        <th scope="col">Actions</th>
+                        <th scope="col" style="min-width: 150px;">Actions</th>
                     </tr>
                 </thead>
 
@@ -196,6 +195,8 @@
                         <td>{{ status[job.status] }}</td>
 
                         <td *ngIf="role==2 || (role==1 && job.status!=2 ) ">
+
+
                             <button placement="top" ngbTooltip="Edit job" class="btn"
                                 (click)="open(formModule,job.jobId)"><a class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;

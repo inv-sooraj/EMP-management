@@ -4,5 +4,4 @@ public interface StatusView {
     Integer getStatus();
 
     Integer getCount();
-
 }
