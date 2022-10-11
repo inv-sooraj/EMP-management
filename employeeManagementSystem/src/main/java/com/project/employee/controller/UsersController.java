@@ -46,10 +46,11 @@ public class UsersController {
 		return userService.add(form);
 	}
 
+//	for adding users by admin
 	@PostMapping("/admin")
 	public UserView adminAdd(@Valid @RequestBody UserRegistrationForm form)
 			throws UnsupportedEncodingException, MessagingException {
-		return userService.add(form);
+		return userService.addbyadmin(form);
 	}
 
 //	api for paginated listing all  users
@@ -84,8 +85,7 @@ public class UsersController {
 //	find user by email for forgot password
 	@PostMapping("/resetPswdEmail")
 	public void validateEmail(@Valid @RequestBody String email) {
-		String token = RandomString.make(45);
-		userService.forgotPassword(token, email);
+		userService.forgotPassword(email);
 	}
 
 // to reset password

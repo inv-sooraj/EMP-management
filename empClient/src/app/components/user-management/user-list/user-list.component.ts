@@ -63,6 +63,8 @@ export class UserListComponent implements OnInit {
   }
 
   edit(userId: any) {
+    console.log("editt");
+    
     this.userService.status = 1;
     this.userService.userId = userId;
   }

@@ -2,6 +2,7 @@ package com.project.employee.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -49,11 +50,14 @@ public class User {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+	@Column(unique = true)
 	private String userName;
 	private String password;
+	@Column(unique = true)
 	private String email;
 	private String name;
 	private String address;
+	@Column(unique = true)
 	private String phoneNo;
 	private String imagePath;
 	private byte role;
@@ -99,7 +103,7 @@ public class User {
     
     public User delete() {
 
-        this.status = User     .Status.INACTIVE.value;
+        this.status = User.Status.INACTIVE.value;
 
         this.updateDate = new Date();
         return this;
@@ -190,7 +194,7 @@ public class User {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
-	}
+	}	
 
 	public Date getUpdateDate() {
 		return updateDate;

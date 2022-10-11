@@ -57,7 +57,7 @@ public class JobServiceImpl implements JobService {
 			page = 1;
 		}
 		Page<Job> jobs;
-		if (user.getRole() == 0) {
+		
 
 			ArrayList<Byte> status = new ArrayList<>();
 			if (filter.equals("0")) {
@@ -72,17 +72,20 @@ public class JobServiceImpl implements JobService {
 				status.add(Job.JobStatus.APPROVED.value);
 				status.add(Job.JobStatus.REJECTED.value);
 			}
+			if (user.getRole() == 0) {
 			jobs = jobRepository.findAllByStatus(status, search,
 					PageRequest.of(page - 1, limit, Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
                             sortBy)));
 
 		} else if (user.getRole() == 1) {
 
-			jobs = jobRepository.findAllByUserIdAndStatus(SecurityUtil.getCurrentUserId(), Job.Status.ACTIVE.value,
-					search, PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+			jobs = jobRepository.findAllByUserIdAndStatus(status,SecurityUtil.getCurrentUserId(), Job.Status.ACTIVE.value,
+					search, PageRequest.of(page - 1, limit,  Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
 		} else if (user.getRole() == 2) {
 			jobs = jobRepository.findAllByStatusAndJobStatus(Job.Status.ACTIVE.value, Job.JobStatus.APPROVED.value,
-					search, PageRequest.of(page - 1, limit, Sort.by(sortBy).ascending()));
+					search, PageRequest.of(page - 1, limit,  Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
 		} else
 			throw new BadRequestException("Hii");
 

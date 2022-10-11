@@ -3,22 +3,27 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobService } from 'src/app/services/job-services/job.service';
+import { JoblistComponent } from '../joblist-admin/joblist.component';
 
 @Component({
   selector: 'app-joblist-emplyr',
   templateUrl: './joblist-emplyr.component.html',
-  styleUrls: ['./joblist-emplyr.component.css']
+  styleUrls: ['./joblist-emplyr.component.css'],
+  providers: [JoblistComponent]
 })
 export class JoblistEmplyrComponent implements OnInit {
   jobs: any
-  jobsData:any
+  jobsData: any
   count: any
   total: any
-  
-  page:number = 1
-  limit:number=5;
-  sortBy:string='job_Id'
-  search:string='';
+
+  page: number = 1
+  limit: number = 5;
+  sortBy: string = 'job_Id'
+  search: string = '';
+  sortDesc: boolean = false;
+  filter: number = 5;
+
 
 
   title = 'appBootstrap';
@@ -41,6 +46,10 @@ export class JoblistEmplyrComponent implements OnInit {
   edit(jobId: any) {
     this.jobService.status = 1;
     this.jobService.jobId = jobId;
+    console.log("hlo");
+    console.log(jobId);
+
+
   }
 
   delete(jobId: any) {
@@ -59,6 +68,8 @@ export class JoblistEmplyrComponent implements OnInit {
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
+      .append('filter', this.filter)
       .append('search', this.search);
 
     this.jobService.getJobs(queryParams).subscribe({
@@ -66,7 +77,7 @@ export class JoblistEmplyrComponent implements OnInit {
         if (response) {
           console.log(response);
           this.jobs = response;
-          this.jobsData=response.result;
+          this.jobsData = response.result;
           this.count = response.result.length;
           this.total = response.numItems;
         }
@@ -110,8 +121,22 @@ export class JoblistEmplyrComponent implements OnInit {
     this.jobList();
   }
   setSort(sortBy: string) {
+    if (this.jobs.result.length <= 1) {
+      return;
+    }
+
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
     this.sortBy = sortBy;
     this.page = 1;
+    this.jobList();
+  }
+
+  setFilter() {
+    console.log(this.limit);
     this.jobList();
   }
 

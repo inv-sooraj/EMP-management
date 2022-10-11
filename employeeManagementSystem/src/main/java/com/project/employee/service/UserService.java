@@ -31,6 +31,8 @@ public interface UserService {
 	Pager<UserView> list(Integer page, Integer limit, String sortBy,Boolean desc,String filter, String search);
 
 	UserView add(@Valid UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException;
+	
+	UserView addbyadmin(@Valid UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException;
 
 	LoginView login(LoginForm form, Errors errors) throws BadRequestException;
 
@@ -50,7 +52,7 @@ public interface UserService {
 
 	HttpEntity<byte[]> getImg();
 
-	void forgotPassword(String token,String email);
+	void forgotPassword(String email);
 
 	void resetPswd(String token, String password);
 

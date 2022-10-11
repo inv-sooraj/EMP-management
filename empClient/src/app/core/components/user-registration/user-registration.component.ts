@@ -15,13 +15,16 @@ export class UserRegistrationComponent implements OnInit {
 
   status: boolean = false
 
+
   Role: any
+
+  flag: any = 0
 
   showSpinner: boolean = false
 
 
   constructor(private service: AuthService,
-     private router: Router) { }
+    private router: Router) { }
 
   registerForm: FormGroup = new FormGroup({
     userName: new FormControl('', [Validators.required]),
@@ -30,9 +33,18 @@ export class UserRegistrationComponent implements OnInit {
     confirmPassword: new FormControl('', [Validators.required])
   })
   ngOnInit(): void {
+    this.status = false;
+    console.log("1:::", this.status);
+
     this.Role = localStorage.getItem('role');
     if (this.Role == 0) {
       this.status = true;
+      console.log("2 in condition:::", this.Role);
+
+    } else {
+      this.status = false;
+      console.log("3 else part:::", this.status);
+
     }
   }
 
@@ -50,7 +62,7 @@ export class UserRegistrationComponent implements OnInit {
       };
       if (this.Role) {
         console.log("in role fun");
-        
+
         this.service.regUser(userData).subscribe({
           next: (response: any) => {
             console.log(response);
@@ -81,7 +93,7 @@ export class UserRegistrationComponent implements OnInit {
     } else { this.registerForm.markAllAsTouched() }
 
   }
-  
+
 
   login() {
     this.router.navigate(['login'])

@@ -25,6 +25,8 @@ export class JoblistEmployeeComponent implements OnInit {
   sortBy: string = 'job_Id'
   search: string = '';
 button:boolean=false;
+sortDesc: boolean = false;
+  filter: number = 5;
 
   title = 'appBootstrap';
 
@@ -52,6 +54,8 @@ button:boolean=false;
       .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
+      .append('desc', this.sortDesc)
+      .append('filter', this.filter)
       .append('search', this.search);
 
     this.jobService.getJobs(queryParams).subscribe({
@@ -102,11 +106,6 @@ button:boolean=false;
     this.page += 1;
     this.jobList();
   }
-  setSort(sortBy: string) {
-    this.sortBy = sortBy;
-    this.page = 1;
-    this.jobList();
-  }
 
   setLimit() {
     console.log(this.limit);
@@ -115,6 +114,25 @@ button:boolean=false;
 
   setSearch() {
     console.log(this.search);
+    this.jobList();
+  }
+  setSort(sortBy: string) {
+    if (this.jobs.result.length <= 1) {
+      return;
+    }
+
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
+    this.sortBy = sortBy;
+    this.page = 1;
+    this.jobList();
+  }
+
+  setFilter() {
+    console.log(this.limit);
     this.jobList();
   }
 

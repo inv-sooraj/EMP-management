@@ -35,8 +35,8 @@ public interface JobRepository extends Repository<Job, Integer> {
 	@Query(value = "SELECT * FROM job  WHERE job_status IN ?1 AND (title LIKE %?2% OR description LIKE %?2% OR update_date LIKE %?2%  )", nativeQuery = true)
 	Page<Job> findAllByStatus(ArrayList<Byte> status, String search, Pageable page);
 
-	@Query(value = "SELECT * FROM job  WHERE user_id=?1 AND status = ?2 AND (title LIKE %?3% OR description LIKE %?3% OR update_date LIKE %?3%  )", nativeQuery = true)
-	Page<Job> findAllByUserIdAndStatus(Integer userId, Byte status, String search, Pageable page);
+	@Query(value = "SELECT * FROM job  WHERE job_status IN ?1 AND user_id=?2 AND status = ?3 AND (title LIKE %?4% OR description LIKE %?4% OR update_date LIKE %?4%  )", nativeQuery = true)
+	Page<Job> findAllByUserIdAndStatus(ArrayList<Byte> jobstatus,Integer userId, Byte status, String search, Pageable page);
 
 	@Query(value = "SELECT * FROM job  WHERE status = ?1 AND job_status	=?2 AND (title LIKE %?3% OR description LIKE %?3% OR update_date LIKE %?3%  )", nativeQuery = true)
 	Page<Job> findAllByStatusAndJobStatus(Byte status, Byte jobStatus, String search, Pageable page);

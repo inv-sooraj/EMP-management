@@ -31,7 +31,7 @@ public interface JobRequestRepository extends Repository<JobRequest, Integer> {
 	@Query(value = "SELECT `COLUMN_NAME`  FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='job_request'", nativeQuery = true)
 	ArrayList<String> findColumns();
 
-	@Query(value = "SELECT * FROM job_request  WHERE request_status IN ?1 AND job_id IN(select job_id from job where user_id=?2) AND (remark LIKE %?3% )", nativeQuery = true)
+	@Query(value = "SELECT * FROM job_request  WHERE status =1 AND request_status IN ?1 AND job_id IN(select job_id from job where user_id=?2) AND (remark LIKE %?3% )", nativeQuery = true)
 	Page<JobRequest> findAllByUserUserId(ArrayList<Byte> status,Integer  userId, String search, Pageable page);
 	
 //	@Query(value = "SELECT * FROM job_request  WHERE status = ?1 AND (remark LIKE %?2% )", nativeQuery = true)

@@ -83,7 +83,7 @@ export class JoblistComponent implements OnInit {
       next: (response: any) => {
         const anchor = document.createElement("a");
         anchor.download = response.headers.get('Content-Disposition');
-        anchor.href = URL.createObjectURL(new Blob([response.body], { type: response.body.type }));
+        anchor.href = URL.createObjectURL(new Blob([response.body], {type: response.body.type }));
         anchor.click();
       },
       error: (error: any) => { console.log(error) }

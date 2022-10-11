@@ -63,6 +63,8 @@ import com.project.employee.view.LoginView;
 import com.project.employee.view.UserDetailView;
 import com.project.employee.view.UserView;
 
+import net.bytebuddy.utility.RandomString;
+
 @Service
 public class UserServiceImpl implements UserService {
 	private static final String PURPOSE_REFRESH_TOKEN = "REFRESH_TOKEN";
@@ -90,6 +92,20 @@ public class UserServiceImpl implements UserService {
 		if (userRepository.findByEmail(form.getEmail()).isPresent()) {
 			throw new BadRequestException("Email Already Exists");
 		}
+		return new UserView(userRepository.save(new User(form.getUserName(), form.getEmail(),
+				passwordEncoder.encode(form.getPassword()), form.getRole())));
+	}
+	
+	@Override
+	public UserView addbyadmin(UserRegistrationForm form) throws UnsupportedEncodingException, MessagingException {
+		if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+			throw new BadRequestException("Username Already Exists");
+		}
+
+		if (userRepository.findByEmail(form.getEmail()).isPresent()) {
+			throw new BadRequestException("Email Already Exists");
+		}
+		
 		User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
 				.orElseThrow(NotFoundException::new);
 		if (user.getRole() == 0) {
@@ -103,6 +119,10 @@ public class UserServiceImpl implements UserService {
 		return new UserView(userRepository.save(new User(form.getUserName(), form.getEmail(),
 				passwordEncoder.encode(form.getPassword()), form.getRole())));
 	}
+	
+	
+	
+	
 
 	@Override
 	public LoginView login(LoginForm form, Errors errors) throws BadRequestException {
@@ -339,7 +359,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void forgotPassword(String token, String email) {
+	public void forgotPassword(String email) {
+		String token = RandomString.make(45);
 		User user = userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
 		if (user != null) {
 

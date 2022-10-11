@@ -7,12 +7,26 @@
           <div class="card" style="border-radius: 15px;">
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Create an account</h2>
-
+              
+              <div>
+                <label class="form-la167%bel" for="form3Example4cdg">Register as :</label>&nbsp;&nbsp;
+                <input *ngIf="status" type="radio" id="html" value='0' [(ngModel)]='role' name="fav_language">
+                <label *ngIf="status">Admin</label>&nbsp;&nbsp;
+                
+                <input type="radio" id="html" value='1' [(ngModel)]='role' name="fav_language">
+                <label for="html">Employer</label>&nbsp;&nbsp;
+                <input type="radio" id="html" value='2' [(ngModel)]='role' name="fav_language" checked>
+                <label for="html">Employee</label><br>
+                
+              </div>
+              <div>
+                &nbsp;
+              </div>
               <form [formGroup]="registerForm" (ngSubmit)="registerUser()">
 
                 <div class="form-outline mb-4">
                   <label class="form-label" for="form3Example1cg">Your Name</label>
-                  <input type="text" id="form3Example1cg"  class="form-control form-control-lg"
+                  <input type="text" id="form3Example1cg" class="form-control form-control-lg"
                     formControlName="userName" required
                     [ngClass]="{'is-invalid': registerForm.controls['userName'].touched&& registerForm.controls['userName'].errors}" />
                   <div *ngIf="registerForm.controls['userName'].touched">
@@ -31,7 +45,7 @@
                       Required</div>
                     <div *ngIf="registerForm.controls['email']?.errors?.['email']" class="text-danger"> Invalid Email
                       Format</div>
-                   
+
                   </div>
                 </div>
 
@@ -70,29 +84,20 @@
                     </div>
                   </div>
                 </div>
-
-                <div>
-                  <label class="form-la167%bel"  for="form3Example4cdg">Register as :</label>&nbsp;&nbsp;
-                  <input  *ngIf="!status==false" type="radio" id="html"  value='0' [(ngModel)]='role' name="fav_language" >
-                  <label  *ngIf="!status==false" >Admin</label>&nbsp;&nbsp;
-                  <input type="radio" id="html"  value='1' [(ngModel)]='role' name="fav_language" >
-                  <label for="html">Employer</label>&nbsp;&nbsp;
-                  <input type="radio" id="html"  value='2' [(ngModel)]='role'name="fav_language"  checked>
-                  <label for="html">Employee</label><br>
-                </div>
-
+                
+                
+                
                 <div class="d-flex justify-content-center">
                   <button type="submit"
-                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
+                  class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
                 </div>
-
-                <p class="text-center text-muted mt-5 mb-0"> Already have an account?
-                  <button type="button" (click)="login()" class="btn btn-link"><u>Login here</u></button>
-                </p>
-
-
-
               </form>
+
+                <div *ngIf="!status">
+                  <p class="text-center text-muted mt-5 mb-0"> Already have an account?
+                    <button type="button" (click)="login()" class="btn btn-link"><u>Login here</u></button>
+                  </p>
+                </div>
 
             </div>
           </div>
@@ -105,5 +110,3 @@
 
 <!-- Spinner -->
 <div *ngIf="showSpinner" class="loading">Loading&#8230;</div>
-
-
