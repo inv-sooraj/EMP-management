@@ -11,16 +11,13 @@ import com.innovaturelabs.training.employee.management.view.JobRequestView;
 
 public interface JobRequestService {
 
-    // JobRequestView add(JobRequestForm form, Integer jobId);
     JobRequestView add(Integer jobId);
 
     JobRequestView update(Integer jobRequestId, JobRequestForm status);
 
-    // Collection<JobRequestView> list();
-
     Collection<Integer> appliedJobs();
 
-    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc);
+    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc);
 
     void jobRequestCsv(HttpServletResponse httpServletResponse);
 

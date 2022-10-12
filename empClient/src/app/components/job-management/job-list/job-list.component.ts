@@ -26,7 +26,6 @@ export class JobListComponent implements OnInit {
 
   search: string = '';
 
-  // tableHeight: number = 73 * (this.limit + 1);
   qualifications = this.jobService.qualifications;
 
   status = this.jobService.status;
@@ -78,7 +77,6 @@ export class JobListComponent implements OnInit {
     console.log(this.limit);
     this.page = 1;
     this.listJobs();
-    // this.tableHeight = 73 * (this.limit + 1);
   }
 
   setSearch() {
@@ -88,7 +86,7 @@ export class JobListComponent implements OnInit {
 
   listJobs(): void {
     let queryParams = new HttpParams()
-      .append('page', this.page)
+      .append('page', 1)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)

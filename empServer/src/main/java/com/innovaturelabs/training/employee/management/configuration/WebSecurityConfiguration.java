@@ -28,6 +28,8 @@ import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenG
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final String ADMIN = "ADMIN";
+
     public WebSecurityConfiguration() {
         super(true);
     }
@@ -46,17 +48,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(OPTIONS, "/users").anonymous()
                 .antMatchers(POST, "/users").anonymous()
-                .antMatchers(OPTIONS, "/login").anonymous()
-                .antMatchers(POST, "/login").anonymous()
+                .antMatchers("/login").anonymous()
                 .antMatchers(PUT, "/login/forgot-password").anonymous()
                 .antMatchers(PUT, "/login/reset-password/**").anonymous()
-                .antMatchers(PUT, "/login").anonymous()
-                .antMatchers(GET, "/job/page/**").hasAnyRole("EMPLOYER", "ADMIN", "EMPLOYEE")
-                .antMatchers(GET, "/users/page/**").hasAnyRole("ADMIN")
-                .antMatchers(GET, "/users/role-stat").hasAnyRole("ADMIN")
-                .antMatchers(PUT, "/users/delete/**").hasAnyRole("ADMIN")
-                .antMatchers(PUT, "/users/download").hasAnyRole("ADMIN")
-                // .antMatchers(GET, "/job/**").hasRole("ADMIN")
+                .antMatchers(GET, "/job/page/**").hasAnyRole("EMPLOYER", ADMIN, "EMPLOYEE")
+                .antMatchers(GET, "/users/page/**").hasAnyRole(ADMIN)
+                .antMatchers(GET, "/users/role-stat").hasAnyRole(ADMIN)
+                .antMatchers(PUT, "/users/delete/**").hasAnyRole(ADMIN)
+                .antMatchers(PUT, "/users/download").hasAnyRole(ADMIN)
+                // .antMatchers(GET, "/job/**").hasRole(ADMIN)
                 .antMatchers(OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
     }

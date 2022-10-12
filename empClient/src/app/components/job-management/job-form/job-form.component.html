@@ -33,8 +33,8 @@
 
                 <div class="col-12">
                     <label for="description" class="form-label">Description</label>
-                    <input type="text" id="description" formControlName="description" class="form-control"
-                        [ngClass]="{'is-invalid':(jobForm.controls['description'].touched||jobForm.controls['description'].dirty) && jobForm.controls['description'].errors}">
+                    <textarea type="text" id="description" formControlName="description" class="form-control"
+                        [ngClass]="{'is-invalid':(jobForm.controls['description'].touched||jobForm.controls['description'].dirty) && jobForm.controls['description'].errors}"></textarea>
 
                     <div *ngIf="(jobForm.controls['description'].touched||jobForm.controls['description'].dirty)"
                         class="is-invalid">
@@ -71,15 +71,13 @@
                             Qualification is required.
                         </div>
 
-                        
-
                     </div>
                     <label for="qualification" class="text-danger pt-1"></label>
                 </div>
 
                 <div class="col-12">
                     <label for="openings" class="form-label">Openings</label>
-                    <input type="number" id="openings" formControlName="openings" class="form-control"
+                    <input min=0 type="number" id="openings" formControlName="openings" class="form-control"
                         [ngClass]="{'is-invalid':(jobForm.controls['openings'].touched||jobForm.controls['openings'].dirty) && jobForm.controls['openings'].errors}">
 
                     <div *ngIf="(jobForm.controls['openings'].touched||jobForm.controls['openings'].dirty)"
@@ -94,7 +92,7 @@
                         </div>
 
                         <div class="text-danger" *ngIf="jobForm.controls['openings'].errors?.['min']">
-                            Minimum 1 Openings Should be Present.
+                            Invalid Entry
                         </div>
 
                     </div>

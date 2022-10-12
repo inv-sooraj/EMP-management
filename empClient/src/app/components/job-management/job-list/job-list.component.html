@@ -194,25 +194,25 @@
                         <td>{{ job.updateDate }}</td>
                         <td>{{ status[job.status] }}</td>
 
-                        <td *ngIf="role==2 || (role==1 && job.status!=2 ) ">
+                        <td *ngIf="role==2 ||role==1  ">
 
 
-                            <button placement="top" ngbTooltip="Edit job" class="btn"
+                            <button placement="top"  ngbTooltip="Edit job" class="btn btn-sort"
                                 (click)="open(formModule,job.jobId)"><a class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
-                            <button [disabled]="job.status==3" placement="top" ngbTooltip="Delete job" class="btn"
+                            <button [disabled]="job.status==3" placement="top" ngbTooltip="Delete job" class="btn btn-sort"
                                 (click)="changeJobStatus(job.jobId,3)">
                                 <a class="bi bi-trash-fill delete"></a>
                             </button>
 
                             &nbsp;
                             <button *ngIf="role==2" [disabled]="job.status==1" placement="top" ngbTooltip="Approve job"
-                                class="btn" (click)="changeJobStatus(job.jobId,1)">
+                                class="btn btn-sort" (click)="changeJobStatus(job.jobId,1)">
                                 <em class="bi bi-check2-square"></em>
                             </button>
 
                             &nbsp;
-                            <button [disabled]="job.status==2" placement="top" ngbTooltip="Mark as Compled" class="btn"
+                            <button [disabled]="job.status==2" placement="top" ngbTooltip="Mark as Compled" class="btn btn-sort"
                                 (click)="changeJobStatus(job.jobId,2)">
                                 <em class="bi bi-c-circle-fill"></em>
                             </button>
@@ -263,10 +263,10 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <app-job-form #form [jobId]="jobId" (completedEvent)="listJobs()"></app-job-form>
+        <app-job-form #form [jobId]="jobId" (completedEvent)="listJobs();modal.close('Save click')"></app-job-form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="form.formAction();modal.close('Save click')"><label
+        <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
                 *ngIf="jobId">Edit</label><label *ngIf="!jobId">Add</label></button>
     </div>
 </ng-template>

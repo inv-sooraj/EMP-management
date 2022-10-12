@@ -230,12 +230,12 @@
     </div>
     <div class="modal-body">
 
-        <app-admin-user-edit (completedEvent)="listUsers()" #adminUserEditComponent [userId]="userId">
+        <app-admin-user-edit (completedEvent)="listUsers();modal.dismiss('Save')" #adminUserEditComponent [userId]="userId">
         </app-admin-user-edit>
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-outline-success" (click)="adminUserEditComponent.update();modal.dismiss('Save')"> Save
+        <button class="btn btn-outline-success" (click)="adminUserEditComponent.update()"> Save
         </button>
 
     </div>

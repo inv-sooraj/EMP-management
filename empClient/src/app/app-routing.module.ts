@@ -7,6 +7,7 @@ import { UserEditComponent } from './components/user-management/user-edit/user-e
 import { UserListComponent } from './components/user-management/user-list/user-list.component';
 import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
 import { AuthGuard } from './core/auth/auth.guard';
+import { LoginGuard } from './core/auth/login.guard';
 import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { RegisterComponent } from './core/components/register/register.component';
@@ -15,10 +16,12 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [LoginGuard],
   },
   {
     path: 'register',
     component: RegisterComponent,
+    canActivate: [LoginGuard],
   },
   {
     path: 'user-list',
@@ -34,25 +37,21 @@ const routes: Routes = [
     path: 'user-edit',
     component: UserEditComponent,
     canActivate: [AuthGuard],
-
   },
   {
     path: 'job-list',
     component: JobListComponent,
     canActivate: [AuthGuard],
-
   },
   {
     path: 'job-apply',
     component: JobApplyComponent,
     canActivate: [AuthGuard],
-
   },
   {
     path: 'job-request-list',
     component: JobRequestListComponent,
     canActivate: [AuthGuard],
-
   },
   {
     path: 'forgot-password',
@@ -60,7 +59,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: LoginComponent,
+    redirectTo: 'login',
   },
 ];
 

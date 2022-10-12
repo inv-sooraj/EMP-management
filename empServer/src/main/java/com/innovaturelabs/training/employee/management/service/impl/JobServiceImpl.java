@@ -45,7 +45,7 @@ public class JobServiceImpl implements JobService {
 
         if (!SecurityUtil.isAdmin()
                 && !SecurityUtil.isEmployer()) {
-            throw new BadRequestException("Illegal Access");
+            throw illegalAccess();
         }
 
         Byte status = Job.Status.PENDING.value;
@@ -85,7 +85,7 @@ public class JobServiceImpl implements JobService {
                     .orElseThrow(() -> new NotFoundException("Job Not Found for JobId : " + jobId)).update(form)));
         }
 
-        throw new BadRequestException("Illegal Access");
+        throw illegalAccess();
 
     }
 
@@ -94,8 +94,6 @@ public class JobServiceImpl implements JobService {
             Integer selectedStatus, Boolean apply) {
 
         sortBy = jobRepository.findColumns().contains(sortBy) ? sortBy : "job_id";
-
-        page = page <= 0 ? 1 : page;
 
         Page<Job> jobs;
 
@@ -143,10 +141,6 @@ public class JobServiceImpl implements JobService {
 
         Pager<JobView> jobViews = new Pager<>(limit, (int) jobs.getTotalElements(), page);
 
-        // Pager<JobView> jobViews = new
-        // Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
-        // search).intValue(),page);
-
         jobViews.setResult(jobs.getContent().stream()
                 .map(job -> new JobView(job, userRepository.findByUserId(SecurityUtil.getCurrentUserId()).get()))
                 .collect(Collectors.toList()));
@@ -178,7 +172,7 @@ public class JobServiceImpl implements JobService {
     public JobView updateStatus(Integer jobId, Byte status) {
 
         if (SecurityUtil.isEmployee()) {
-            throw new BadRequestException("Illegal Access");
+            throw illegalAccess();
         }
 
         Job job = jobRepository.findByJobId(jobId).orElseThrow(NotFoundException::new);
@@ -189,13 +183,8 @@ public class JobServiceImpl implements JobService {
 
         }
 
-        if (SecurityUtil.isAdmin()) {
-
-            job.setStatus(status);
-
-            job.setUpdateDate(new Date());
-        } else if (SecurityUtil.isEmployer()
-                && (status == Job.Status.DELETED.value || status == Job.Status.COMPLETED.value)) {
+        if (SecurityUtil.isAdmin() || (SecurityUtil.isEmployer()
+                && (status == Job.Status.DELETED.value || status == Job.Status.COMPLETED.value))) {
 
             job.setStatus(status);
 
@@ -212,7 +201,7 @@ public class JobServiceImpl implements JobService {
     public void changeSelectedStatus(Collection<Integer> jobIds, Byte status) {
         if (!SecurityUtil.isAdmin()
                 && !SecurityUtil.isEmployer()) {
-            throw new BadRequestException("Illegal Access");
+            throw illegalAccess();
         }
 
         for (Integer jobId : jobIds) {
@@ -245,7 +234,11 @@ public class JobServiceImpl implements JobService {
             return jobRepository.countStatusByUserId(SecurityUtil.getCurrentUserId());
         }
 
-        throw new BadRequestException("Illegal");
+        throw illegalAccess();
+    }
+
+    private static BadRequestException illegalAccess() {
+        return new BadRequestException("Illegal Access");
     }
 
 }

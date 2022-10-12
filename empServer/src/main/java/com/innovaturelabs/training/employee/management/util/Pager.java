@@ -9,6 +9,7 @@ public class Pager<T> {
 
     public static final String PAGER_KEY = "pager";
     private int currentPage;
+    private static final int FIRST_PAGE = 1;
     private int numItems;
     private int numPages;
     private int pageSize;
@@ -46,7 +47,7 @@ public class Pager<T> {
         }
 
         public int getFirstPage() {
-            return 1;
+            return FIRST_PAGE;
         }
 
         public int getLastPage() {
@@ -121,6 +122,10 @@ public class Pager<T> {
         int s = currentPage - c1;
         int e = currentPage + c2;
 
+        displayEnd = this.setDisplayEnd(s, e);
+    }
+
+    private int setDisplayEnd(int s, int e) {
         if (s < 1) {
             displayEnd = e - s + 1;
         } else {
@@ -137,10 +142,12 @@ public class Pager<T> {
         if (displayEnd > numPages) {
             displayEnd = numPages;
         }
+
+        return displayEnd;
     }
 
     public int getFirstPage() {
-        return 1;
+        return FIRST_PAGE;
     }
 
     public int getPreviousPage() {
@@ -164,7 +171,7 @@ public class Pager<T> {
     }
 
     public int getNumPages() {
-        return numPages;
+        return this.getLastPage();
     }
 
     public int getStartIndex() {

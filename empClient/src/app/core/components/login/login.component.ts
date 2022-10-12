@@ -38,7 +38,10 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('refreshToken', response.refreshToken.value);
         localStorage.setItem('name', response.name);
         localStorage.setItem('role', response.role);
-        this.router.navigate(['user-profile']);
+
+        if (response.role == 2) this.router.navigate(['user-list']);
+        else if (response.role == 1) this.router.navigate(['job-list']);
+        else this.router.navigate(['job-apply']);
       },
       error: (error: any) => {
         console.log('Error', error.error);

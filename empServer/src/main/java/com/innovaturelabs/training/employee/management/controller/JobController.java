@@ -43,6 +43,9 @@ public class JobController {
             @RequestParam(name = "filter", defaultValue = "5") Integer data,
             @RequestParam(name = "apply", defaultValue = "false") Boolean apply,
             @RequestParam(name = "search", defaultValue = "") String search) {
+
+        page = page <= 0 ? 1 : page;
+
         return jobService.list(page, limit, sortBy, desc, search, data, apply);
     }
 

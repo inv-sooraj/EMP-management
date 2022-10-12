@@ -61,9 +61,9 @@ public class EmailUtil {
 
         helper.setFrom("empmanagemenet@gmail.com", "Job Management");
         // helper.setBcc("aaaaa@gmail.com");
+        message.setContent(body,"text/html");
         helper.setTo(toEmail);
         helper.setSubject(subject);
-        helper.setText(body);
 
         mailSender.send(message);
 

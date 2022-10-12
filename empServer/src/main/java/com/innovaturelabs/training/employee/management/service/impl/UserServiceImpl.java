@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     public UserView add(UserForm form) {
 
         if (userRepository.findByUserNameLike(form.getUserName()).isPresent()) {
-            throw new BadRequestException("Username Already Exists");
+            throw userAlreadyNameExists();
         }
 
         if (userRepository.findByEmail(form.getEmail()).isPresent()) {
@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid Password");
         }
 
-        String id = String.format("%010d", user.getUserId());
+        String id = formatUserId(user.getUserId());
         Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id + String.valueOf(user.getRole()),
                 securityConfig.getAccessTokenExpiry());
 
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
         try {
             status = tokenGenerator.verify(PURPOSE_REFRESH_TOKEN, refreshToken);
         } catch (InvalidTokenException e) {
-            throw new BadRequestException("Invalid token", e);
+            throw invalidToken(e);
         } catch (TokenExpiredException e) {
             throw new BadRequestException("Token expired", e);
         }
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
         try {
             userId = Integer.parseInt(status.data.substring(0, 10));
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Invalid token", e);
+            throw invalidToken(e);
         }
 
         String password = status.data.substring(10);
@@ -167,20 +167,12 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid User");
         }
 
-        String id = String.format("%010d", user.getUserId());
+        String id = formatUserId(user.getUserId());
         Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry());
         return new LoginView(
                 user,
                 new LoginView.TokenView(accessToken.value, accessToken.expiry),
                 new LoginView.TokenView(refreshToken, status.expiry));
-    }
-
-    private static BadRequestException badRequestException() {
-        return new BadRequestException("Invalid credentials");
-    }
-
-    private static BadRequestException invalidUsername() {
-        return new BadRequestException("Invalid Username");
     }
 
     @Override
@@ -210,10 +202,6 @@ public class UserServiceImpl implements UserService {
 
         Pager<UserView> userViews = new Pager<>(limit, (int) users.getTotalElements(), page);
 
-        // Pager<JobView> userViews = new
-        // Pager<JobView>(limit,jobRepository.countJobList(Job.Status.PENDING.value,
-        // search).intValue(),page);
-
         userViews.setResult(users.getContent().stream().map(UserView::new).collect(Collectors.toList()));
 
         return userViews;
@@ -231,7 +219,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.findByUserName(name).isPresent()) {
-            throw new BadRequestException("Username Already Exists");
+            throw userAlreadyNameExists();
         }
 
         user.setUserName(name);
@@ -302,6 +290,7 @@ public class UserServiceImpl implements UserService {
         user.setName(form.getName());
 
         user.setEmail(form.getEmail());
+
         user.setUserName(form.getUserName());
 
         user.setUpdateDate(new Date());
@@ -380,7 +369,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndStatus(email, User.Status.ACTIVE.value)
                 .orElseThrow(() -> new BadRequestException("User Not Found"));
 
-        String data = String.format("%010d", user.getUserId());
+        String data = formatUserId(user.getUserId());
 
         PasswordToken token = forgotPasswordTokenGenerator.create(data);
 
@@ -399,7 +388,7 @@ public class UserServiceImpl implements UserService {
         try {
             status = forgotPasswordTokenGenerator.verify(token);
         } catch (InvalidTokenException e) {
-            throw new BadRequestException("Invalid token", e);
+            throw invalidToken(e);
         } catch (TokenExpiredException e) {
             throw new BadRequestException("Token expired", e);
         }
@@ -408,7 +397,7 @@ public class UserServiceImpl implements UserService {
         try {
             userId = Integer.parseInt(status.data.substring(0, 10));
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Invalid token", e);
+            throw invalidToken(e);
         }
 
         User user = userRepository.findByUserIdAndStatusAndPasswordResetRequest(userId, User.Status.ACTIVE.value, true)
@@ -426,7 +415,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.findByUserName(form.getUserName()).isPresent()) {
-            throw new BadRequestException("Username Already Exists");
+            throw userAlreadyNameExists();
         }
 
         if (userRepository.findByEmail(form.getEmail()).isPresent()) {
@@ -445,13 +434,13 @@ public class UserServiceImpl implements UserService {
 
         SecureRandom rand = new SecureRandom();
 
-        String password = form.getUserName().substring(0, 5) + "#" + rand.nextInt(1000)
+        String password = "#" + rand.nextInt(1000)
                 + (char) (rand.nextInt(26) + 'a') + (char) (rand.nextInt(26) + 'A')
                 + RandomString.make(5);
 
-        System.out.println("Paaaasword : " + password);
+        // System.out.println("Paaaasword : " + password);
 
-        // emailUtil.sendRegisterSuccess(form.getEmail(), form.getUserName(), password);
+        emailUtil.sendRegisterSuccess(form.getEmail(), form.getUserName(), password);
 
         return new UserView(userRepository.save(new User(
                 form.getName(),
@@ -459,6 +448,26 @@ public class UserServiceImpl implements UserService {
                 form.getEmail(),
                 passwordEncoder.encode(password),
                 role)));
+    }
+
+    private static BadRequestException badRequestException() {
+        return new BadRequestException("Invalid credentials");
+    }
+
+    private static BadRequestException userAlreadyNameExists() {
+        return new BadRequestException("Username Already Exists");
+    }
+
+    private static BadRequestException invalidUsername() {
+        return new BadRequestException("Invalid Username");
+    }
+
+    private static BadRequestException invalidToken(Exception e) {
+        return new BadRequestException("Invalid Token", e);
+    }
+
+    private static String formatUserId(Integer userId) {
+        return String.format("%010d", userId);
     }
 
 }
