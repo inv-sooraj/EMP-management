@@ -273,3 +273,7 @@ body {
 	clear: both;
 	display: table;
   }
+
+  .btns{
+	display: flex;
+  }

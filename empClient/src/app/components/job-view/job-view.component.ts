@@ -19,7 +19,8 @@ export class JobViewComponent implements OnInit {
 
   userRole: number = 0;
   jobId: number = 0;
-
+  sortDesc: boolean = false;
+  sortBy:string='job_Id'
   // details: any = {};
   checked: Array<number> = [];
   qualifications: { [key: number]: string } = {
@@ -41,8 +42,10 @@ export class JobViewComponent implements OnInit {
 
     if (role == 0) {
       this.userRole = 1;
-    } else {
-      this.userRole = 0;
+    } else if(role==1){
+      this.userRole = 2;
+    }else{
+      this.userRole=0;
     }
   }
   constructor(
@@ -90,15 +93,32 @@ export class JobViewComponent implements OnInit {
   //   this.route.navigate(['editJob']);
   // }
 
+
+
   getParam(): HttpParams {
     return new HttpParams()
       .append('page', this.page)
       .append('limit', this.limit)
-      .append('sort', 'job_id')
+      .append('sort', this.sortBy)
       .append('search', this.search)
+      .append('desc', this.sortDesc)
       .append('filter', this.view);
   }
 
+  setSort(sortBy: string) {
+    if (this.details.result.length <= 1) {
+      return;
+    }
+    
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
+    this.sortBy = sortBy;
+    this.page = 1;
+    this.pagination();
+  }
   setSearch() {
     this.page = 1;
     this.pagination();  

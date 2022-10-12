@@ -63,11 +63,10 @@ public class JobController {
             @RequestParam(value = "page", required = false, defaultValue = "1") String page,
             @RequestParam(value = "limit", required = false, defaultValue = "16") String limit,
             @RequestParam(value = "sort", required = false, defaultValue = "update_date") String sort,
-            @RequestParam(value = "filter", required = false, defaultValue = "ALL") String filter
-  
-    ) {
+            @RequestParam(value = "filter", required = false, defaultValue = "ALL") String filter,
+            @RequestParam(value = "desc", required = false, defaultValue = "false") Boolean desc) {
 
-        return jobService.listItem(search, limit, sort, page, filter);
+        return jobService.listItem(search, limit, sort, page, filter, desc);
     }
 
     // csv download................
@@ -81,5 +80,7 @@ public class JobController {
     public void deleteAll(@RequestBody Collection<Integer> Ids) {
         jobService.deleteAll(Ids);
     }
+   
+   
 
 }

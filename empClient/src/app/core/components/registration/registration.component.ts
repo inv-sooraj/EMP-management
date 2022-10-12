@@ -42,7 +42,11 @@ export class RegistrationComponent implements OnInit {
         },
         error: (error: any) => {
           console.log(error);
-          alert("Username already exists");
+          if (error.error.message == 'UserName Already Exists') {
+            alert('Username already exists');
+          } else {
+            alert('Email already exists');
+          }
         },
       });
     }

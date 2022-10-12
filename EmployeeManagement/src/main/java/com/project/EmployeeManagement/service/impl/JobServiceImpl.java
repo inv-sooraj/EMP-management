@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,26 +43,10 @@ public class JobServiceImpl implements JobService {
     @Autowired
     private UserRepository userRepository;
 
-    // @Override
-    // public JobView addJob(JobForm form) {
-
-    // Byte userRole =
-    // userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
-
-    // if (!userRole.equals(User.Role.USER.value)) {
-
-    // return new JobView(
-    // jobRepository.save(new Job(form,
-    // userRepository.findByUserId(SecurityUtil.getCurrentUserId()))));
-    // } else
-    // throw new BadRequestException("Illegal Access");
-
-    // }
-
     @Override
     public JobView addJob(JobForm form) {
 
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new).getRole();
 
         if (!userRole.equals(User.Role.USER.value)) {
 
@@ -77,7 +62,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Collection<JobView> list() {
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new).getRole();
         if (!userRole.equals(User.Role.EMPLOYER.value)) {
             return jobRepository.findAllByStatus(Job.Status.ACTIVE.value);
         } else {
@@ -90,7 +75,7 @@ public class JobServiceImpl implements JobService {
     @Transactional
     public void delete(Integer itemId, Integer flag) {
 
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new).getRole();
 
         if (!userRole.equals(User.Role.USER.value)) {
             Job job = jobRepository.findById(itemId).orElseThrow(NotFoundException::new);
@@ -114,7 +99,7 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public JobDetailView update(Integer jobId, JobForm form) throws NotFoundException {
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new).getRole();
 
         // if (userRole.equals(User.Role.ADMIN.value)) {
         if (!userRole.equals(User.Role.USER.value)) {
@@ -129,8 +114,9 @@ public class JobServiceImpl implements JobService {
     // ...........................pagination.........................
 
     @Override
-    public Pager<JobDetailView> listItem(String search, String limit, String sort, String page, String filter) {
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+    public Pager<JobDetailView> listItem(String search, String limit, String sort, String page, String filter,
+            Boolean desc) {
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new).getRole();
 
         Page<Job> jobs;
         ArrayList<Byte> status = new ArrayList<>();
@@ -148,18 +134,28 @@ public class JobServiceImpl implements JobService {
             }
 
             jobs = jobRepository.find(status, search,
-                    PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit), Sort.by(sort).ascending()));
+                    PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit),
+                            Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                                    sort)));
         } else if (userRole.equals(User.Role.EMPLOYER.value)) {
-            // ArrayList<Byte> status = new ArrayList<>();
+            
 
-            status.add(Job.Status.PENDING.value);
-            status.add(Job.Status.ACTIVE.value);
+            if (filter.equals("1")) {
+                status.add(Job.Status.ACTIVE.value);
+            } else if (filter.equals("2")) {
+                status.add(Job.Status.PENDING.value);
+
+            } else {
+                status.add(Job.Status.PENDING.value);
+                status.add(Job.Status.ACTIVE.value);
+            }
 
             jobs = jobRepository.findAllByUserIdStatus(SecurityUtil.getCurrentUserId(),
                     status, search,
-                    PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit), Sort.by(sort).ascending()));
+                    PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit),
+                            Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                                    sort)));
         } else {
-            // ArrayList<Byte> status = new ArrayList<>();
 
             status.add(Job.Status.PENDING.value);
             status.add(Job.Status.ACTIVE.value);
@@ -168,7 +164,7 @@ public class JobServiceImpl implements JobService {
                     PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit), Sort.by(sort).ascending()));
         }
 
-        Pager<JobDetailView> jobDetailViews = new Pager<JobDetailView>(Integer.parseInt(limit),
+        Pager<JobDetailView> jobDetailViews = new Pager<>(Integer.parseInt(limit),
                 (int) jobs.getTotalElements(),
                 Integer.parseInt(page));
 

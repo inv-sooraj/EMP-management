@@ -29,7 +29,7 @@ body {
 }
 td{
 	overflow: hidden;
-	max-width: 100px;
+	/* max-width: 100px; */
 }
 td:hover{
 	max-width: initial;
@@ -260,4 +260,12 @@ table.table .avatar {
 
   .btns{
 	display: flex;
+  }
+
+  .box{
+	background-color: lightgrey;
+	width: 100px;
+	border: 15px solid grey;
+	padding: 50px;
+	margin: 20px;
   }

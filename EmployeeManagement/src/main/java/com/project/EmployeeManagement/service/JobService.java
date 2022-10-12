@@ -21,7 +21,7 @@ public interface JobService {
 
     JobDetailView update(Integer jobId, JobForm form) throws NotFoundException;
 
-    public Pager<JobDetailView> listItem(String search, String limit, String sort, String page, String filter);
+    public Pager<JobDetailView> listItem(String search, String limit, String sort, String page, String filter,Boolean desc);
 
     void jobCsv(HttpServletResponse httpServletResponse);
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.project.EmployeeManagement.entity.Job;
@@ -37,7 +38,7 @@ public class JobRequestImpl implements JobRequestService {
 
         @Override
         public JobRequestView addJobRequest(Integer jobId) {
-                Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+                Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new).getRole();
 
                 if (userRole.equals(User.Role.USER.value)) {
 
@@ -49,49 +50,40 @@ public class JobRequestImpl implements JobRequestService {
         }
 
         @Override
-        public Pager<JobRequestView> listItem(String search, String limit, String sort, String page) {
-                Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
-
+        public Pager<JobRequestView> listItem(String search, String limit, String sort, Boolean desc, String page) {
+                Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new).getRole();
+                Page<JobRequest> jobsRequests;
                 if (!userRole.equals(User.Role.USER.value)) {
 
-                        Page<JobRequest> jobsRequests = jobRequestRepository
+                        jobsRequests = jobRequestRepository
                                         .findAllByUserUserId(SecurityUtil.getCurrentUserId(),
                                                         search,
                                                         PageRequest.of(Integer.parseInt(page) - 1,
                                                                         Integer.parseInt(limit),
-                                                                        Sort.by(sort).ascending()));
-
-                        Pager<JobRequestView> JobRequestViews = new Pager<JobRequestView>(Integer.parseInt(limit),
-                                        (int) jobsRequests.getTotalElements(),
-                                        Integer.parseInt(page));
-
-                        JobRequestViews.setResult(
-                                        jobsRequests.getContent().stream()
-                                                        .map(jobsRequest -> new JobRequestView(jobsRequest))
-                                                        .collect(Collectors.toList()));
-
-                        return JobRequestViews;
+                                                                        Sort.by(desc.booleanValue() ? Direction.DESC
+                                                                                        : Direction.ASC,
+                                                                                        sort)));
 
                 } else if (userRole.equals(User.Role.USER.value)) {
-                        Page<JobRequest> jobsRequests = jobRequestRepository
+                        jobsRequests = jobRequestRepository
                                         .findByJobReqId(SecurityUtil.getCurrentUserId(), search,
                                                         PageRequest.of(Integer.parseInt(page) - 1,
                                                                         Integer.parseInt(limit),
                                                                         Sort.by(sort).ascending()));
 
-                        Pager<JobRequestView> JobRequestViews = new Pager<JobRequestView>(Integer.parseInt(limit),
-                                        (int) jobsRequests.getTotalElements(),
-                                        Integer.parseInt(page));
-
-                        JobRequestViews.setResult(
-                                        jobsRequests.getContent().stream()
-                                                        .map(jobsRequest -> new JobRequestView(jobsRequest))
-                                                        .collect(Collectors.toList()));
-
-                        return JobRequestViews;
-
                 } else
                         throw new BadRequestException("invalid");
+
+                Pager<JobRequestView> jobRequestViews = new Pager<>(Integer.parseInt(limit),
+                                (int) jobsRequests.getTotalElements(),
+                                Integer.parseInt(page));
+
+                jobRequestViews.setResult(
+                                jobsRequests.getContent().stream()
+                                                .map(jobsRequest -> new JobRequestView(jobsRequest))
+                                                .collect(Collectors.toList()));
+
+                return jobRequestViews;
 
         }
 
@@ -102,22 +94,18 @@ public class JobRequestImpl implements JobRequestService {
 
                 if ((form.getStatus() == 0)) {
                         Job job = jobRequest.getJob();
-
                         job.setOpenings(job.getOpenings() - 1);
                         jobRepository.save(job);
 
                 }
-
                 jobRequest.changeStatus(form);
-
                 jobRequestRepository.save(jobRequest);
                 return new JobRequestView(jobRequest);
-
         }
 
         @Override
         public Collection<Integer> appliedJobs() {
-
+                
                 return jobRequestRepository.getAppliedJobs(SecurityUtil.getCurrentUserId());
 
         }

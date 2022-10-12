@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 @NotNull
 @Size(min = 8, max = 20)
 @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9 \\!\"#\\$%&'\\(\\)\\*\\+,\\-\\.\\/\\:;\\<\\=\\>\\?@\\[\\\\\\]\\^_`\\{\\|\\}~]+$")
-@Target({ANNOTATION_TYPE, FIELD, METHOD, PARAMETER, TYPE_USE})
+@Target({ ANNOTATION_TYPE, FIELD, METHOD, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Constraint(validatedBy = {})
 @Documented
@@ -37,4 +37,3 @@ public @interface Password {
 
     Class<? extends Payload>[] payload() default {};
 }
-

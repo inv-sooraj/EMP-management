@@ -35,7 +35,6 @@ export class UserDashboardComponent implements OnInit {
     this.currentUserView();
     this.isUser();
     this.getprofilePicture();
-    
   }
 
   currentUserView() {
@@ -61,7 +60,7 @@ export class UserDashboardComponent implements OnInit {
   }
   edit(info: any) {
     this.service.userId = info;
-    this.route.navigate(['editUser']);
+    // this.route.navigate(['editUser']);
   }
 
   changePasswordForm: FormGroup = new FormGroup({
@@ -82,9 +81,9 @@ export class UserDashboardComponent implements OnInit {
     confirmPswd: new FormControl('', Validators.required),
   });
 
-  img= new FormGroup({
-    image:new FormControl('')
-  })
+  img = new FormGroup({
+    image: new FormControl(''),
+  });
 
   changePassword() {
     if (this.changePasswordForm.valid) {
@@ -106,48 +105,48 @@ export class UserDashboardComponent implements OnInit {
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
-  image:any;
+  image: any;
   getprofilePicture() {
     this.service.getProfileImage().subscribe({
       next: (response: any) => {
-        console.log("Imgage", response);
-            
-            
-        (document.getElementById('asd'))?.setAttribute('src', URL.createObjectURL(
-         new Blob([response], { type: response.type })
-        ))
+        console.log('Imgage', response);
+
+        document
+          .getElementById('asd')
+          ?.setAttribute(
+            'src',
+            URL.createObjectURL(new Blob([response], { type: response.type }))
+          );
       },
-      error: (error:any) => {
-            
-      
-        console.log(error)
-      }
-    })
+      error: (error: any) => {
+        console.log(error);
+      },
+    });
     // console.log(this.imgurl);
   }
 
-  file:any
-  onChange(event:any) {
+  file: any;
+  onChange(event: any) {
     this.file = event.target.files[0];
-}
-update(){
 
-  let body = new FormData()
+    console.log(this.file);
 
-  body.append('image',this.file)
+    this.update();
+  }
+  update() {
+    let body = new FormData();
 
-  this.service.updateUserDetails(body).subscribe({
-    next:(res)=>{console.log(res);
-            //  this.route.navigate(['userDashboard']).then().
-           this.getprofilePicture();
+    body.append('image', this.file);
 
-    },
-    error:(err)=>{
-      console.log(err);
-      
-    }
-
-  })
-}
-
+    this.service.updateUserDetails(body).subscribe({
+      next: (res) => {
+        console.log(res);
+        //  this.route.navigate(['userDashboard']).then().
+        this.getprofilePicture();
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 }

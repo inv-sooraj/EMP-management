@@ -33,11 +33,12 @@ export class LoginComponent implements OnInit {
           // } else {
           //   this.route.navigate(['adminDashboard']);
           // }
-          localStorage.setItem('accessToken', response.accessToken.value),
-            localStorage.setItem('refreshToken', response.refreshToken.value);
+          localStorage.setItem('accessToken', response.accessToken.value);
+          localStorage.setItem('refreshToken', response.refreshToken.value);
         },
         error: (error: any) => {
-          console.log(error), alert('Invalid Credentials');
+          console.log(error);
+          alert('Invalid Credentials');
         },
       });
     }

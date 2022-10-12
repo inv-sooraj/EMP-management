@@ -10,11 +10,11 @@ import { UserDashboardComponent } from './components/user-dashboard/user-dashboa
 import { UserJobViewComponent } from './components/user-job-view/user-job-view.component';
 import { JobRequestViewComponent } from './components/job-request-view/job-request-view.component';
 import { RoleGuard } from './core/role-guard/role.guard';
+import { LoginAuthGuard } from './core/login-guard/login-auth.guard';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegistrationComponent },
+  { path: 'login', component: LoginComponent ,canActivate:[LoginAuthGuard]},
+  { path: 'register', component: RegistrationComponent ,canActivate:[LoginAuthGuard]},
   {
     path: 'adminDashboard',
     component: AdminDashboardComponent,
@@ -51,6 +51,8 @@ const routes: Routes = [
     component: JobRequestViewComponent,
     canActivate: [AuthGuard],
   },
+  { path: '**', component: LoginComponent},
+
   // { path: 'editUser', component: EditUserComponent, canActivate: [AuthGuard] },
 ];
 

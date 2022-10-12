@@ -12,7 +12,7 @@ public interface JobRequestService {
 
     // Collection<JobRequestView> list();
 
-    Pager<JobRequestView> listItem(String search, String limit, String sort, String page);
+    Pager<JobRequestView> listItem(String search, String limit, String sort,Boolean desc, String page);
 
     JobRequestView edit(Integer jobRequestId, JobRequestForm form);
 

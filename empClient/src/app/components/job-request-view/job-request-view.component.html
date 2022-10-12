@@ -1,7 +1,7 @@
-
 <app-header></app-header>
 <div *ngIf="role==0">
 </div>
+
 <body>
     <div class="container-xl">
         <div class="table-responsive" style="height: 500px;">
@@ -18,9 +18,10 @@
 
                             
                         </div> -->
+                        <h2 >Job Request View</h2>
 
                         <div class="col-sm-6">
-                            
+
                             <!-- <button class="btn btn-info" type="button" (click)="logOut()">
                                 Log Out
                             </button> -->
@@ -32,11 +33,7 @@
                                 View Users
                             </button> -->
 
-
-                            <div>
-
-                                <input type="search" placeholder="Search.." [(ngModel)]="search" (keyup)="setSearch()">
-                            </div>
+                            
 
 
 
@@ -44,7 +41,12 @@
                         </div>
                     </div>
                 </div>
+                <div>
+
+                    <input type="search"  placeholder="Search.." [(ngModel)]="search" (keyup)="setSearch()">
+                </div>
                 <table class="table table-striped table-hover">
+                    
                     <thead>
                         <tr>
                             <!-- <th>
@@ -72,7 +74,7 @@
                             </td> -->
 
                             <td>{{ val.jobName }}</td>
-                             <td>{{ val.userName }}</td>
+                            <td>{{ val.userName }}</td>
                             <td>{{ val.remarks}}</td>
                             <td>{{ val.updateDate }}</td>
                             <td>{{ status[val.status] }}</td>
@@ -80,13 +82,15 @@
 
                             <!-- {{val.reqId}} -->
                             <td *ngIf="role!=2">
+                                <div class="btns">
 
-
-                                <button class="btn btn-outline-success mx-0" [disabled]="val.status == 0"
-                                    (click)="open(remarkModal,0);remark=val.remarks;jobRequestId=val.reqId">Approve</button><br>
-
-                                <button class="btn btn-outline-danger" [disabled]="val.status == 2"
-                                    (click)="open(remarkModal,2);remark=val.remarks;jobRequestId=val.reqId">Reject</button>
+                                    <button class="btn btn-outline-success mx-0" [disabled]="val.status == 0"
+                                        (click)="open(remarkModal,0);remark=val.remarks;jobRequestId=val.reqId">Approve</button><br>
+                                        &nbsp;&nbsp;
+                                        
+                                    <button class="btn btn-outline-danger" [disabled]="val.status == 2"
+                                        (click)="open(remarkModal,2);remark=val.remarks;jobRequestId=val.reqId">Reject</button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -151,7 +155,8 @@
     <div class="modal-footer">
         <button *ngIf="action==0" class="btn btn-outline-success" (click)="modal.dismiss();sendConfim()"> Approve
         </button>
-        <button *ngIf="action==2" class="btn btn-outline-danger" (click)="modal.dismiss();sendConfim()"> Reject </button>
+        <button *ngIf="action==2" class="btn btn-outline-danger" (click)="modal.dismiss();sendConfim()"> Reject
+        </button>
     </div>
 </ng-template>
 <app-footer></app-footer>

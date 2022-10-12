@@ -11,7 +11,6 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,14 +91,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserView addUser(UserForm form) {
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new)
+                .getRole();
         if (userRole.equals(User.Role.ADMIN.value)) {
 
             if (userRepository.findByUserName(form.getUserName()).isPresent()) {
-                throw new BadRequestException("Already Exists");
+                throw new BadRequestException("UserName Already Exists");
             }
             if (userRepository.findByEmail(form.getEmail()).isPresent()) {
-                throw new BadRequestException("Already Exists");
+                throw new BadRequestException("Email already exists");
             }
             return new UserView(userRepository.save(new User(
                     form.getUserName(),
@@ -122,7 +123,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserView get(Integer userId) {
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new)
+                .getRole();
 
         if (userRole.equals(User.Role.ADMIN.value) || userId == SecurityUtil.getCurrentUserId()) {
             return userRepository.findById(userId)
@@ -215,7 +217,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<User> list() {
 
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new)
+                .getRole();
         if (userRole.equals(User.Role.ADMIN.value)) {
             return userRepository.findByStatus(User.Status.ACTIVE.value);
         } else
@@ -224,16 +227,18 @@ public class UserServiceImpl implements UserService {
 
     // ###################################pagination################################################
     @Override
-    public Pager<UserView> listItem(String search, String limit, String sort, String page) {
+    public Pager<UserView> listItem(String search, String limit, String sort, Boolean desc, String page) {
 
         Page<User> users = userRepository.find(User.Status.ACTIVE.value, search,
-                PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit), Sort.by(sort).ascending()));
+                PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit),
+                        Sort.by(desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                                sort)));
 
-        Pager<UserView> userViews = new Pager<UserView>(Integer.parseInt(limit),
+        Pager<UserView> userViews = new Pager<>(Integer.parseInt(limit),
                 (int) users.getTotalElements(),
                 Integer.parseInt(page));
 
-        userViews.setResult(users.getContent().stream().map(user -> new UserView(user)).collect(Collectors.toList()));
+        userViews.setResult(users.getContent().stream().map(UserView::new).collect(Collectors.toList()));
 
         return userViews;
     }
@@ -242,7 +247,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void jobCsv(HttpServletResponse httpServletResponse) {
-        Collection<UserView> exportlist = userRepository.findAll().stream().map(job -> new UserView(job))
+        Collection<UserView> exportlist = userRepository.findAll().stream().map(UserView::new)
                 .collect(Collectors.toList());
         Date dt = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -279,7 +284,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Integer userId) {
-        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).get().getRole();
+        Byte userRole = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new)
+                .getRole();
 
         if (userRole.equals(User.Role.ADMIN.value)) {
             User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
@@ -325,10 +331,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    // image upload ans view
+    // image upload
 
     @Override
-    public UserView addUserDetails(userProfilePictureForm form) throws Exception {
+    public UserView addUserDetails(userProfilePictureForm form) throws IOException {
         String uploadDir = "files/";
         String fileName;
         String randStr = RandomString.make(20);
@@ -354,7 +360,7 @@ public class UserServiceImpl implements UserService {
         }
 
         return new UserView(userRepository
-                .save(userRepository.findById(SecurityUtil.getCurrentUserId()).get()
+                .save(userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(NotFoundException::new)
                         .update(fileName)));
 
     }

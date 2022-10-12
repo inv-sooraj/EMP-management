@@ -30,7 +30,8 @@ export class AdminDashboardComponent implements OnInit {
     private service: UserManagementService,
     private modalService: NgbModal
   ) {}
-
+  sortDesc: boolean = false;
+  sortBy:string='user_id'
   page: number = 1;
   search: string = '';
 
@@ -51,10 +52,10 @@ export class AdminDashboardComponent implements OnInit {
   //   });
   // }
 
-  editUser(info: any) {
-    this.service.userId = info;
-    this.route.navigate(['editUser']);
-  }
+  // editUser(info: any) {
+  //   this.service.userId = info;
+  //   this.route.navigate(['editUser']);
+  // }
 
   userDelete(info: any) {
     this.service.deleteUser(info).subscribe({
@@ -78,7 +79,8 @@ export class AdminDashboardComponent implements OnInit {
     return new HttpParams()
       .append('page', this.page)
       .append('limit', this.limit)
-      .append('sort', 'user_id')
+      .append('sort', this.sortBy)
+      .append('desc', this.sortDesc)
       .append('search', this.search);
   }
 
@@ -203,5 +205,19 @@ export class AdminDashboardComponent implements OnInit {
     });
 
     (document.getElementById('selectAll') as HTMLInputElement).checked = false;
+  }
+  setSort(sortBy: string) {
+    if (this.details.result.length <= 1) {
+      return;
+    }
+    
+    if (this.sortBy == sortBy) {
+      this.sortDesc = this.sortDesc ? false : true;
+    } else {
+      this.sortDesc = false;
+    }
+    this.sortBy = sortBy;
+    this.page = 1;
+    this.pagination();
   }
 }

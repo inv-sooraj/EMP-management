@@ -50,6 +50,11 @@ export class AddEditUserComponent implements OnInit {
         },
         error: (error: any) => {
           console.log(error);
+          if (error.error.message == 'UserName Already Exists') {
+            alert('Username already exists');
+          } else {
+            alert('Email already exists');
+          }
         },
       });
     } else {

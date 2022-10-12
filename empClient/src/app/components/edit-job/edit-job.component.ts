@@ -33,13 +33,13 @@ export class EditJobComponent implements OnInit {
 
     this.service.getJobById(this.jobId).subscribe({
       next: (response: any) => {
-        console.log(response),
-          this.editJobForm.patchValue({
-            jobTitle: response.jobTitle,
-            jobDescription: response.jobDescription,
-            openings: response.openings,
-            qualification: response.qualification,
-          });
+        console.log(response);
+        this.editJobForm.patchValue({
+          jobTitle: response.jobTitle,
+          jobDescription: response.jobDescription,
+          openings: response.openings,
+          qualification: response.qualification,
+        });
       },
       error: (error: any) => {
         console.log(error);
@@ -56,7 +56,7 @@ export class EditJobComponent implements OnInit {
             console.log(response);
             this.completed.emit();
             let role = Number(localStorage.getItem('key'));
-            if (role == 0) {
+            if (role != 2) {
               this.route.navigate(['jobView']);
             } else {
               this.route.navigate(['userDashboard']);

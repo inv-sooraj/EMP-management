@@ -1,5 +1,6 @@
 package com.project.EmployeeManagement.controller;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletResponse;
@@ -84,9 +85,10 @@ public class UsersController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", required = false, defaultValue = "1") String page,
             @RequestParam(value = "limit", required = false, defaultValue = "16") String limit,
-            @RequestParam(value = "sort", required = false, defaultValue = "update_date") String sort) {
+            @RequestParam(value = "sort", required = false, defaultValue = "update_date") String sort,
+            @RequestParam(value = "desc", required = false, defaultValue = "false") Boolean desc) {
 
-        return userService.listItem(search, limit, sort, page);
+        return userService.listItem(search, limit, sort, desc, page);
     }
 
     // ................................CSV_Download..................................
@@ -109,7 +111,7 @@ public class UsersController {
 
     // profilepicture upload
     @PostMapping("/uploadimage")
-    public UserView addUserDetails(@ModelAttribute userProfilePictureForm form) throws Exception {
+    public UserView addUserDetails(@ModelAttribute userProfilePictureForm form) throws IOException {
 
         return userService.addUserDetails(form);
 

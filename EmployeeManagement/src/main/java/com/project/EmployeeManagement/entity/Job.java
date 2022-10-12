@@ -73,7 +73,7 @@ public class Job {
         this.jobTitle = form.getJobTitle();
         this.jobDescription = form.getJobDescription();
 
-        
+        this.openings=form.getOpenings();
 
         // if ((form.getQualification() < Qualification.values().length) &&
         // (form.getQualification() >= 0)) {

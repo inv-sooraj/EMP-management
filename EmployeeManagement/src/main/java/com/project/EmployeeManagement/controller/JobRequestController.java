@@ -46,13 +46,11 @@ public class JobRequestController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", required = false, defaultValue = "1") String page,
             @RequestParam(value = "limit", required = false, defaultValue = "16") String limit,
-            @RequestParam(value = "sort", required = false, defaultValue = "update_date") String sort
+            @RequestParam(value = "sort", required = false, defaultValue = "update_date") String sort,
+            @RequestParam(value = "desc", required = false, defaultValue = "false") Boolean desc) {
 
-    ) {
-
-        return jobRequestService.listItem(search, limit, sort, page);
+        return jobRequestService.listItem(search, limit, sort,desc, page);
     }
-
 
     @GetMapping("/applied")
     public Collection<Integer> appliedJobs() {

@@ -1,5 +1,6 @@
 package com.project.EmployeeManagement.service;
 
+import java.io.IOException;
 import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -10,7 +11,6 @@ import com.project.EmployeeManagement.exception.NotFoundException;
 import com.project.EmployeeManagement.form.ChangePasswordForm;
 import com.project.EmployeeManagement.form.LoginForm;
 import com.project.EmployeeManagement.form.UserAddForm;
-import com.project.EmployeeManagement.form.UserDetailForm;
 import com.project.EmployeeManagement.form.UserForm;
 import com.project.EmployeeManagement.form.userProfilePictureForm;
 import com.project.EmployeeManagement.util.Pager;
@@ -30,7 +30,7 @@ public interface UserService {
 
     UserView edit(Integer userId, UserAddForm form) throws NotFoundException;
 
-    public Pager<UserView> listItem(String search, String limit, String sort, String page);
+    public Pager<UserView> listItem(String search, String limit, String sort,Boolean desc, String page);
 
     void jobCsv(HttpServletResponse httpServletResponse);
 
@@ -44,7 +44,7 @@ public interface UserService {
 
     void deleteAll(Collection<Integer> ids);
 
-    UserView addUserDetails(userProfilePictureForm form) throws Exception;
+    UserView addUserDetails(userProfilePictureForm form)throws IOException;
 
     byte[] getFileData();
 

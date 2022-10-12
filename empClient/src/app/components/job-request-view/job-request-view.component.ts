@@ -56,7 +56,7 @@ export class JobRequestViewComponent implements OnInit {
     this.pagination();
   }
 
-  limit: number = 5;
+  limit: number = 3;
   setLimit() {
     console.log(this.limit);
     this.page = 1;
@@ -73,8 +73,6 @@ export class JobRequestViewComponent implements OnInit {
   //     },
   //   });
   // }
-
- 
 
   getParam(): HttpParams {
     return new HttpParams()
@@ -122,10 +120,8 @@ export class JobRequestViewComponent implements OnInit {
     });
   }
 
-  setSearch(){
-  this.page = 1;
+  setSearch() {
+    this.page = 1;
     this.pagination();
   }
-
-  
 }
