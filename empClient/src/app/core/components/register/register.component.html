@@ -1,141 +1,173 @@
-<div class="container pt-5 pb-3 text-center">
-    <h1>Register</h1>
-</div>
+<section class="vh-100">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-12 col-xl-11">
+                <div class="card text-black " style="border-radius: 25px;">
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                                <p class="text-center h1 fw-bold mt-0 mb-3">
+                                    Sign up
+                                </p>
 
-<div class="card m-auto" style="width: 30rem;">
+                                <form [formGroup]="registrationForm" (ngSubmit)="register()" class="mx-1 mx-md-4"
+                                    autocomplete="off">
+                                    <div class="d-flex flex-row align-items-center mb-4">
 
-    <div class="card-body">
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="text" placement="right" ngbTooltip="User Name"
+                                                formControlName="userName" class="form-control"
+                                                placeholder="Username" />
+                                            <div *ngIf="registrationForm.controls['userName'].touched">
+                                                <div *ngIf="registrationForm.controls['userName']?.errors?.['required']"
+                                                    class="error">
+                                                    Username Required
+                                                </div>
 
-        <div class="container pt-2">
+                                                <div class="text-danger"
+                                                    *ngIf="registrationForm.controls['userName'].errors?.['maxlength']">
+                                                    User Name Should be less than 50 characters.
+                                                </div>
+                                            </div>
+                                        </div>
 
-            <form [formGroup]="registrationForm" class="row g-3" (ngSubmit)="register()">
+                                    </div>
 
-                <label>
-                    Register As
-                </label>
+                                    <div class="d-flex flex-row align-items-center mb-4">
 
-                <div class="col-6 mt-2 text-center">
-                    <input class="form-check-input mx-3" type="radio" name="role" id="employee" value=0
-                        formControlName="role">
-                    <label class="form-check-label" for="employee">
-                        Employee
-                    </label>
-                </div>
-                <div class="col-4 text-center">
-                    <input class="form-check-input mx-3" type="radio" name="role" id="employer" value=1
-                        formControlName="role">
-                    <label class="form-check-label" for="employer">
-                        Employer
-                    </label>
-                </div>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="text" placement="right" ngbTooltip="Name" placeholder="Name"
+                                                formControlName="name" class="form-control"
+                                                [ngClass]="{'is-invalid':(registrationForm.controls['name'].touched||registrationForm.controls['name'].dirty) && registrationForm.controls['name'].errors}">
 
-                <hr>
+                                            <div *ngIf="registrationForm.controls['name'].touched">
+                                                <div *ngIf="registrationForm.controls['name']?.errors?.['required']"
+                                                    class="error">
+                                                    Name required
+                                                </div>
+                                                <div class="text-danger"
+                                                    *ngIf="registrationForm.controls['name'].errors?.['maxlength']">
+                                                    Name Should be less than 50 characters.
+                                                </div>
+                                            </div>
 
-                <div class="col-12 mt-0">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" formControlName="name" class="form-control"
-                        [ngClass]="{'is-invalid':(registrationForm.controls['name'].touched||registrationForm.controls['name'].dirty) && registrationForm.controls['name'].errors}">
+                                        </div>
+                                    </div>
 
-                    <div *ngIf="registrationForm.controls['name'].touched||registrationForm.controls['name'].dirty"
-                        class="is-invalid">
+                                    <div class="d-flex flex-row align-items-center mb-4">
 
-                        <div class="text-danger" *ngIf="registrationForm.controls['name'].errors?.['required']">
-                            Name is required.
-                        </div>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="email" placement="right" ngbTooltip="Email" placeholder="Email"
+                                                formControlName="email" class="form-control"
+                                                [ngClass]="{'is-invalid':(registrationForm.controls['email'].touched||registrationForm.controls['email'].dirty) && registrationForm.controls['email'].errors}">
 
-                        <div class="text-danger" *ngIf="registrationForm.controls['name'].errors?.['maxlength']">
-                            Name Should be less than 50 characters.
+
+                                            <div *ngIf="registrationForm.controls['email'].touched">
+                                                <div *ngIf="registrationForm.controls['email']?.errors?.['required']"
+                                                    class="error">
+                                                    Email Required
+                                                </div>
+                                                <div *ngIf="registrationForm.controls['email']?.errors?.['email']"
+                                                    class="error">
+                                                    Invalid Email
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="password" placement="right" ngbTooltip="Password"
+                                                autocomplete="new-password" placeholder="Password"
+                                                formControlName="password" class="form-control"
+                                                [ngClass]="{'is-invalid':(registrationForm.controls['password'].touched||registrationForm.controls['password'].dirty) && registrationForm.controls['password'].errors}">
+
+                                            <!-- password validation -->
+                                            <div *ngIf="registrationForm.controls['password'].touched">
+                                                <div *ngIf="registrationForm.controls['password']?.errors?.['required']"
+                                                    class="error">
+                                                    password Required
+                                                </div>
+                                                <div class="text-danger"
+                                                    *ngIf="registrationForm.controls['password'].errors?.['pattern']">
+                                                    Password must be 8 - 20 characters including one uppercase letter,
+                                                    one special character and
+                                                    alphanumeric characters
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <!-- confirm password -->
+
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="password" placement="right" ngbTooltip="Confirm Password"
+                                                autocomplete="new-password" placeholder="Confirm Password"
+                                                formControlName="confirmPassword" class="form-control"
+                                                [ngClass]="{'is-invalid':(registrationForm.controls['confirmPassword'].touched||registrationForm.controls['confirmPassword'].dirty) && registrationForm.controls['confirmPassword'].errors}">
+
+                                            <div *ngIf="(registrationForm.controls['confirmPassword'].touched||registrationForm.controls['confirmPassword'].dirty)"
+                                                class="is-invalid">
+
+                                                <div class="text-danger"
+                                                    *ngIf="registrationForm.controls['confirmPassword'].errors?.['required']">
+                                                    Re-enter Password.
+                                                </div>
+
+                                                <div class="text-danger"
+                                                    *ngIf="!registrationForm.controls['confirmPassword'].errors?.['required']&&(registrationForm.controls['confirmPassword'].value != registrationForm.controls['password'].value)">
+                                                    Password Should match
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <hr>
+                                    <label>
+                                        Register As
+                                    </label>
+
+                                    <div class=" text-center">
+                                        <input class="form-check-input mx-3" type="radio" id="employer" value=1
+                                            formControlName="role">
+                                        <label class="form-check-label" for="employer">
+                                            Employer
+                                        </label>
+
+                                        <input class="form-check-input mx-3" type="radio" id="employee" value="0"
+                                            formControlName="role">
+                                        <label class="form-check-label" for="employee">
+                                            Employee
+                                        </label>
+                                    </div>
+
+                                    <hr>
+
+                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                        <button type="submit" class="btn btn-primary btn-lg"
+                                            [disabled]="registrationForm.invalid">
+                                            Register
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                                    class="img-fluid" alt="Sample image" />
+                            </div>
                         </div>
                     </div>
                 </div>
-
-
-                <div class="col-12">
-                    <label for="userName" class="form-label">User Name</label>
-                    <input type="text" formControlName="userName" class="form-control"
-                        [ngClass]="{'is-invalid':(registrationForm.controls['userName'].touched||registrationForm.controls['userName'].dirty) && registrationForm.controls['userName'].errors}">
-
-                    <div *ngIf="registrationForm.controls['userName'].touched||registrationForm.controls['userName'].dirty"
-                        class="is-invalid">
-
-                        <div class="text-danger" *ngIf="registrationForm.controls['userName'].errors?.['required']">
-                            UserName is required.
-                        </div>
-
-                        <div class="text-danger" *ngIf="registrationForm.controls['userName'].errors?.['minlength']">
-                            User Name Should be minimum 5 characters.
-                        </div>
-
-                        <div class="text-danger" *ngIf="registrationForm.controls['userName'].errors?.['maxlength']">
-                            User Name Should be less than 50 characters.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" formControlName="email" class="form-control"
-                        [ngClass]="{'is-invalid':(registrationForm.controls['email'].touched||registrationForm.controls['email'].dirty) && registrationForm.controls['email'].errors}">
-
-                    <div *ngIf="(registrationForm.controls['email'].touched)" class="is-invalid">
-
-                        <div class="text-danger" *ngIf="registrationForm.controls['email'].errors?.['required']">
-                            Email is required.
-                        </div>
-                        <div class="text-danger" *ngIf="registrationForm.controls['email'].errors?.['pattern']">
-                            Invalid email.
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="col-md-12">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="text" formControlName="password" class="form-control"
-                        [ngClass]="{'is-invalid':(registrationForm.controls['password'].touched||registrationForm.controls['password'].dirty) && registrationForm.controls['password'].errors}">
-
-                    <div *ngIf="(registrationForm.controls['password'].touched||registrationForm.controls['password'].dirty)"
-                        class="is-invalid">
-
-                        <div class="text-danger" *ngIf="registrationForm.controls['password'].errors?.['required']">
-                            Password is required.
-                        </div>
-                        <div class="text-danger" *ngIf="registrationForm.controls['password'].errors?.['pattern']">
-                            Password must be 8 - 20 characters including one uppercase letter, one special character and
-                            alphanumeric characters
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="col-md-12">
-                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                    <input type="text" formControlName="confirmPassword" class="form-control"
-                        [ngClass]="{'is-invalid':(registrationForm.controls['confirmPassword'].touched||registrationForm.controls['confirmPassword'].dirty) && registrationForm.controls['confirmPassword'].errors}">
-
-                    <div *ngIf="(registrationForm.controls['confirmPassword'].touched||registrationForm.controls['confirmPassword'].dirty)"
-                        class="is-invalid">
-
-                        <div class="text-danger"
-                            *ngIf="registrationForm.controls['confirmPassword'].errors?.['required']">
-                            Re-enter Password.
-                        </div>
-
-                        <div class="text-danger"
-                            *ngIf="registrationForm.controls['confirmPassword'].value != registrationForm.controls['password'].value">
-                            Password Should match
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Register</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
+</section>

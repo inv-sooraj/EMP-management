@@ -26,13 +26,19 @@
                     <a class="nav-link active" aria-current="page" routerLink="/job-apply">Job Apply</a>
                 </li>
 
-
             </ul>
         </div>
     </div>
 
-
-
-    <button class="btn btn-outline-dark text-white d-inline-block" (click)="logout()">{{getStat()}}</button>
+    <div class="col">
+        <div ngbDropdown class="d-inline-block mx-2" display="dynamic">
+            <button type="button" class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle>
+                <span class="bi bi-gear" style="color: beige;"></span></button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="background:darkslategrey;">
+                <button class="btn btn-dark text-white" ngbDropdownItem>Profile</button>
+                <button (click)="logout()" class="btn btn-dark text-white" ngbDropdownItem>Logout</button>
+            </div>
+        </div>
+    </div>
 
 </nav>
