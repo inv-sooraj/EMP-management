@@ -29,6 +29,8 @@ import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenG
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String ADMIN = "ADMIN";
+    private static final String EMPLOYER = "EMPLOYER";
+    private static final String EMPLOYEE = "EMPLOYEE";
 
     public WebSecurityConfiguration() {
         super(true);
@@ -51,7 +53,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").anonymous()
                 .antMatchers(PUT, "/login/forgot-password").anonymous()
                 .antMatchers(PUT, "/login/reset-password/**").anonymous()
-                .antMatchers(GET, "/job/page/**").hasAnyRole("EMPLOYER", ADMIN, "EMPLOYEE")
+                .antMatchers(PUT, "/jobstatus").hasAnyRole(ADMIN,EMPLOYER)
+                .antMatchers(GET, "/job/page/**").hasAnyRole(EMPLOYER, ADMIN, EMPLOYEE)
                 .antMatchers(GET, "/users/page/**").hasAnyRole(ADMIN)
                 .antMatchers(GET, "/users/role-stat").hasAnyRole(ADMIN)
                 .antMatchers(PUT, "/users/delete/**").hasAnyRole(ADMIN)
