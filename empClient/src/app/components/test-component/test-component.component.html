@@ -1,0 +1,23 @@
+
+<button hidden  id="idle" (click)="open(formModule)"><a class="bi bi-pencil-fill edit"></a></button>
+ <!-- rest of your app omitted for brevity -->
+ <!-- rest of your app omitted for brevity -->
+
+ 
+
+ <ng-template #formModule let-modal>
+    <div  class="modal-header">
+        <h4 style="color: red;" class="modal-title" id="modal-basic-title"><label>Alert!</label></h4>
+        <button type="button" class="btn btn-danger" aria-label="Close" id="closeidle" (click)="modal.dismiss('Cross click')">X</button>
+    </div>
+    <div class="modal-body">
+
+    <div style="color: red;">You have been idle for 30 Minutes.</div>
+    <div style="color: red;">You will be logged out in {{countdown}} Seconds!!</div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button"  (click)="stay()" class="btn btn-outline-success">Stay</button>
+    </div>
+</ng-template>
+

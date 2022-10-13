@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from 'src/app/core/service/auth.service';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -19,7 +20,8 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private service:AuthService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
@@ -27,6 +29,7 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.listUsers();
     this.getRoleStat();
+    this.service.checkExp();
   }
 
   page: number = 1;

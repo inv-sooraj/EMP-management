@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from 'src/app/core/service/auth.service';
 import { JobService } from 'src/app/service/job.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { JobService } from 'src/app/service/job.service';
 export class JobListComponent implements OnInit {
   role: number;
 
-  constructor(private jobService: JobService, private modalService: NgbModal) {
+  constructor(private jobService: JobService, private modalService: NgbModal,private service:AuthService) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
 
@@ -34,6 +35,7 @@ export class JobListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobs();
+    this.service.checkExp();
   }
 
   numSeq(n: number): Array<number> {

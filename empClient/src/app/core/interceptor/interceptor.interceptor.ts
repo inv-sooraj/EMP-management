@@ -6,20 +6,25 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from '../service/auth.service';
 
 @Injectable()
 export class InterceptorInterceptor implements HttpInterceptor {
-  constructor() {}
+  constructor(private service: AuthService) { }
 
   getAccessToken(): any {
     return localStorage.getItem('accessToken');
   }
+
+
+  
 
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     let accessToken = this.getAccessToken();
+    
 
     if (accessToken) {
       request = request.clone({
@@ -28,6 +33,7 @@ export class InterceptorInterceptor implements HttpInterceptor {
         },
       });
     }
+    
 
     return next.handle(request);
   }

@@ -34,10 +34,13 @@ export class LoginComponent implements OnInit {
     this.service.login(body).subscribe({
       next: (response: any) => {
         console.log('Logged In');
+        console.log(response);
+        localStorage.setItem('accessTokenExpiry',response.accessToken.expiry);
         localStorage.setItem('accessToken', response.accessToken.value);
         localStorage.setItem('refreshToken', response.refreshToken.value);
         localStorage.setItem('name', response.name);
         localStorage.setItem('role', response.role);
+        this.service.startTimer();
 
         if (response.role == 2) this.router.navigate(['user-list']);
         else if (response.role == 1) this.router.navigate(['job-list']);
