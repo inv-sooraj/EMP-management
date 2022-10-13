@@ -20,6 +20,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { AdminUserEditComponent } from './components/user-management/admin-user-edit/admin-user-edit.component';
 import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 import { AdminUserAddComponent } from './components/user-management/admin-user-add/admin-user-add.component';
+import { NgIdleModule } from '@ng-idle/core';
+import { TestComponentComponent } from './components/test-component/test-component.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import { AdminUserAddComponent } from './components/user-management/admin-user-a
     AdminUserEditComponent,
     ForgotPasswordComponent,
     AdminUserAddComponent,
+    TestComponentComponent,
   ],
 
   imports: [
@@ -46,6 +49,7 @@ import { AdminUserAddComponent } from './components/user-management/admin-user-a
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgIdleModule.forRoot()
   ],
   providers: [
     {

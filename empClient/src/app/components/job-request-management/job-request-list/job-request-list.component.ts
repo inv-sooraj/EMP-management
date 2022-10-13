@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from 'src/app/core/service/auth.service';
 import { JobRequestService } from 'src/app/service/job-request.service';
 import { JobService } from 'src/app/service/job.service';
 
@@ -13,7 +14,8 @@ import { JobService } from 'src/app/service/job.service';
 export class JobRequestListComponent implements OnInit {
   constructor(
     private jobRequestService: JobRequestService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private service:AuthService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
@@ -38,6 +40,7 @@ export class JobRequestListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobRequests();
+    this.service.checkExp();
   }
 
   numSeq(n: number): Array<number> {
