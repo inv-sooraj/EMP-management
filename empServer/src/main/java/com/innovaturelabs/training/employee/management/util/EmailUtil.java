@@ -28,12 +28,7 @@ public class EmailUtil {
         String subject = "Employee Management : Reset Password";
         String body = "<h3>Reset password </h3>"
                 + "<a href=" + url + ">Click here to reset password</a>";
-        try {
-            sendEmail(email, subject, body);
-        } catch (UnsupportedEncodingException | MessagingException e) {
-            e.printStackTrace();
-            throw new BadRequestException("Email Service Temporarily Unavailable");
-        }
+        sendEmail(email, subject, body);
 
     }
 
@@ -44,8 +39,53 @@ public class EmailUtil {
                 + "<h4>Username :" + userName + " </h4>"
                 + "<h4>Password :" + password + " </h4>"
                 + "<h5>Reset Password at first login </h5>";
+        sendEmail(email, subject, body);
+
+    }
+
+    public void sendJobStatus(String email, Integer jobId, String jobTitle, Boolean approved) {
+
+        String status = (approved.booleanValue() ? "Approved" : "Rejected");
+
+        String subject = "Employee Management : Job " + status
+                + " For JobId : " + jobId;
+        String body = "<h2>Job Status </h2>" +
+                "Job Id : " + jobId + "<br>" +
+                "Job Title : " + jobTitle + "<br>" +
+                "Status : " + status;
+        sendEmail(email, subject, body);
+
+    }
+
+    public void sendJobRequestStatus(String email, Integer jobRequestId, String jobTitle, String message,
+            Boolean approved) {
+
+        String status = (approved.booleanValue() ? "Approved" : "Rejected");
+
+        String subject = "Employee Management : Job Request " + status
+                + " For Job Request Id : " + jobRequestId;
+        String body = "<h2>Job Request Status </h2>" +
+                "Job Request Id : " + jobRequestId + "<br>" +
+                "Job Title : " + jobTitle + "<br>" +
+                "Remark : " + message + "<br>" +
+                "Status : " + status;
+        sendEmail(email, subject, body);
+
+    }
+
+    public void sendEmail(String toEmail, String subject, String body) {
+
         try {
-            sendEmail(email, subject, body);
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+
+            helper.setFrom("empmanagemenet@gmail.com", "Job Management");
+            // helper.setBcc("aaaaa@gmail.com");
+            message.setContent(body, "text/html");
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+
+            mailSender.send(message);
         } catch (UnsupportedEncodingException | MessagingException e) {
             e.printStackTrace();
             throw new BadRequestException("Email Service Temporarily Unavailable");
@@ -53,19 +93,4 @@ public class EmailUtil {
 
     }
 
-    public void sendEmail(String toEmail, String subject, String body)
-            throws UnsupportedEncodingException, MessagingException {
-
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-
-        helper.setFrom("empmanagemenet@gmail.com", "Job Management");
-        // helper.setBcc("aaaaa@gmail.com");
-        message.setContent(body,"text/html");
-        helper.setTo(toEmail);
-        helper.setSubject(subject);
-
-        mailSender.send(message);
-
-    }
 }
