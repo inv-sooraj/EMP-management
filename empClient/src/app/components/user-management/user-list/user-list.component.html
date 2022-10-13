@@ -54,7 +54,7 @@
                             &nbsp; Add user
                         </button>&nbsp;
 
-                        <button (click)="deleteUsers()" class="btn btn-danger">
+                        <button [disabled]="!checkedUserIds.size" (click)="deleteUsers()" class="btn btn-danger">
                             <em class="bi-trash-fill"></em>
                             &nbsp;Delete Users
                         </button>
@@ -230,7 +230,8 @@
     </div>
     <div class="modal-body">
 
-        <app-admin-user-edit (completedEvent)="listUsers();modal.dismiss('Save')" #adminUserEditComponent [userId]="userId">
+        <app-admin-user-edit (completedEvent)="listUsers();modal.dismiss('Save')" #adminUserEditComponent
+            [userId]="userId">
         </app-admin-user-edit>
 
     </div>
