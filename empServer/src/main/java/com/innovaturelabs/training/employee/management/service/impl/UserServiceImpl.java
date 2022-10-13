@@ -124,6 +124,8 @@ public class UserServiceImpl implements UserService {
 
         if (user.getStatus() == User.Status.INACTIVE.value) {
             throw new BadRequestException("User Inactive");
+        } else if (user.getStatus() == User.Status.REJECTED.value) {
+            throw new BadRequestException("User Rejected");
         }
 
         if (!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
@@ -285,17 +287,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserView updateUser(UserEditForm form, Integer userId) {
 
-        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundException::new);
+        return userRepository.findByUserId(userId)
+                .map(user -> new UserView(userRepository.save(user.updateDetails(form))))
+                .orElseThrow(NotFoundException::new);
 
-        user.setName(form.getName());
-
-        user.setEmail(form.getEmail());
-
-        user.setUserName(form.getUserName());
-
-        user.setUpdateDate(new Date());
-
-        return new UserView(userRepository.save(user));
     }
 
     @Override

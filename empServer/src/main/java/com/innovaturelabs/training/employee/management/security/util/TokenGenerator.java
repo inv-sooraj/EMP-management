@@ -69,6 +69,7 @@ public class TokenGenerator {
     }
 
     private static final String SEPARATOR = "#";
+    private static final String INVALID_TOKEN_MSG = "Token content is invalid";
 
     private static final Pattern PURPOSE_PATTERN = Pattern.compile("[a-zA-Z0-9_]+");
 
@@ -195,7 +196,7 @@ public class TokenGenerator {
 
         String[] parts = value.split(SEPARATOR);
         if (parts.length != 5 || !parts[0].equals(purpose)) {
-            throw new InvalidTokenException("Token content is invalid");
+            throw new InvalidTokenException(INVALID_TOKEN_MSG);
         }
 
         long keyTime;
@@ -204,7 +205,7 @@ public class TokenGenerator {
             keyTime = Long.parseLong(parts[2]);
             expiry = Long.parseLong(parts[3]);
         } catch (NumberFormatException e) {
-            throw new InvalidTokenException("Token content is invalid", e);
+            throw new InvalidTokenException(INVALID_TOKEN_MSG, e);
         }
 
         if (checkExpiry && expiry > 0) {
@@ -215,15 +216,13 @@ public class TokenGenerator {
                 throw new TokenExpiredException("Token is expired");
             }
         }
-
+        String data;
         try {
-            decode(parts[1]);
+            data = decode(parts[1]);
         } catch (IllegalArgumentException e) {
-            throw new InvalidTokenException("Token content is invalid", e);
+            throw new InvalidTokenException(INVALID_TOKEN_MSG, e);
         }
 
-       
-
-        return new Status(decode(parts[1]), keyTime, keyTime + expiry);
+        return new Status(data, keyTime, keyTime + expiry);
     }
 }

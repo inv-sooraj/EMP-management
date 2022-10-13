@@ -26,6 +26,7 @@ import com.innovaturelabs.training.employee.management.repository.UserRepository
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.JobRequestService;
 import com.innovaturelabs.training.employee.management.util.CsvDownload;
+import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.JobRequestView;
 
@@ -40,6 +41,9 @@ public class JobRequestServiceImpl implements JobRequestService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailUtil emailUtil;
 
     @Override
     public JobRequestView add(Integer jobId) {
@@ -66,7 +70,7 @@ public class JobRequestServiceImpl implements JobRequestService {
     }
 
     @Override
-    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc) {
+    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc) {
 
         if (!jobRequestRepository.findColumns().contains(sortBy)) {
             sortBy = "job_request_id";
@@ -85,26 +89,19 @@ public class JobRequestServiceImpl implements JobRequestService {
             jobRequests = jobRequestRepository.findAllByUserIdStatus(SecurityUtil.getCurrentUserId(),
                     status, search,
                     PageRequest.of(page - 1, limit, Sort.by(
-                    desc.booleanValue() ? Direction.DESC : Direction.ASC,
-                    sortBy)));
+                            desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
 
-        } else if (SecurityUtil.isEmployee()) {
+        } else {
 
             jobRequests = jobRequestRepository.findAllByUserUserIdStatus(SecurityUtil.getCurrentUserId(),
                     status, search,
                     PageRequest.of(page - 1, limit, Sort.by(
-                    desc.booleanValue() ? Direction.DESC : Direction.ASC,
-                    sortBy)));
-        } else {
-            throw new BadRequestException("Illegal Access");
-
+                            desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                            sortBy)));
         }
 
         Pager<JobRequestView> jobRequestViews = new Pager<>(limit, (int) jobRequests.getTotalElements(), page);
-
-        // Pager<JobView> jobViews = new
-        // Pager<JobView>(limit,jobRequestRepository.countJobList(Job.Status.PENDING.value,
-        // search).intValue(),page);
 
         jobRequestViews.setResult(jobRequests.getContent().stream().map(JobRequestView::new)
                 .collect(Collectors.toList()));
@@ -165,6 +162,9 @@ public class JobRequestServiceImpl implements JobRequestService {
                 job.setStatus(Job.Status.COMPLETED.value);
             }
 
+            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequestId,
+                    jobRequest.getJob().getTitle(),form.getRemark(), true);
+
             jobRepository.save(job);
 
         } else if (jobRequest.getStatus().equals(JobRequest.Status.APPROVED.value)
@@ -173,6 +173,9 @@ public class JobRequestServiceImpl implements JobRequestService {
             if (job.getOpenings() == 0) {
                 job.setStatus(Job.Status.APPROVED.value);
             }
+
+            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequestId,
+                    jobRequest.getJob().getTitle(), form.getRemark(),false);
 
             job.setOpenings(job.getOpenings() + 1);
 
