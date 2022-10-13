@@ -7,13 +7,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  constructor(private router:Router) {}
+  constructor(private router: Router) {}
+  ngOnInit(): void {
+  }
 
-  ngOnInit(): void {}
-
-  logout(){
-    localStorage.clear()
-    this.router.navigate(['login'])
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['login']);
   }
 
   getName(): string {

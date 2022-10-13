@@ -7,6 +7,7 @@ import { TestComponentComponent } from './components/test-component/test-compone
 import { UserEditComponent } from './components/user-management/user-edit/user-edit.component';
 import { UserListComponent } from './components/user-management/user-list/user-list.component';
 import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
+import { UserchartComponent } from './components/user-management/userchart/userchart.component';
 import { AuthGuard } from './core/auth/auth.guard';
 import { LoginGuard } from './core/auth/login.guard';
 import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
@@ -63,6 +64,7 @@ const routes: Routes = [
     path: 'forgot-password',
     component: ForgotPasswordComponent,
   },
+  { path: 'userchart', component: UserchartComponent },
   {
     path: '**',
     redirectTo: 'login',
