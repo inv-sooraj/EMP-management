@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
+import com.innovaturelabs.training.employee.management.form.UserEditForm;
 
 @Entity(name = "user_tbl")
 public class User {
@@ -124,6 +125,19 @@ public class User {
         this.address = form.getAddress();
 
         this.phone = form.getPhone();
+
+        this.updateDate = new Date();
+
+        return this;
+    }
+
+    public User updateDetails(UserEditForm form) {
+
+        this.name = form.getName();
+
+        this.email = form.getEmail();
+
+        this.userName = form.getUserName();
 
         this.updateDate = new Date();
 

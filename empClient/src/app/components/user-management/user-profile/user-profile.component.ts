@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/service/user.service';
-
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',

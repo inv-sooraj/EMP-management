@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +26,7 @@ import com.innovaturelabs.training.employee.management.repository.UserRepository
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.JobService;
 import com.innovaturelabs.training.employee.management.util.CsvDownload;
+import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.JobView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
@@ -39,6 +39,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailUtil emailUtil;
 
     @Override
     public JobView add(JobForm form) {
@@ -171,16 +174,14 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobView updateStatus(Integer jobId, Byte status) {
 
-        if (SecurityUtil.isEmployee()) {
-            throw illegalAccess();
-        }
-
         Job job = jobRepository.findByJobId(jobId).orElseThrow(NotFoundException::new);
 
+        if (status.byteValue() == job.getStatus()) {
+            return null;
+        }
+
         if (job.getStatus() == Job.Status.COMPLETED.value && !SecurityUtil.isAdmin()) {
-
             throw new BadRequestException("Completed Job Cant be Updated");
-
         }
 
         if (SecurityUtil.isAdmin() || (SecurityUtil.isEmployer()
@@ -189,6 +190,17 @@ public class JobServiceImpl implements JobService {
             job.setStatus(status);
 
             job.setUpdateDate(new Date());
+
+            /**
+             * Send Mail only if User is admin and job is not created by current user
+             */
+            if (SecurityUtil.isAdmin() && !SecurityUtil.getCurrentUserId().equals(job.getUser().getUserId())) {
+                if (status == Job.Status.APPROVED.value) {
+                    emailUtil.sendJobStatus(job.getUser().getEmail(), jobId, job.getTitle(), true);
+                } else if (status == Job.Status.DELETED.value) {
+                    emailUtil.sendJobStatus(job.getUser().getEmail(), jobId, job.getTitle(), false);
+                }
+            }
 
         } else {
             throw new BadRequestException("Illegal Action");
@@ -199,27 +211,28 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public void changeSelectedStatus(Collection<Integer> jobIds, Byte status) {
-        if (!SecurityUtil.isAdmin()
-                && !SecurityUtil.isEmployer()) {
+        if (SecurityUtil.isEmployee()) {
             throw illegalAccess();
         }
 
         for (Integer jobId : jobIds) {
 
-            Optional<Job> job = jobRepository.findByJobId(jobId);
+            // if (SecurityUtil.isAdmin() || (SecurityUtil.isEmployer()
+            // && (status == Job.Status.DELETED.value || status ==
+            // Job.Status.COMPLETED.value))) {
 
-            if (job.isPresent()) {
-                Job job2 = job.get();
+            // jobRepository.findByJobId(jobId).ifPresent(j -> {
 
-                if (SecurityUtil.isAdmin() || (SecurityUtil.isEmployer()
-                        && (status == Job.Status.DELETED.value || status == Job.Status.COMPLETED.value))) {
-                    job2.setStatus(status);
-                    job2.setUpdateDate(new Date());
-                }
+            // if (status.byteValue() != j.getStatus()) {
+            // j.setStatus(status);
+            // j.setUpdateDate(new Date());
+            // jobRepository.save(j);
+            // }
+            // });
 
-                jobRepository.save(job2);
+            // }
 
-            }
+            this.updateStatus(jobId, status);
 
         }
 
