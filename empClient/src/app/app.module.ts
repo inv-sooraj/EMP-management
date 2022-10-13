@@ -20,8 +20,12 @@ import { HeaderComponent } from './components/header/header.component';
 import { AdminUserEditComponent } from './components/user-management/admin-user-edit/admin-user-edit.component';
 import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 import { AdminUserAddComponent } from './components/user-management/admin-user-add/admin-user-add.component';
+
 import { NgIdleModule } from '@ng-idle/core';
 import { TestComponentComponent } from './components/test-component/test-component.component';
+
+import { UserchartComponent } from './components/user-management/userchart/userchart.component';
+
 
 @NgModule({
   declarations: [
@@ -39,7 +43,11 @@ import { TestComponentComponent } from './components/test-component/test-compone
     AdminUserEditComponent,
     ForgotPasswordComponent,
     AdminUserAddComponent,
+
     TestComponentComponent,
+
+    UserchartComponent,
+
   ],
 
   imports: [
