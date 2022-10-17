@@ -240,10 +240,11 @@ public class UserServiceImpl implements UserService {
 
             if (user.getStatus() == User.Status.INACTIVE.value) {
                 user.setStatus(User.Status.ACTIVE.value);
+                emailUtil.sendUserActiveAlertMAil(userId, user.getEmail(), user.getName());
             } else {
 
-                emailUtil.sendUserDeleteAlertMail(userId, user.getEmail(), user.getName());
                 user.setStatus(User.Status.INACTIVE.value);
+                emailUtil.sendUserDeleteAlertMail(userId, user.getEmail(), user.getName());
             }
             user.setUpdateDate(new Date());
             userRepository.save(user);
