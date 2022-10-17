@@ -55,7 +55,7 @@ export class AuthService {
 
   newToken() {
     let token = localStorage.getItem('refreshToken');
-    return this.http.put(environment.apiUrl + '/login/refresh', token);
+    return this.http.put(environment.apiUrl + '/login',token);
   }
 
 
