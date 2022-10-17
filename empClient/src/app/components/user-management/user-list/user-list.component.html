@@ -101,8 +101,8 @@
 
 
 
-                        <th scope="col" (click)="setSort('user_id')">Id
-                            <button [disabled]="sortBy!='user_id'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('userId')">Id
+                            <button [disabled]="sortBy!='userId'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
 
@@ -120,8 +120,8 @@
                                 [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
                         </th>
 
-                        <th scope="col" (click)="setSort('update_date')">Last Update
-                            <button [disabled]="sortBy!='update_date'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('updateDate')">Last Update
+                            <button [disabled]="sortBy!='updateDate'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
                         </th>
 
@@ -160,16 +160,12 @@
                         <td>{{ user.userName }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.updateDate }}</td>
-                        <td>{{ status[user.status] }}</td>
-                        <td>{{ roles[user.role] }}</td>
+                        <td >
+                            <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status[user.status] }}</span></p>
+                            <p *ngIf="user.status == 0" ><span class="badge bg-danger">{{ status[user.status] }}</span></p>
+                        </td>
 
-                        <!-- <td>
-                        <a class="edit" data-toggle="modal" routerLink="/user-form/{{ user.userId }}"><em
-                                class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</em></a>
-                        <a class="delete" data-toggle="modal" (click)="deleteUser(user.userId)">
-                            <em class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</em>
-                        </a>
-                    </td> -->
+                        <td>{{ roles[user.role] }}</td>
 
                         <td *ngIf="role==2">
                             <button placement="top" ngbTooltip="Edit user" class="btn"><a
@@ -259,4 +255,3 @@
 
     </div>
 </ng-template>
-<!-- <app-test-component></app-test-component> -->

@@ -131,7 +131,7 @@
                             </span>
                         </th>
 
-                        <th scope="col" (click)="setSort('job_id')">Id <button [disabled]="sortBy!='job_id'"
+                        <th scope="col" (click)="setSort('jobId')">Id <button [disabled]="sortBy!='jobId'"
                                 class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
@@ -154,8 +154,8 @@
 
                         </th>
                         <th scope="col">User</th>
-                        <th scope="col" (click)="setSort('update_date')">Last Modified
-                            <button [disabled]="sortBy!='update_date'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('updateDate')">Last Modified
+                            <button [disabled]="sortBy!='updateDate'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
 
                         </th>
@@ -188,9 +188,13 @@
                         <td>{{ qualifications[job.qualification] }}</td>
                         <td>{{ job.openings }}</td>
                         <td>{{ job.userId }}</td>
-
-                        <td>{{ job.updateDate }}</td>
-                        <td>{{ status[job.status] }}</td>
+                        <td>{{ job.updateDate|date}}</td>
+                        <td >
+                            <p *ngIf="job.status == 0" ><span class="badge bg-warning clr">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 2"><span class="badge bg-primary">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 3"><span class="badge bg-danger">{{ status[job.status] }}</span></p>
+                        </td>
 
                         <td *ngIf="role==2 ||role==1  ">
 
@@ -268,3 +272,6 @@
                 *ngIf="jobId">Edit</label><label *ngIf="!jobId">Add</label></button>
     </div>
 </ng-template>
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>

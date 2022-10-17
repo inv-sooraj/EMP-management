@@ -10,6 +10,9 @@ import { UserService } from 'src/app/service/user.service';
 export class AdminUserAddComponent implements OnInit {
   @Output() public completedEvent = new EventEmitter();
 
+
+  showSpinner: boolean = false
+
   constructor(private userService: UserService) {}
 
   userAddForm: FormGroup = new FormGroup({
@@ -34,6 +37,9 @@ export class AdminUserAddComponent implements OnInit {
       this.userAddForm.markAllAsTouched();
       return;
     }
+    this.showSpinner = true
+
+
 
     let param = {
       role: this.userAddForm.controls['role'].value,
@@ -48,11 +54,14 @@ export class AdminUserAddComponent implements OnInit {
     this.userService.registerUser(param).subscribe({
       next: (response: any) => {
         console.log('User Registered', response);
+        this.showSpinner = false
+
         this.completedEvent.emit();
         alert('User Registered');
       },
       error: (error: any) => {
         console.log('error', error.error);
+        this.showSpinner = false
         if (error.error.status == 400) {
           if (error.error.message == 'Username Already Exists') {
             console.log('Username Already Exists');

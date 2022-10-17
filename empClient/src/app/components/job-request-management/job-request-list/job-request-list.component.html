@@ -8,19 +8,6 @@
                         <h2>Manage <strong>Job Requests</strong></h2>
                     </div>
                     <div class="col-sm-6">
-
-                        <!-- 
-                        <button placement="bottom" ngbTooltip="Delete selected jobs from table" (click)="deleteJobs()"
-                            class="btn btn-danger" [disabled]="!checked.length">
-                            <em class="bi-trash-fill"></em>
-                            &nbsp;Delete Jobs
-                        </button>
-
-                        <button placement="bottom" ngbTooltip="Download job list as Csv" (click)="downloadCsv()"
-                            class="btn btn-secondary">
-                            <em class="bi bi-download"></em>
-                            &nbsp;Download
-                        </button> -->
                     </div>
                 </div>
             </div>
@@ -50,27 +37,26 @@
                     <tr>
                         <th scope="col">
                             <span class="custom-checkbox">
-                                <!-- <input type="checkbox" id="selectAll" (change)="checkAll($event)" /> -->
                                 <label for="selectAll"></label>
                             </span>
                         </th>
 
-                        <th scope="col" (click)="setSort('job_request_id')">Id
-                            <button [disabled]="sortBy!='job_request_id'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('jobRequestId')">Id
+                            <button [disabled]="sortBy!='jobRequestId'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
 
                         </th>
 
-                        <th scope="col" (click)="setSort('job_id')">Job Id
-                            <button [disabled]="sortBy!='job_id'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('jobId')">Job Id
+                            <button [disabled]="sortBy!='jobId'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
 
                         </th>
 
                         <th scope="col">Job Title </th>
 
-                        <th scope="col" (click)="setSort('user_id')">User Id
-                            <button [disabled]="sortBy!='user_id'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('userId')">User Id
+                            <button [disabled]="sortBy!='userId'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
 
                         </th>
@@ -81,7 +67,6 @@
                                 [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
 
                         </th>
-                        <!-- <th scope="col" (click)="setSort('')">Last Modified <span class="bi bi-sort-alpha-down"></span></th> -->
                         <th scope="col">Status
                         </th>
 
@@ -97,11 +82,7 @@
                     </tr>
                     <tr *ngFor="let job of jobList.result">
                         <td>
-                            <!-- <span class="custom-checkbox">
-                                <input type="checkbox" id="checkbox{{ job.jobId }}" value="{{ job.jobId }}"
-                                    (change)="checkedUser($event)" />
-                                <label for="checkbox{{ job.jobId }}"></label>
-                            </span> -->
+                        
                         </td>
                         <td>{{ job.jobRequestId }}</td>
                         <td>{{ job.jobId }}</td>
@@ -110,10 +91,11 @@
                         <td>{{ job.userName }}</td>
                         <td>{{ job.remark }}</td>
 
-                        <!-- <td>{{ job.updateDate }}</td> -->
-
-
-                        <td>{{ status[job.status] }}</td>
+                      <td >
+                            <p *ngIf="job.status == 0" ><span class="badge bg-warning clr">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 2"><span class="badge bg-danger">{{ status[job.status] }}</span></p>
+                        </td>
 
                         <td *ngIf="role">
 
@@ -187,3 +169,6 @@
             (click)="updateStatus(jobRequestId,action);modal.dismiss()"> Reject </button>
     </div>
 </ng-template>
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>

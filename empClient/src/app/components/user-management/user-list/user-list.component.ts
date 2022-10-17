@@ -29,12 +29,11 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.listUsers();
     this.getRoleStat();
-    this.service.checkExp();
   }
 
   page: number = 1;
 
-  sortBy: string = 'job_id';
+  sortBy: string = 'userId';
 
   limit: number = 5;
 

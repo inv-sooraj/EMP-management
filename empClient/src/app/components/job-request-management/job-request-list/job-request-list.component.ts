@@ -24,13 +24,16 @@ export class JobRequestListComponent implements OnInit {
 
   page: number = 1;
 
-  sortBy: string = 'job_request_id';
+  sortBy: string = 'jobRequestId';
 
   limit: number = 5;
 
   search: string = '';
 
   sortDesc: boolean = false;
+
+  showSpinner: boolean = false
+
 
   // tableHeight: number = 73 * (this.limit + 1);
 
@@ -40,7 +43,6 @@ export class JobRequestListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobRequests();
-    this.service.checkExp();
   }
 
   numSeq(n: number): Array<number> {
@@ -84,7 +86,6 @@ export class JobRequestListComponent implements OnInit {
     console.log(this.limit);
     this.page = 1;
     this.listJobRequests();
-    // this.tableHeight = 73 * (this.limit + 1);
   }
 
   setSearch() {
@@ -113,6 +114,8 @@ export class JobRequestListComponent implements OnInit {
 
   updateStatus(jobRequestId: number, status: number): void {
     console.log(this.remark);
+    this.showSpinner = true
+
 
     let body = {
       status: status,
@@ -123,8 +126,11 @@ export class JobRequestListComponent implements OnInit {
       next: (response: any) => {
         console.log(response);
         this.listJobRequests();
+        this.showSpinner = false
+
       },
       error: (err: any) => {
+        this.showSpinner = false
         console.error(err);
         if (err.error.status == 400) {
           if (err.error.message == 'Invalid Operation') {

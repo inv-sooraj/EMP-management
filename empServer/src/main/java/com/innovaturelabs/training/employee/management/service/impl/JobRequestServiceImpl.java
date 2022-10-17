@@ -1,8 +1,11 @@
 
 package com.innovaturelabs.training.employee.management.service.impl;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +48,9 @@ public class JobRequestServiceImpl implements JobRequestService {
     @Autowired
     private EmailUtil emailUtil;
 
+    private final Set<String> jobRequestFields = Arrays.stream(JobRequest.class.getDeclaredFields()).map(Field::getName)
+            .collect(Collectors.toSet());
+
     @Override
     public JobRequestView add(Integer jobId) {
 
@@ -72,13 +78,12 @@ public class JobRequestServiceImpl implements JobRequestService {
     @Override
     public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc) {
 
-        if (!jobRequestRepository.findColumns().contains(sortBy)) {
-            sortBy = "job_request_id";
-        }
+        // if (!jobRequestRepository.findColumns().contains(sortBy)) {
+        // sortBy = "job_request_id";
+        // }
 
-        if (page <= 0) {
-            page = 1;
-        }
+        sortBy = jobRequestFields.contains(sortBy) ? sortBy : "jobRequestId";
+
         Page<JobRequest> jobRequests;
 
         byte[] status = { JobRequest.Status.PENDING.value, JobRequest.Status.APPROVED.value,
@@ -86,7 +91,8 @@ public class JobRequestServiceImpl implements JobRequestService {
 
         if (SecurityUtil.isEmployer() || SecurityUtil.isAdmin()) {
 
-            jobRequests = jobRequestRepository.findAllByUserIdStatus(SecurityUtil.getCurrentUserId(),
+            jobRequests = jobRequestRepository.findByJobUserUserIdAndStatusInAndRemarkContaining(
+                    SecurityUtil.getCurrentUserId(),
                     status, search,
                     PageRequest.of(page - 1, limit, Sort.by(
                             desc.booleanValue() ? Direction.DESC : Direction.ASC,
@@ -94,7 +100,8 @@ public class JobRequestServiceImpl implements JobRequestService {
 
         } else {
 
-            jobRequests = jobRequestRepository.findAllByUserUserIdStatus(SecurityUtil.getCurrentUserId(),
+            jobRequests = jobRequestRepository.findAllByUserUserIdAndStatusInAndRemarkContaining(
+                    SecurityUtil.getCurrentUserId(),
                     status, search,
                     PageRequest.of(page - 1, limit, Sort.by(
                             desc.booleanValue() ? Direction.DESC : Direction.ASC,
@@ -161,9 +168,10 @@ public class JobRequestServiceImpl implements JobRequestService {
             if (job.getOpenings() <= 0) {
                 job.setStatus(Job.Status.COMPLETED.value);
             }
-
+            
             emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(),jobRequest.getUser().getName(), jobRequestId,
                     jobRequest.getJob().getTitle(),form.getRemark(), true);
+
 
             jobRepository.save(job);
 
@@ -176,6 +184,7 @@ public class JobRequestServiceImpl implements JobRequestService {
 
             emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(),jobRequest.getUser().getName(), jobRequestId,
                     jobRequest.getJob().getTitle(), form.getRemark(),false);
+
 
             job.setOpenings(job.getOpenings() + 1);
 
