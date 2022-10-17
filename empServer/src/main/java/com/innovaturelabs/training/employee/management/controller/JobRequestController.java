@@ -35,7 +35,8 @@ public class JobRequestController {
     }
 
     @PutMapping("/{jobRequestId}")
-    public JobRequestView update(@PathVariable("jobRequestId") Integer jobRequestId, @Valid @RequestBody JobRequestForm form) {
+    public JobRequestView update(@PathVariable("jobRequestId") Integer jobRequestId,
+            @Valid @RequestBody JobRequestForm form) {
         return jobRequestService.update(jobRequestId, form);
     }
 
@@ -47,7 +48,9 @@ public class JobRequestController {
             @RequestParam(name = "sortBy", defaultValue = "job_request_id") String sortBy,
             @RequestParam(name = "search", defaultValue = "") String search) {
 
-        return jobRequestService.list(page, limit, sortBy, search,desc);
+        page = page <= 0 ? 1 : page;
+
+        return jobRequestService.list(page, limit, sortBy, search, desc);
     }
 
     @GetMapping("/applied")

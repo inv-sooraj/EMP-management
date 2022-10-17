@@ -133,7 +133,7 @@
                             </span>
                         </th>
 
-                        <th scope="col" (click)="setSort('job_id')">Id <button [disabled]="sortBy!='job_id'"
+                        <th scope="col" (click)="setSort('jobId')">Id <button [disabled]="sortBy!='jobId'"
                                 class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
                         </th>
@@ -156,8 +156,8 @@
 
                         </th>
                         <th scope="col">User</th>
-                        <th scope="col" (click)="setSort('update_date')">Last Modified
-                            <button [disabled]="sortBy!='update_date'" class="btn btn-sort bi "
+                        <th scope="col" (click)="setSort('updateDate')">Last Modified
+                            <button [disabled]="sortBy!='updateDate'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
 
                         </th>
