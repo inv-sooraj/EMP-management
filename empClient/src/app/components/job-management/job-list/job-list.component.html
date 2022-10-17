@@ -190,9 +190,13 @@
                         <td>{{ qualifications[job.qualification] }}</td>
                         <td>{{ job.openings }}</td>
                         <td>{{ job.userId }}</td>
-
-                        <td>{{ job.updateDate }}</td>
-                        <td>{{ status[job.status] }}</td>
+                        <td>{{ job.updateDate|date}}</td>
+                        <td >
+                            <p *ngIf="job.status == 0" ><span class="badge bg-warning clr">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 2"><span class="badge bg-primary">{{ status[job.status] }}</span></p>
+                            <p *ngIf="job.status == 3"><span class="badge bg-danger">{{ status[job.status] }}</span></p>
+                        </td>
 
                         <td *ngIf="role==2 ||role==1  ">
 
@@ -270,3 +274,6 @@
                 *ngIf="jobId">Edit</label><label *ngIf="!jobId">Add</label></button>
     </div>
 </ng-template>
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>

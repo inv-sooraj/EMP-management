@@ -44,42 +44,13 @@ export class InterceptorInterceptor implements HttpInterceptor {
     }
   }
 
-  // private refreshAccess(request: HttpRequest<any>, next: HttpHandler) {
-
-  //   console.log("oldaaaaaaaa", localStorage.getItem('accessToken'));
-
-  //   this.service.newToken().subscribe({
-  //     next: (response: any) => {
-  //       localStorage.setItem("accessToken", response.accessToken.value);
-
-
-  //       let accessToken = localStorage.getItem('accessToken');
-  //       console.log("newaaaaaaaa", accessToken);
-  //       request = request.clone({
-  //         setHeaders: {
-  //           Authorization: 'Emp ' + accessToken
-  //         },
-  //       })
-  //       console.log("reqqqqqqq", request);
-  //       return next.handle(request)
-  //     },
-  //     error: (error: any) => {
-  //       console.log(error);
-  //     }
-  //   })
-
-
-   
-  // }
-
-
   private refreshAccess(request: HttpRequest<any>, next: HttpHandler) {
    
     return this.service.newToken().pipe(
       switchMap((res: any) => {
         console.log(res);
-        localStorage.setItem("accessToken", res.accessToken.value)
-        // localStorage.setItem("refreshToken", res.refreshToken.value)
+        localStorage.setItem("accessToken", res.accessToken.value);
+        localStorage.setItem('accessTokenExpiry', res.accessToken.expiry);
 
         request = request.clone({
           setHeaders: {
@@ -94,9 +65,5 @@ export class InterceptorInterceptor implements HttpInterceptor {
 
   }
 }
-
-
-
-
 
 

@@ -12,7 +12,7 @@ import { JobService } from 'src/app/service/job.service';
 export class JobListComponent implements OnInit {
   role: number;
 
-  constructor(private jobService: JobService, private modalService: NgbModal,private service:AuthService) {
+  constructor(private jobService: JobService, private modalService: NgbModal, private service: AuthService) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
 
@@ -21,6 +21,7 @@ export class JobListComponent implements OnInit {
   page: number = 1;
 
   sortBy: string = 'jobId';
+  
   sortDesc: boolean = false;
 
   limit: number = 5;
@@ -30,6 +31,8 @@ export class JobListComponent implements OnInit {
   qualifications = this.jobService.qualifications;
 
   status = this.jobService.status;
+
+  showSpinner: boolean = false
 
   statusCount: { [key: string]: number } = {};
 
@@ -171,13 +174,16 @@ export class JobListComponent implements OnInit {
   }
 
   changeJobStatus(jobId: number, status: number): void {
+    this.showSpinner = true
     this.jobService.changeJobStatus(jobId, status).subscribe({
       next: (response: any) => {
         console.log('Status Changed', response);
+        this.showSpinner = false
         this.listJobs();
       },
-      error(err) {
-        console.log(err);
+      error:(error:any) =>{
+        console.log(error);
+        this.showSpinner = false;
       },
     });
   }

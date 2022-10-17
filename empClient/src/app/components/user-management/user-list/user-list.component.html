@@ -160,16 +160,12 @@
                         <td>{{ user.userName }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.updateDate }}</td>
-                        <td>{{ status[user.status] }}</td>
-                        <td>{{ roles[user.role] }}</td>
+                        <td >
+                            <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status[user.status] }}</span></p>
+                            <p *ngIf="user.status == 0" ><span class="badge bg-danger">{{ status[user.status] }}</span></p>
+                        </td>
 
-                        <!-- <td>
-                        <a class="edit" data-toggle="modal" routerLink="/user-form/{{ user.userId }}"><em
-                                class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</em></a>
-                        <a class="delete" data-toggle="modal" (click)="deleteUser(user.userId)">
-                            <em class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</em>
-                        </a>
-                    </td> -->
+                        <td>{{ roles[user.role] }}</td>
 
                         <td *ngIf="role==2">
                             <button placement="top" ngbTooltip="Edit user" class="btn"><a
@@ -259,4 +255,3 @@
 
     </div>
 </ng-template>
-<!-- <app-test-component></app-test-component> -->

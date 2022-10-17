@@ -32,6 +32,9 @@ export class JobRequestListComponent implements OnInit {
 
   sortDesc: boolean = false;
 
+  showSpinner: boolean = false
+
+
   // tableHeight: number = 73 * (this.limit + 1);
 
   status = this.jobRequestService.status;
@@ -111,6 +114,8 @@ export class JobRequestListComponent implements OnInit {
 
   updateStatus(jobRequestId: number, status: number): void {
     console.log(this.remark);
+    this.showSpinner = true
+
 
     let body = {
       status: status,
@@ -121,8 +126,11 @@ export class JobRequestListComponent implements OnInit {
       next: (response: any) => {
         console.log(response);
         this.listJobRequests();
+        this.showSpinner = false
+
       },
       error: (err: any) => {
+        this.showSpinner = false
         console.error(err);
         if (err.error.status == 400) {
           if (err.error.message == 'Invalid Operation') {
