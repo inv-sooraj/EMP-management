@@ -77,7 +77,6 @@ export class JobApplyComponent implements OnInit {
     console.log(this.limit);
     this.page = 1;
     this.listJobs();
-    // this.tableHeight = 73 * (this.limit + 1);
   }
 
   setSearch() {

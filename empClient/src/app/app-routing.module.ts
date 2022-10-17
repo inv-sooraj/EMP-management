@@ -16,6 +16,7 @@ import { RegisterComponent } from './core/components/register/register.component
 
 const routes: Routes = [
   {
+    
     path: 'login',
     component: LoginComponent,
     canActivate: [LoginGuard],
@@ -68,7 +69,9 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login',
+    pathMatch:'full'
   },
+  
 ];
 
 @NgModule({
