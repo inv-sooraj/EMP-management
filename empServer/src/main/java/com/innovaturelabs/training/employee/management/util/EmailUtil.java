@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
+import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator.PasswordToken;
 
 @Component
@@ -47,8 +48,8 @@ public class EmailUtil {
 
         String status = (approved.booleanValue() ? "Approved" : "Rejected");
 
-        String subject = "Employee Management : Job " + status
-                + " For JobId : " + jobId;
+        String subject = "Job status " + status;
+                
         String body = "<h2>Job Status </h2>" +
                 "Job Id : " + jobId + "<br>" +
                 "Job Title : " + jobTitle + "<br>" +
@@ -57,18 +58,39 @@ public class EmailUtil {
 
     }
 
-    public void sendJobRequestStatus(String email, Integer jobRequestId, String jobTitle, String message,
+    public void sendJobRequestStatus(String email,String name, Integer jobRequestId, String jobTitle, String message,
             Boolean approved) {
 
         String status = (approved.booleanValue() ? "Approved" : "Rejected");
 
-        String subject = "Employee Management : Job Request " + status
-                + " For Job Request Id : " + jobRequestId;
-        String body = "<h2>Job Request Status </h2>" +
-                "Job Request Id : " + jobRequestId + "<br>" +
-                "Job Title : " + jobTitle + "<br>" +
-                "Remark : " + message + "<br>" +
-                "Status : " + status;
+        String subject = " Job Request " + status;
+                // + " For Job Request Id : " + jobRequestId;
+        String body = "<h4>Dear " + name + "</h4> <br>" +
+                "We are "+status+ "your request for the profile "+jobTitle+" having <b>job request id "+ jobRequestId +"</b>.<br>" +
+                "Best regards<br><b>botjobs</b>"+
+                "Remark : " + message + "<br>" ;
+                
+        sendEmail(email, subject, body);
+
+    }
+
+    // Email service for deleted user
+
+    public void sendUserDeleteAlertMail(Integer userId, String email, String name) {
+        String body;
+        String subject = "User Account Deactivated";
+        if (userId.equals(SecurityUtil.getCurrentUserId())) {
+
+            body = "<h4>Dear " + name + "</h4> <br>" +
+                    "<p>Your request for deactivating account in botjobs.com with <b> user id " + userId
+                    + " </b>is successfully registred.  </p>  <br>Best regards <br><b>botjobs</b><br>Remark : <b> If not done by you please feel free to contact us.</b>" ;
+        } else {
+            body = "<h4>Dear " + name + "</h4> <br>" +
+                    "<p>Your account in botjobs.com with <b>user id " + userId
+                    + "</b> has been deactivated by higher authorities. </p> <br> <br>Best regards <br><b>botjobs</b><br>Remark : <b> If you have any quires please feel free to contact us. </b> ";
+
+        }
+
         sendEmail(email, subject, body);
 
     }

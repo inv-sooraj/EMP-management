@@ -16,8 +16,6 @@
                             <div class="col-4 text-right">
                                 <span>{{(sta.value*100/(statusCount["PENDING"]+statusCount["APPROVED"]+statusCount["COMPLETED"]+statusCount["DELETED"])).toFixed(2)}}
                                     % </span>
-
-
                             </div>
                         </div>
                         <div class="progress mt-1 " data-height="8" style="height: 8px;">
@@ -197,11 +195,11 @@
                         <td *ngIf="role==2 ||role==1  ">
 
 
-                            <button placement="top"  ngbTooltip="Edit job" class="btn btn-sort"
+                            <button placement="top" ngbTooltip="Edit job" class="btn btn-sort"
                                 (click)="open(formModule,job.jobId)"><a class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
-                            <button [disabled]="job.status==3" placement="top" ngbTooltip="Delete job" class="btn btn-sort"
-                                (click)="changeJobStatus(job.jobId,3)">
+                            <button [disabled]="job.status==3" placement="top" ngbTooltip="Delete job"
+                                class="btn btn-sort" (click)="changeJobStatus(job.jobId,3)">
                                 <a class="bi bi-trash-fill delete"></a>
                             </button>
 
@@ -212,8 +210,8 @@
                             </button>
 
                             &nbsp;
-                            <button [disabled]="job.status==2" placement="top" ngbTooltip="Mark as Compled" class="btn btn-sort"
-                                (click)="changeJobStatus(job.jobId,2)">
+                            <button [disabled]="job.status==2" placement="top" ngbTooltip="Mark as Compled"
+                                class="btn btn-sort" (click)="changeJobStatus(job.jobId,2)">
                                 <em class="bi bi-c-circle-fill"></em>
                             </button>
 

@@ -35,6 +35,7 @@ public interface UserRepository extends Repository<User, Integer> {
     Optional<User> findByEmailAndStatus(String email, Byte status);
 
     Optional<User> findByUserName(String userName);
+
     Optional<User> findByUserNameLike(String userName);
 
     Optional<User> findByUserId(Integer userId);
