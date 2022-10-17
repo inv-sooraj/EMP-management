@@ -29,7 +29,6 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.listUsers();
     this.getRoleStat();
-    this.service.checkExp();
   }
 
   page: number = 1;

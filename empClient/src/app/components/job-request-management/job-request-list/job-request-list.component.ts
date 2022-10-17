@@ -40,7 +40,6 @@ export class JobRequestListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobRequests();
-    this.service.checkExp();
   }
 
   numSeq(n: number): Array<number> {
@@ -84,7 +83,6 @@ export class JobRequestListComponent implements OnInit {
     console.log(this.limit);
     this.page = 1;
     this.listJobRequests();
-    // this.tableHeight = 73 * (this.limit + 1);
   }
 
   setSearch() {

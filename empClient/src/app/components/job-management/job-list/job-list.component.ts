@@ -35,7 +35,7 @@ export class JobListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobs();
-    this.service.checkExp();
+    this.service.checkExpired()
   }
 
   numSeq(n: number): Array<number> {
