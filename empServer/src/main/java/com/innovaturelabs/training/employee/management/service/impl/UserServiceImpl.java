@@ -4,11 +4,13 @@ package com.innovaturelabs.training.employee.management.service.impl;
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.security.SecureRandom;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -80,6 +82,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ForgotPasswordTokenGenerator forgotPasswordTokenGenerator;
+
+    private final Set<String> userFields = Arrays.stream(User.class.getDeclaredFields()).map(Field::getName)
+            .collect(Collectors.toSet());
 
     @Override
     public UserView add(UserForm form) {
@@ -170,7 +175,8 @@ public class UserServiceImpl implements UserService {
         }
 
         String id = formatUserId(user.getUserId());
-        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry());
+        Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id + String.valueOf(user.getRole()),
+                securityConfig.getAccessTokenExpiry());
         return new LoginView(
                 user,
                 new LoginView.TokenView(accessToken.value, accessToken.expiry),
@@ -184,18 +190,13 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Illegal Access");
         }
 
-        if (!userRepository.findColumns().contains(sortBy)) {
-            sortBy = "user_id";
-        }
+        // if (!userRepository.findColumns().contains(sortBy)) {
+        // sortBy = "user_id";
+        // }
 
-        if (page <= 0) {
-            page = 1;
-        }
+        sortBy = userFields.contains(sortBy) ? sortBy : "userId";
 
-        ArrayList<Byte> status = new ArrayList<>();
-
-        status.add(User.Status.ACTIVE.value);
-        status.add(User.Status.INACTIVE.value);
+        byte[] status = { User.Status.INACTIVE.value, User.Status.ACTIVE.value };
 
         Page<User> users = userRepository.findAllByStatus(status, search,
                 PageRequest.of(page - 1, limit, Sort.by(

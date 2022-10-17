@@ -67,7 +67,9 @@ public class UsersController {
             @RequestParam(name = "sortBy", defaultValue = "user_id") String sortBy,
             @RequestParam(name = "search", defaultValue = "") String search) {
 
-        return userService.list(page, limit, sortBy, search,desc);
+        page = page <= 0 ? 1 : page;
+
+        return userService.list(page, limit, sortBy, search, desc);
     }
 
     @PutMapping("/username")
