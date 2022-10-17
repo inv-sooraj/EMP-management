@@ -20,7 +20,7 @@ export class JobListComponent implements OnInit {
 
   page: number = 1;
 
-  sortBy: string = 'job_id';
+  sortBy: string = 'jobId';
   sortDesc: boolean = false;
 
   limit: number = 5;

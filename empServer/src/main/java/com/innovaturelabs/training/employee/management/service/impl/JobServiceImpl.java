@@ -1,10 +1,12 @@
 
 package com.innovaturelabs.training.employee.management.service.impl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +44,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private EmailUtil emailUtil;
+
+    private final Set<String> jobFields = Arrays.stream(Job.class.getDeclaredFields()).map(Field::getName)
+            .collect(Collectors.toSet());
 
     @Override
     public JobView add(JobForm form) {
@@ -96,7 +101,9 @@ public class JobServiceImpl implements JobService {
     public Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc, String search,
             Integer selectedStatus, Boolean apply) {
 
-        sortBy = jobRepository.findColumns().contains(sortBy) ? sortBy : "job_id";
+        // sortBy = jobRepository.findColumns().contains(sortBy) ? sortBy : "job_id";
+
+        sortBy = jobFields.contains(sortBy) ? sortBy : "jobId";
 
         Page<Job> jobs;
 
@@ -135,7 +142,7 @@ public class JobServiceImpl implements JobService {
 
             }
 
-            jobs = jobRepository.findAllByStatus(status, search,
+            jobs = jobRepository.findByStatusInAndTitleContainingOrDescriptionContaining(status, search,
                     PageRequest.of(page - 1, limit, Sort.by(
                             desc.booleanValue() ? Direction.DESC : Direction.ASC,
                             sortBy)));

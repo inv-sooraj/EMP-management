@@ -34,7 +34,7 @@ export class UserListComponent implements OnInit {
 
   page: number = 1;
 
-  sortBy: string = 'job_id';
+  sortBy: string = 'userId';
 
   limit: number = 5;
 
