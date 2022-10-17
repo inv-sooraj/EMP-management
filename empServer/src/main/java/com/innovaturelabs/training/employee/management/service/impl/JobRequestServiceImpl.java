@@ -168,9 +168,10 @@ public class JobRequestServiceImpl implements JobRequestService {
             if (job.getOpenings() <= 0) {
                 job.setStatus(Job.Status.COMPLETED.value);
             }
+            
+            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(),jobRequest.getUser().getName(), jobRequestId,
+                    jobRequest.getJob().getTitle(),form.getRemark(), true);
 
-            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequestId,
-                    jobRequest.getJob().getTitle(), form.getRemark(), true);
 
             jobRepository.save(job);
 
@@ -181,8 +182,9 @@ public class JobRequestServiceImpl implements JobRequestService {
                 job.setStatus(Job.Status.APPROVED.value);
             }
 
-            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequestId,
-                    jobRequest.getJob().getTitle(), form.getRemark(), false);
+            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(),jobRequest.getUser().getName(), jobRequestId,
+                    jobRequest.getJob().getTitle(), form.getRemark(),false);
+
 
             job.setOpenings(job.getOpenings() + 1);
 
