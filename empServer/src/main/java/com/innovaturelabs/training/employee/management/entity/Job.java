@@ -34,10 +34,11 @@ public class Job {
     }
 
     public enum Qualification {
-        SSLC((byte) 0),
-        PLUSTWO((byte) 1),
-        UG((byte) 2),
-        PG((byte) 3);
+        NIL((byte) 0),
+        SSLC((byte) 1),
+        PLUSTWO((byte) 2),
+        UG((byte) 3),
+        PG((byte) 4);
 
         public final byte value;
 
@@ -106,8 +107,6 @@ public class Job {
         return this;
     }
 
-    
-
     public Job delete() {
 
         this.status = Job.Status.DELETED.value;
@@ -116,7 +115,6 @@ public class Job {
 
         return this;
     }
-
 
     public Integer getJobId() {
         return jobId;

@@ -55,7 +55,7 @@ export class AuthService {
 
   newToken() {
     let token = localStorage.getItem('refreshToken');
-    return this.http.put(environment.apiUrl + '/login/refresh', token);
+    return this.http.put(environment.apiUrl + '/login',token);
   }
 
 
@@ -73,17 +73,6 @@ export class AuthService {
     return false
   }
 
-  checkExp() {
-    if (this.checkExpired()) {
-      console.log("Exxxxxxxxxxxxxxxxxxxxpired");
-      this.newToken().subscribe({
-        next: (response: any) => {
-          console.log(response);
-          localStorage.setItem('accessTokenExpiry', response.accessToken.expiry);
-          localStorage.setItem('accessToken', response.accessToken.value);
-        },
-        error: (error: any) => console.log(error)
-      })
-    }
-  }
+  
+ 
 }

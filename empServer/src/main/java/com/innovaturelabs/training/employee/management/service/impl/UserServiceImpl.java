@@ -235,16 +235,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer userId) {
 
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(NotFoundException::new);
+        if (SecurityUtil.isAdmin() || SecurityUtil.getCurrentUserId().equals(userId)) {
+            User user = userRepository.findByUserId(userId)
+                    .orElseThrow(NotFoundException::new);
 
-        if (user.getStatus() == User.Status.INACTIVE.value) {
-            user.setStatus(User.Status.ACTIVE.value);
-        } else {
-            user.setStatus(User.Status.INACTIVE.value);
-        }
-        user.setUpdateDate(new Date());
-        userRepository.save(user);
+            if (user.getStatus() == User.Status.INACTIVE.value) {
+                user.setStatus(User.Status.ACTIVE.value);
+                emailUtil.sendUserActiveAlertMAil(userId, user.getEmail(), user.getName());
+            } else {
+
+                user.setStatus(User.Status.INACTIVE.value);
+                emailUtil.sendUserDeleteAlertMail(userId, user.getEmail(), user.getName());
+            }
+            user.setUpdateDate(new Date());
+            userRepository.save(user);
+
+        } else
+            throw new BadRequestException("Invalid user");
 
     }
 
@@ -476,6 +483,17 @@ public class UserServiceImpl implements UserService {
 
     private static String formatUserId(Integer userId) {
         return String.format("%010d", userId);
+    }
+
+    @Override
+    public UserDetailView deleteProfilePic(Integer userId) {
+
+        return new UserDetailView(userRepository.findByUserId(userId).map(
+                user -> {
+                    user.setProfilePic(null);
+                    user.setUpdateDate(new Date());
+                    return user;
+                }).orElseThrow(() -> new BadRequestException("Invalid User")));
     }
 
 }

@@ -160,11 +160,12 @@
                         <td>{{ user.userName }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.updateDate }}</td>
-                        <td>{{ status.get(user.status) }}</td>
-
+                        <td >
+                            <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status.get(user.status) }}</span></p>
+                            <p *ngIf="user.status == 0" ><span class="badge bg-danger">{{status.get(user.status) }}</span></p>
+                        </td>
 
                         <td>{{ roles.get(user.role) }}</td>
-
 
                         <td *ngIf="role==2">
                             <button placement="top" ngbTooltip="Edit user" class="btn"><a
@@ -256,7 +257,6 @@
 </ng-template>
 
 
-
 <ng-template #csvDowloadModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Select Options</h4>
@@ -325,3 +325,6 @@
 
     </div>
 </ng-template>
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>

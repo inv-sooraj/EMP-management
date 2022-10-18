@@ -101,37 +101,4 @@ export class UserProfileComponent implements OnInit {
       },
     });
   }
-
-  changePassword(): void {
-    if (!this.changePasswordForm.valid) {
-      console.log('Validation Failed');
-      this.changePasswordForm.markAllAsTouched();
-      return;
-    }
-
-    if (
-      this.changePasswordForm.controls['newPassword'].value !=
-      this.changePasswordForm.controls['confirmNewPassword'].value
-    ) {
-      alert('Password Should Match');
-      return;
-    }
-
-    let param = {
-      currentPassword:
-        this.changePasswordForm.controls['currentPassword'].value,
-      newPassword: this.changePasswordForm.controls['newPassword'].value,
-    };
-
-    this.userService.changePassword(param).subscribe({
-      next: (response: any) => {
-        console.log('Password Changed', response);
-        alert('Password Changed');
-        this.modalService.dismissAll();
-      },
-      error: (error: any) => {
-        console.log('error', error.error);
-      },
-    });
-  }
 }

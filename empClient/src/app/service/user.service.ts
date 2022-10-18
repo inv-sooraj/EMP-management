@@ -86,4 +86,8 @@ export class UserService {
   getRoleStat(): Observable<any> {
     return this.http.get(this.apiUrl + '/users/role-stat');
   }
+
+  deactivateUser() {
+    return this.http.put(this.apiUrl + '/users/delete','');
+  }
 }

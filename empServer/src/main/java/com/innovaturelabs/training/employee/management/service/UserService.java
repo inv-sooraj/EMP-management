@@ -47,7 +47,7 @@ public interface UserService {
 
     LoginView refresh(String refreshToken) throws BadRequestException;
 
-    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search,Boolean desc);
+    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc);
 
     UserDetailView updateUserDetails(UserDetailForm form);
 
@@ -66,5 +66,7 @@ public interface UserService {
     void forgotPassword(String email);
 
     void resetPassword(String token, String password);
+
+    UserDetailView deleteProfilePic(Integer userId);
 
 }

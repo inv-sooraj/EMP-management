@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,7 +70,6 @@ public class UsersController {
             @RequestParam(name = "search", defaultValue = "") String search) {
 
         page = page <= 0 ? 1 : page;
-
         return userService.list(page, limit, sortBy, search, desc);
     }
 
@@ -94,6 +94,11 @@ public class UsersController {
     @PutMapping("/delete/{UserId}")
     public void delete(@PathVariable("UserId") Integer userId) {
         userService.delete(userId);
+    }
+
+    @PutMapping("/delete")
+    public void delete() {
+        userService.delete(SecurityUtil.getCurrentUserId());
     }
 
     @PutMapping("/delete/selected")
@@ -133,6 +138,11 @@ public class UsersController {
     @GetMapping("/role-stat")
     public Collection<StatusView> count() {
         return userService.getRoleStat();
+    }
+
+    @DeleteMapping("/profile/deleted/{userId}")
+    public UserDetailView deleteProfilePic(@PathVariable Integer userId) {
+        return userService.deleteProfilePic(userId);
     }
 
 }

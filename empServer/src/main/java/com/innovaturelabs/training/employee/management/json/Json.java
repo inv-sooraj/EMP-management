@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-
 public final class Json {
 
     public static final String TIME_ZONE = "UTC";

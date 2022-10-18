@@ -25,8 +25,10 @@ import { NgIdleModule } from '@ng-idle/core';
 import { TestComponentComponent } from './components/test-component/test-component.component';
 
 import { UserchartComponent } from './components/user-management/userchart/userchart.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatCommonModule } from '@angular/material/core';
+
+import { ToastrModule } from 'ngx-toastr';
+import { HotToastModule } from '@ngneat/hot-toast';
+
 
 @NgModule({
   declarations: [
@@ -61,11 +63,10 @@ import { MatCommonModule } from '@angular/material/core';
     ReactiveFormsModule,
     HttpClientModule,
     NgIdleModule.forRoot(),
-    BrowserAnimationsModule,
-    MatCommonModule,
-    
-    
-    
+
+    ToastrModule.forRoot(),
+    HotToastModule.forRoot()
+
   ],
   providers: [
     {

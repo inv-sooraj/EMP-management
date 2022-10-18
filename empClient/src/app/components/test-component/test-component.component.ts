@@ -16,7 +16,7 @@ export class TestComponentComponent implements OnInit {
   timer:any;
 
   constructor(private idle: Idle, cd: ChangeDetectorRef,private modalService: NgbModal,private service: AuthService) {
-    idle.setIdle(30); // how long can they be inactive before considered idle, in seconds
+    idle.setIdle(300); // how long can they be inactive before considered idle, in seconds
     idle.setTimeout(10); // how long can they be idle before considered timed out, in seconds
     idle.setInterrupts(DEFAULT_INTERRUPTSOURCES); // provide sources that will "interrupt" aka provide events indicating the user is active
 

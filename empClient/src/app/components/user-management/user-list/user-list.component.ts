@@ -13,6 +13,8 @@ import { UserService } from 'src/app/service/user.service';
 export class UserListComponent implements OnInit {
   role: number;
 
+  showSpinner: boolean = false
+
   status = this.userService.status;
 
   roles = this.userService.roles;
@@ -31,6 +33,7 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.listUsers();
     this.getRoleStat();
+    
     this.service.checkExp();
 
     console.log(this.csvData);
@@ -38,6 +41,7 @@ export class UserListComponent implements OnInit {
     console.log(this.today);
 
     this.csvData.endDate.value = this.today;
+
   }
 
   page: number = 1;
@@ -120,12 +124,17 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(userId: number) {
+    this.showSpinner = true
+
     this.userService.deleteUser(userId).subscribe({
       next: (response: any) => {
+        this.showSpinner = false
+
         console.log('deleted', userId, response);
         this.listUsers();
       },
-      error(err) {
+      error:(err) =>{
+        this.showSpinner = false
         console.log(err);
       },
     });

@@ -203,9 +203,9 @@ public class JobServiceImpl implements JobService {
              */
             if (SecurityUtil.isAdmin() && !SecurityUtil.getCurrentUserId().equals(job.getUser().getUserId())) {
                 if (status == Job.Status.APPROVED.value) {
-                    emailUtil.sendJobStatus(job.getUser().getEmail(), jobId, job.getTitle(), true);
+                    emailUtil.sendJobStatus(job.getUser().getEmail(),job.getUser().getName(), jobId, job.getTitle(), true);
                 } else if (status == Job.Status.DELETED.value) {
-                    emailUtil.sendJobStatus(job.getUser().getEmail(), jobId, job.getTitle(), false);
+                    emailUtil.sendJobStatus(job.getUser().getEmail(),job.getUser().getName(), jobId, job.getTitle(), false);
                 }
             }
 
