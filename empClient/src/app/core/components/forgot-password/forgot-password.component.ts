@@ -30,7 +30,6 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
   }
 
   userEmailForm: FormGroup = new FormGroup({
