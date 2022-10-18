@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { JobRequestService } from 'src/app/service/job-request.service';
 import { JobService } from 'src/app/service/job.service';
@@ -15,7 +16,8 @@ export class JobRequestListComponent implements OnInit {
   constructor(
     private jobRequestService: JobRequestService,
     private modalService: NgbModal,
-    private service:AuthService
+    private service:AuthService,
+    private toastService: ToastrService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
@@ -134,7 +136,7 @@ export class JobRequestListComponent implements OnInit {
         console.error(err);
         if (err.error.status == 400) {
           if (err.error.message == 'Invalid Operation') {
-            alert('Job Already Completed');
+            this.toastService.error('Job is Completed!')
           } else alert(err.error.message);
         }
       },
