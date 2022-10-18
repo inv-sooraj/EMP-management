@@ -264,6 +264,7 @@ public class UserServiceImpl implements UserService {
 
             if (user.isPresent()) {
                 userRepository.save(user.get().delete());
+                emailUtil.sendUserDeleteAlertMail(userId, user.get().getEmail(), user.get().getName());
             }
         }
     }
@@ -360,7 +361,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Password Doesnot Match");
         }
 
-        emailUtil.changePasswordMail(user.getEmail(),user.getName());
+        emailUtil.changePasswordMail(user.getEmail(), user.getName());
 
         user.setPassword(passwordEncoder.encode(form.getNewPassword()));
 
