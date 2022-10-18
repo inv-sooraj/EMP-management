@@ -69,7 +69,7 @@
 
             <div class="row">
 
-                <div class="col-6">
+                <div class="col-3">
                     Show
                     <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="setLimit()">
                         <option selected="selected" [ngValue]="3">3</option>
@@ -79,6 +79,22 @@
                     entries
                 </div>
 
+
+                <div class="col-3">
+                    <label for="filter">
+
+                        <em class="bi bi-funnel-fill"></em>
+                        Status : &nbsp;
+                    </label>
+                    <select id="filter" class="form-select w-auto d-inline" [(ngModel)]="selectedStatus"
+                        (change)="setLimit()">
+                        <option selected="selected" [ngValue]="3">All</option>
+                        <option *ngFor="let filter of status | keyvalue" [ngValue]="filter.key">{{filter.value}}
+                        </option>
+
+                    </select>
+
+                </div>
 
                 <div class="col-6 text-end">
                     <input placeholder="search" class="form-control w-auto d-inline align-self-end" type="text"
@@ -160,9 +176,13 @@
                         <td>{{ user.userName }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.updateDate }}</td>
-                        <td >
-                            <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status.get(user.status) }}</span></p>
-                            <p *ngIf="user.status == 0" ><span class="badge bg-danger">{{status.get(user.status) }}</span></p>
+                        <td>
+                            <p *ngIf="user.status == 0"><span class="badge bg-warning">{{status.get(user.status)
+                                    }}</span></p>
+                            <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status.get(user.status)
+                                    }}</span></p>
+                            <p *ngIf="user.status == 2"><span class="badge bg-danger">{{status.get(user.status)
+                                    }}</span></p>
                         </td>
 
                         <td>{{ roles.get(user.role) }}</td>
@@ -172,12 +192,12 @@
                                     (click)="open(userEditModal);userId=user.userId"
                                     class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
-                            <button *ngIf="user.status==1" placement="top" ngbTooltip="Delete User : {{user.name}}"
-                                class="btn" (click)="deleteUser(user.userId)">
+                            <button *ngIf="user.status!=2" [disabled]="user.status==0" placement="top" ngbTooltip="Delete User : {{user.name}}"
+                                class="btn btn-sort" (click)="deleteUser(user.userId)">
                                 <a class="bi bi-trash-fill delete"></a>
                             </button>
 
-                            <button *ngIf="user.status==0" placement="top" ngbTooltip="Activate User : {{user.name}}"
+                            <button *ngIf="user.status==2" placement="top" ngbTooltip="Activate User : {{user.name}}"
                                 class="btn" (click)="deleteUser(user.userId)">
                                 <a class="bi bi-check2-square"></a>
                             </button>

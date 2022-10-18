@@ -2,6 +2,7 @@
 package com.innovaturelabs.training.employee.management.service.impl;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -160,21 +161,35 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public void jobCsv(HttpServletResponse httpServletResponse) {
+    public void jobCsv(HttpServletResponse httpServletResponse, Collection<Byte> status,
+            Date startDate, Date endDate) {
 
         Collection<JobView> exportlist;
 
         if (SecurityUtil.isAdmin()) {
-            exportlist = jobRepository.findAll().stream().map(JobView::new)
+            exportlist = jobRepository.findQueryCsv(status, startDate,
+                    Date.from(endDate.toInstant().plus(Duration.ofDays(1)))).stream().map(JobView::new)
                     .collect(Collectors.toList());
         } else {
 
-            exportlist = jobRepository.findAllByUserUserId(SecurityUtil.getCurrentUserId()).stream().map(JobView::new)
+            exportlist = jobRepository.findQueryCsvEmployer(SecurityUtil.getCurrentUserId(), status, startDate,
+                    Date.from(endDate.toInstant().plus(Duration.ofDays(1)))).stream().map(JobView::new)
                     .collect(Collectors.toList());
 
         }
 
-        CsvDownload.download(httpServletResponse, exportlist, "Jobs");
+        if (exportlist.isEmpty()) {
+            throw new NotFoundException("No Records Found");
+        }
+
+        if (exportlist.size() > CsvDownload.MAX_LENGTH) {
+            throw new BadRequestException(
+                    "Max Record Length : " + CsvDownload.MAX_LENGTH + " , Current : " + exportlist.size());
+        }
+
+        String[] exclude = { "eligible" };
+
+        CsvDownload.download(httpServletResponse, exportlist, "Jobs", exclude);
 
     }
 
@@ -203,9 +218,11 @@ public class JobServiceImpl implements JobService {
              */
             if (SecurityUtil.isAdmin() && !SecurityUtil.getCurrentUserId().equals(job.getUser().getUserId())) {
                 if (status == Job.Status.APPROVED.value) {
-                    emailUtil.sendJobStatus(job.getUser().getEmail(),job.getUser().getName(), jobId, job.getTitle(), true);
+                    emailUtil.sendJobStatus(job.getUser().getEmail(), job.getUser().getName(), jobId, job.getTitle(),
+                            true);
                 } else if (status == Job.Status.DELETED.value) {
-                    emailUtil.sendJobStatus(job.getUser().getEmail(),job.getUser().getName(), jobId, job.getTitle(), false);
+                    emailUtil.sendJobStatus(job.getUser().getEmail(), job.getUser().getName(), jobId, job.getTitle(),
+                            false);
                 }
             }
 

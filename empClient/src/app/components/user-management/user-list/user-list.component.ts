@@ -14,7 +14,7 @@ import { UserService } from 'src/app/service/user.service';
 export class UserListComponent implements OnInit {
   role: number;
 
-  showSpinner: boolean = false
+  showSpinner: boolean = false;
 
   status = this.userService.status;
 
@@ -24,6 +24,7 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+
     private modalService: NgbModal,
     private service: AuthService,
     private toastService: ToastrService
@@ -36,12 +37,9 @@ export class UserListComponent implements OnInit {
     this.listUsers();
     this.getRoleStat();
 
-    console.log(this.csvData);
     this.today = new Date().toISOString().split('T')[0];
-    console.log(this.today);
 
     this.csvData.endDate.value = this.today;
-
   }
 
   page: number = 1;
@@ -55,6 +53,8 @@ export class UserListComponent implements OnInit {
   sortDesc: boolean = false;
 
   userList: any = {};
+
+  selectedStatus: number = 3;
 
   numSeq(n: number): Array<number> {
     return Array(n);
@@ -110,6 +110,7 @@ export class UserListComponent implements OnInit {
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)
+      .append('status', this.selectedStatus)
       .append('search', this.search);
 
     this.userService.getUsers(queryParams).subscribe({
@@ -124,17 +125,19 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(userId: number) {
-    this.showSpinner = true
+    this.showSpinner = true;
 
     this.userService.deleteUser(userId).subscribe({
       next: (response: any) => {
-        this.showSpinner = false
+        this.showSpinner = false;
 
         console.log('deleted', userId, response);
         this.listUsers();
       },
       error: (err) => {
-        this.showSpinner = false
+
+        this.showSpinner = false;
+
         console.log(err);
       },
     });
@@ -210,10 +213,10 @@ export class UserListComponent implements OnInit {
       .append('startDate', this.csvData.startDate.value.replaceAll('-', '/'))
       .append('endDate', this.csvData.endDate.value.replaceAll('-', '/'));
 
-    console.log(queryParams);
-
     this.userService.downloadCsv(queryParams).subscribe({
       next: (response: any) => {
+        console.log(response);
+
         let anchor = document.createElement('a');
         anchor.download = response.headers.get('Content-Disposition');
         anchor.href = URL.createObjectURL(
@@ -223,9 +226,10 @@ export class UserListComponent implements OnInit {
 
         this.modalService.dismissAll();
       },
-      error: (err) => {
-        console.log(err);
 
+      error: (err: any) => {
+
+        console.log(err);
         if (err.status == 404) {
           this.toastService.warning('No Records Found!')
         } else if (err.status == 400) {
@@ -286,4 +290,6 @@ export class UserListComponent implements OnInit {
   openLg(content: any) {
     this.modalService.open(content, { size: 'lg' });
   }
+
+  
 }

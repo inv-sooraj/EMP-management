@@ -134,8 +134,9 @@ public class JobRequestServiceImpl implements JobRequestService {
                     .map(JobRequestView::new).collect(Collectors.toList());
 
         }
+        String[] exclude = {};
 
-        CsvDownload.download(httpServletResponse, exportlist, "Job_Requests");
+        CsvDownload.download(httpServletResponse, exportlist, "Job_Requests", exclude);
 
     }
 

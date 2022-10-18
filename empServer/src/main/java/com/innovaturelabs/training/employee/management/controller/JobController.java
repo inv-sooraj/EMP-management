@@ -2,6 +2,7 @@
 package com.innovaturelabs.training.employee.management.controller;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -71,8 +72,11 @@ public class JobController {
     }
 
     @GetMapping("/download")
-    public void jobCsv(HttpServletResponse httpServletResponse) {
-        jobService.jobCsv(httpServletResponse);
+    public void jobCsv(HttpServletResponse httpServletResponse,
+            @RequestParam(name = "status") Collection<Byte> status,
+            @RequestParam(name = "startDate") Date startDate,
+            @RequestParam(name = "endDate") Date endDate) {
+        jobService.jobCsv(httpServletResponse, status, startDate, endDate);
     }
 
     @GetMapping("/stat")

@@ -67,10 +67,11 @@ public class UsersController {
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
             @RequestParam(name = "desc", defaultValue = "false") Boolean desc,
             @RequestParam(name = "sortBy", defaultValue = "user_id") String sortBy,
+            @RequestParam(name = "status", defaultValue = "3") Byte status,
             @RequestParam(name = "search", defaultValue = "") String search) {
 
         page = page <= 0 ? 1 : page;
-        return userService.list(page, limit, sortBy, search, desc);
+        return userService.list(page, limit, sortBy, search,status, desc);
     }
 
     @PutMapping("/username")

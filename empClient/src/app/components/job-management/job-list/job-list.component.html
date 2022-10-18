@@ -67,7 +67,7 @@
                             &nbsp;Approve Jobs
                         </button>
 
-                        <button placement="bottom" ngbTooltip="Download job list as Csv" (click)="downloadCsv()"
+                        <button placement="bottom" ngbTooltip="Download job list as Csv" (click)="open(csvDowloadModal);"
                             class="btn btn-secondary">
                             <em class="bi bi-download"></em>
                             &nbsp;Download
@@ -185,15 +185,24 @@
                         <td>{{ job.jobId }}</td>
                         <td>{{ job.title }}</td>
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
-                        <td>{{ qualifications[job.qualification] }}</td>
+                        <td>{{ qualifications.get(job.qualification) }}</td>
                         <td>{{ job.openings }}</td>
-                        <td>{{ job.userId }}</td>
+                        <td>
+                            <div ngbTooltip="User Id : {{job.userId}}">
+
+                                {{ job.userName }}
+                            </div> 
+                         </td>
                         <td>{{ job.updateDate|date}}</td>
-                        <td >
-                            <p *ngIf="job.status == 0" ><span class="badge bg-warning clr">{{ status[job.status] }}</span></p>
-                            <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status[job.status] }}</span></p>
-                            <p *ngIf="job.status == 2"><span class="badge bg-primary">{{ status[job.status] }}</span></p>
-                            <p *ngIf="job.status == 3"><span class="badge bg-danger">{{ status[job.status] }}</span></p>
+                        <td>
+                            <p *ngIf="job.status == 0"><span class="badge bg-warning clr">{{ status.get(job.status)
+                                    }}</span></p>
+                            <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status.get(job.status)
+                                    }}</span></p>
+                            <p *ngIf="job.status == 2"><span class="badge bg-primary">{{ status.get(job.status)
+                                    }}</span></p>
+                            <p *ngIf="job.status == 3"><span class="badge bg-danger">{{ status.get(job.status) }}</span>
+                            </p>
                         </td>
 
                         <td *ngIf="role==2 ||role==1  ">
@@ -216,7 +225,7 @@
                             &nbsp;
                             <button [disabled]="job.status==2" placement="top" ngbTooltip="Mark as Compled"
                                 class="btn btn-sort" (click)="changeJobStatus(job.jobId,2)">
-                                <em class="bi bi-c-circle-fill"></em>
+                                <em class="bi bi-bag-check-fill"></em>
                             </button>
 
 
@@ -270,6 +279,66 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
                 *ngIf="jobId">Edit</label><label *ngIf="!jobId">Add</label></button>
+    </div>
+</ng-template>
+
+
+
+
+<ng-template #csvDowloadModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Select Options</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <div class="row">
+
+            
+            <div class="col-6">
+                <label class="form-label">
+                    <strong>Status</strong>
+                </label>
+
+                <div class="col-6" *ngFor="let stat of status|keyvalue">
+                    <input type="checkbox" (change)="changeCsvStat($event,stat.key,csvData.status)"
+                        [checked]="csvData.status.has(stat.key)"
+                        [disabled]="csvData.status.size==1 && csvData.status.has(stat.key)">
+                    {{stat.value}}
+                </div>
+            </div>
+            <hr class="mt-2">
+
+            <div class="col-6">
+                <label for="startDate" class="form-label d-inline me-2">Start</label>
+                <input [max]="today" onkeydown="return false" [formControl]="csvData.startDate" id="startDate"
+                    type="date" class="form-control w-75 d-inline">
+
+                <div class="text-danger" *ngIf="csvData.startDate.errors?.['required'] && csvData.startDate.touched ">
+                    Select Start date
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <label for="startDate" class="form-label  d-inline me-2">End</label>
+                <input [max]="today" onkeydown="return false" [formControl]="csvData.endDate" type="date"
+                    class="form-control w-75  d-inline">
+
+                <div class="text-danger" *ngIf="csvData.endDate.errors?.['required'] ">
+                    Select End date
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-primary" (click)="downloadCsv()"> Download
+        </button>
+
     </div>
 </ng-template>
 

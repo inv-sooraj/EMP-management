@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.innovaturelabs.training.employee.management.form.LoginForm;
+import com.innovaturelabs.training.employee.management.form.validaton.Password;
 import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 
@@ -40,7 +41,7 @@ public class LoginController {
     }
 
     @PutMapping("/reset-password/{token}")
-    public void resetPassword(@PathVariable("token") String token, @RequestBody String password) {
+    public void resetPassword(@PathVariable("token") String token, @RequestBody @Password String password) {
         userService.resetPassword(token, password);
     }
 
