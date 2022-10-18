@@ -88,7 +88,7 @@ export class JobListComponent implements OnInit {
 
   listJobs(): void {
     let queryParams = new HttpParams()
-      .append('page', 1)
+      .append('page', this.page)
       .append('limit', this.limit)
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)

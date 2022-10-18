@@ -3,6 +3,7 @@ package com.innovaturelabs.training.employee.management.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,7 +55,7 @@ public interface UserService {
 
     UserView changePassword(ChangePasswordForm form);
 
-    void userCsv(HttpServletResponse httpServletResponse);
+    void userCsv(HttpServletResponse httpServletResponse,Collection<Byte> status,Collection<Byte> roles,Date startDate,Date endDate) ;
 
     void setProfilePic(UserProfilePicForm form) throws IOException;
 

@@ -25,7 +25,8 @@ import { NgIdleModule } from '@ng-idle/core';
 import { TestComponentComponent } from './components/test-component/test-component.component';
 
 import { UserchartComponent } from './components/user-management/userchart/userchart.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatCommonModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,8 @@ import { UserchartComponent } from './components/user-management/userchart/userc
 
     UserchartComponent,
 
+  
+
   ],
 
   imports: [
@@ -57,7 +60,12 @@ import { UserchartComponent } from './components/user-management/userchart/userc
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgIdleModule.forRoot()
+    NgIdleModule.forRoot(),
+    BrowserAnimationsModule,
+    MatCommonModule,
+    
+    
+    
   ],
   providers: [
     {
