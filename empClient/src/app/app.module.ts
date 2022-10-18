@@ -64,9 +64,13 @@ import { HotToastModule } from '@ngneat/hot-toast';
     ReactiveFormsModule,
     HttpClientModule,
     NgIdleModule.forRoot(),
-
-    ToastrModule.forRoot(),
-    HotToastModule.forRoot(),
+    ToastrModule.forRoot({
+      closeButton:true,
+      positionClass:'toast-top-center',
+      preventDuplicates:true,
+      progressBar:true,
+      progressAnimation:'decreasing',
+    }),
     BrowserAnimationsModule
 
   ],
