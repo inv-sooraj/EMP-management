@@ -29,9 +29,7 @@ export class ForgotPasswordComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    // this.service.logout();
-  }
+  ngOnInit(): void {}
 
   userEmailForm: FormGroup = new FormGroup({
     email: new FormControl('', [
