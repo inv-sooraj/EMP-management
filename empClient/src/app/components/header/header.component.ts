@@ -2,29 +2,46 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/service/user.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  
+
   showSpinner: boolean = false
 
   constructor(
     private router: Router,
     private modalService: NgbModal,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private toastService: ToastrService
+  ) { }
   ngOnInit(): void {
     // No API call
   }
 
   logout() {
-    localStorage.clear();
-    this.router.navigate(['login']);
+    Swal.fire({
+      title: 'Are you sure you want to logout?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        this.router.navigate(['login']);
+      }
+    })
+
+
   }
+
 
   getName(): string {
     return localStorage.getItem('name') as string;
@@ -74,43 +91,57 @@ export class HeaderComponent implements OnInit {
       this.changePasswordForm.controls['newPassword'].value !=
       this.changePasswordForm.controls['confirmNewPassword'].value
     ) {
-      alert('Password Should Match');
+      this.toastService.error(' Password Missmatch!')
       return;
     }
 
+    this.showSpinner = true
     let param = {
       currentPassword:
         this.changePasswordForm.controls['currentPassword'].value,
       newPassword: this.changePasswordForm.controls['newPassword'].value,
     };
-
+    this.modalService.dismissAll();
     this.userService.changePassword(param).subscribe({
       next: (response: any) => {
+        this.showSpinner = false
         console.log('Password Changed', response);
-        alert('Password Changed');
-        this.modalService.dismissAll();
+        this.toastService.success('Password Changed Successfully!')
+        this.changePasswordForm.reset();
+        
       },
       error: (error: any) => {
+        this.showSpinner = false
         console.log('error', error.error);
       },
     });
   }
 
   deleteUserAccount() {
-    this.showSpinner = true
-
-    this.userService.deactivateUser().subscribe({
-      next: (response: any) => {
-        console.log(response);
-        this.showSpinner = false
-        alert('Your account has been deactivated');
-        localStorage.clear();
-        this.router.navigate(['login']);
-      },
-      error: (error: any) => {
-        console.log(error);
-        this.showSpinner = false
-      },
-    });
+    Swal.fire({
+      title: 'Are you sure you want to Deactivate Your Account?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.showSpinner = true
+        this.userService.deactivateUser().subscribe({
+          next: (response: any) => {
+            console.log(response);
+            this.showSpinner = false
+            this.toastService.warning('Account Deactivated!')
+            localStorage.clear();
+            this.router.navigate(['login']);
+          },
+          error: (error: any) => {
+            console.log(error);
+            this.showSpinner = false
+          },
+        });
+      }
+    })
   }
 }

@@ -16,8 +16,9 @@
 
                                         <div class="form-outline flex-fill mb-0">
                                             <input type="text" placement="right" ngbTooltip="User Name"
-                                                formControlName="userName" class="form-control"
-                                                placeholder="Username" />
+                                                formControlName="userName" class="form-control" placeholder="Username"
+                                                [ngClass]="{'is-invalid':(registrationForm.controls['userName'].touched||registrationForm.controls['userName'].dirty) && registrationForm.controls['userName'].errors}">
+
                                             <div *ngIf="registrationForm.controls['userName'].touched">
                                                 <div *ngIf="registrationForm.controls['userName']?.errors?.['required']"
                                                     class="error">
