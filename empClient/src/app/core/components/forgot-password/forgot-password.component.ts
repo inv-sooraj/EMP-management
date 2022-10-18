@@ -27,6 +27,7 @@ export class ForgotPasswordComponent implements OnInit {
       this.token = '';
       router.navigate(['/forgot-password']);
     }
+  }
 
   ngOnInit(): void {}
 
