@@ -21,15 +21,14 @@ public class EmailUtil {
     private JavaMailSender mailSender;
 
     // Email service for forgot passord
-
     public void sendForgotPasswordRequest(PasswordToken token, String email) {
 
         String url = "http://localhost:4200/forgot-password?token=" + token.data + "&expiry=" + token.expiry;
 
         System.err.println("Token Url : " + url);
 
-        String subject = "<h4>Reset password</h4>";
-        String body = "<h3>Hi, </h3>"
+        String subject = "Reset password";
+        String body = "<h4>Hi, </h4>"
                 + "<p>A request has been received to change the password for your botjobs account. </p><br>"
                 + "<a href=" + url + ">Click here to reset password</a><br>"
                 + "Best regards,<br><b>BOTJOBS</b><br>"
@@ -38,13 +37,24 @@ public class EmailUtil {
 
     }
 
-    // Email service for add new user
+    // Email service for change password
+    public void changePasswordMail(String email, String name) {
 
+        String subject = "Change Password";
+        String body = "<h4>Dear " + name + ", </h4>"
+                + "<p>A request has been received to change the password for your botjobs account. </p><br>"
+                + "Best regards,<br><b>BOTJOBS</b><br>"
+                + "<b>Remarks:If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
+        sendEmail(email, subject, body);
+
+    }
+
+    // Email service for add new user
     public void sendRegisterSuccess(String email, String userName, String password) {
 
         String subject = " Successfully registered to BOTJOBS";
         String body = "<h4>Hi,</h4>" +
-                "We have received a request to create an account in botjobs.com. <p>Please use below credentials to login in</p>"
+                "We have received a request to create an account in botjobs.com. <p>Please use below credentials to login in.</p>"
                 + "<h4>Username :<b>" + userName + "</b> </h4>"
                 + "<h4>Password :<b>" + password + "</b> </h4><br>"
                 + "Best regards,<br><b>BOTJOBS</b><br>"
@@ -61,8 +71,8 @@ public class EmailUtil {
         String subject = "Job request " + status;
 
         String body = "<h4>Dear " + name + ",</h4> <br>" +
-                "We are " + status + " your request for adding new job title " + jobTitle + " with job id " + jobId
-                + ".<br> Best regards,<br><b>BOTJOBS</b><br><b>Remarks:If you have any queries please fell free to contact us </b>";
+                "We have " + status + " your request for adding new job title " + jobTitle + " with job id " + jobId
+                + ".<br><br> Best regards,<br><b>BOTJOBS</b><br><br><b>Remarks:If you have any queries please fell free to contact us at empmanagemenet@gmail.com. </b>";
 
         sendEmail(email, subject, body);
 
@@ -75,11 +85,10 @@ public class EmailUtil {
         String status = (approved.booleanValue() ? "Approved" : "Rejected");
 
         String subject = " Job Request " + status;
-        // + " For Job Request Id : " + jobRequestId;
         String body = "<h4>Dear " + name + ",</h4> <br>" +
-                "We are " + status + "your request for the profile " + jobTitle + " having <b>job request id "
-                + jobRequestId + "</b>.<br>" +
-                "Best regards,<br><b>BOTJOBS</b><br>" +
+                "We have " + status + " your request for the profile " + jobTitle + " having <b>job request id "
+                + jobRequestId + "</b>.<br><br>" +
+                "Best regards,<br><b>BOTJOBS</b><br><br>" +
                 "Remark : " + message + "<br>";
 
         sendEmail(email, subject, body);
@@ -87,7 +96,6 @@ public class EmailUtil {
     }
 
     // Email service for deleted user
-
     public void sendUserDeleteAlertMail(Integer userId, String email, String name) {
         String body;
         String subject = "User Account Deactivated";

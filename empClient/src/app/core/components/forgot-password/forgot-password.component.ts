@@ -27,11 +27,8 @@ export class ForgotPasswordComponent implements OnInit {
       this.token = '';
       router.navigate(['/forgot-password']);
     }
-  }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   userEmailForm: FormGroup = new FormGroup({
     email: new FormControl('', [
