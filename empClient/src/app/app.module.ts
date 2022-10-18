@@ -25,7 +25,7 @@ import { NgIdleModule } from '@ng-idle/core';
 import { TestComponentComponent } from './components/test-component/test-component.component';
 
 import { UserchartComponent } from './components/user-management/userchart/userchart.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { HotToastModule } from '@ngneat/hot-toast';
 
@@ -51,6 +51,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     TestComponentComponent,
 
     UserchartComponent,
+
   ],
 
   imports: [
@@ -62,9 +63,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     NgIdleModule.forRoot(),
 
-    ToastrModule.forRoot(),
-    HotToastModule.forRoot(),
-    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      closeButton:true,
+      positionClass:'toast-top-center',
+      preventDuplicates:true,
+      progressBar:true,
+      progressAnimation:'decreasing',
+    }),
+    BrowserAnimationsModule
+
+
   ],
   providers: [
     {

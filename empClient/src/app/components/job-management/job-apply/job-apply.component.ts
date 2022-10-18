@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { JobRequestService } from 'src/app/service/job-request.service';
 import { JobService } from 'src/app/service/job.service';
 
@@ -11,7 +12,8 @@ import { JobService } from 'src/app/service/job.service';
 export class JobApplyComponent implements OnInit {
   constructor(
     private jobService: JobService,
-    private jobRequestService: JobRequestService
+    private jobRequestService: JobRequestService,
+    private toastService: ToastrService
   ) {}
 
   jobList: any;
@@ -111,7 +113,7 @@ export class JobApplyComponent implements OnInit {
     this.jobRequestService.addJobRequests(jobId).subscribe({
       next: (response: any) => {
         console.log(response);
-        alert('Applied for Job');
+        this.toastService.success('Job applied!')
         this.getAppliedJobs();
       },
       error(err) {

@@ -277,6 +277,7 @@ public class UserServiceImpl implements UserService {
 
             if (user.isPresent()) {
                 userRepository.save(user.get().delete());
+                emailUtil.sendUserDeleteAlertMail(userId, user.get().getEmail(), user.get().getName());
             }
         }
     }

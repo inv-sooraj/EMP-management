@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -13,7 +14,8 @@ export class AdminUserAddComponent implements OnInit {
 
   showSpinner: boolean = false
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,
+    private toastService: ToastrService) {}
 
   userAddForm: FormGroup = new FormGroup({
     role: new FormControl('0', Validators.required),
@@ -57,7 +59,8 @@ export class AdminUserAddComponent implements OnInit {
         this.showSpinner = false
 
         this.completedEvent.emit();
-        alert('User Registered');
+        this.toastService.success('User Registered Successfully')
+        
       },
       error: (error: any) => {
         console.log('error', error.error);
@@ -65,10 +68,12 @@ export class AdminUserAddComponent implements OnInit {
         if (error.error.status == 400) {
           if (error.error.message == 'Username Already Exists') {
             console.log('Username Already Exists');
-            alert('Username Already Exists');
+            this.toastService.warning('Username Already Exists!')
+
           } else if (error.error.message == 'Email Already Exists') {
             console.log('Email Already Exists');
-            alert('Email Already Exists');
+            this.toastService.warning('Email Already Exists!')
+
           }
         }
         alert("Error")

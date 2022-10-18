@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HotToastService } from '@ngneat/hot-toast';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth.service';
 
@@ -12,21 +11,16 @@ import { AuthService } from '../../service/auth.service';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit {
-  constructor(private service: AuthService, private router: Router,private toaster:ToastrService,private toastService: HotToastService) {}
+  constructor(private service: AuthService, private router: Router, private toastService: ToastrService) { }
   role: number = 0;
 
   ngOnInit(): void {
-    this.toaster.success("survey Added sucessfully!");
-  }
-
-  showToast() {
-    this.toastService.show('Hello World!')
   }
 
   registrationForm: FormGroup = new FormGroup({
     role: new FormControl('0', Validators.required),
-    name: new FormControl('',[ Validators.required,Validators.maxLength(50)]),
-    userName: new FormControl('', [ Validators.required,Validators.maxLength(50)]),
+    name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+    userName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     email: new FormControl('', [
       Validators.required,
       Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}'),
@@ -70,20 +64,25 @@ export class RegisterComponent implements OnInit {
 
     this.service.register(param).subscribe({
       next: (response: any) => {
-      console.log('User Registered', response);
-      this.toastService.success('Registered Successfully!')
-      this.router.navigate(['login']);
+        console.log('User Registered', response);
+        this.toastService.success('Registered Successfully!')
+        this.router.navigate(['login']);
       },
       error: (error: any) => {
+
         console.log('error', error.error);
         if (error.error.status == 400) {
+
           if (error.error.message == 'Username Already Exists') {
             console.log('Username Already Exists');
-            this.toastService.warning("Username Already Exists")
+            this.toastService.warning("Username Already Exists!");
+            this.registrationForm.controls['userName'].setErrors(Validators.required);
+
           } else if (error.error.message == 'Email Already Exists') {
             console.log('Email Already Exists');
             this.toastService.warning("Email Already Exists")
-            
+            this.registrationForm.controls['email'].setErrors(Validators.required)
+
           }
         }
       },

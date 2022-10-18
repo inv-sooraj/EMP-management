@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { UserService } from 'src/app/service/user.service';
 
@@ -23,7 +24,10 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private modalService: NgbModal
+
+    private modalService: NgbModal,
+    private service: AuthService,
+    private toastService: ToastrService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
@@ -131,7 +135,9 @@ export class UserListComponent implements OnInit {
         this.listUsers();
       },
       error: (err) => {
+
         this.showSpinner = false;
+
         console.log(err);
       },
     });
@@ -181,12 +187,15 @@ export class UserListComponent implements OnInit {
     if (this.checkedUserIds.size <= 0) {
       return;
     }
+    this.showSpinner = true
     this.userService.deleteUsers(Array.from(this.checkedUserIds)).subscribe({
       next: (response: any) => {
+        this.showSpinner = false
         console.log('deleted', this.checkedUserIds, response);
         this.listUsers();
       },
-      error(err) {
+      error: (err) => {
+        this.showSpinner = false
         console.log(err);
       },
     });
@@ -217,10 +226,12 @@ export class UserListComponent implements OnInit {
 
         this.modalService.dismissAll();
       },
+
       error: (err: any) => {
+
         console.log(err);
         if (err.status == 404) {
-          alert('No Record Found');
+          this.toastService.warning('No Records Found!')
         } else if (err.status == 400) {
           err.error.text().then((text: any) => {
             alert(JSON.parse(text).message);
