@@ -217,7 +217,7 @@
                         </div>
                         <div class="ms-3" style="margin-top: 130px;">
                             <h5>{{userDetails.name}}</h5>
-                            <p>{{role[userDetails.role]}}</p>
+                            <p>{{role.get(userDetails.role)}}</p>
                         </div>
                     </div>
                     <!--  -->
@@ -279,7 +279,7 @@
 
                                         <td>
 
-                                            <p class="font-italic mb-0">{{qualifications[userDetails.qualification]}}
+                                            <p class="font-italic mb-0">{{qualifications.get(userDetails.qualification)}}
                                             </p>
 
                                         </td>

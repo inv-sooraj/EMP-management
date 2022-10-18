@@ -34,8 +34,6 @@ export class UserListComponent implements OnInit {
     this.listUsers();
     this.getRoleStat();
     
-    this.service.checkExp();
-
     console.log(this.csvData);
     this.today = new Date().toISOString().split('T')[0];
     console.log(this.today);
