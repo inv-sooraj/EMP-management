@@ -17,11 +17,13 @@ import com.innovaturelabs.training.employee.management.exception.BadRequestExcep
 
 public class CsvDownload {
 
+    public static final Integer MAX_LENGTH = 10;
+
     private CsvDownload() {
     }
 
     public static void download(HttpServletResponse httpServletResponse, Collection<?> exportlist, String fileName) {
-        
+
         Collection<String> csvHeader = new ArrayList<>();
         Collection<String> nameMapping = new ArrayList<>();
 

@@ -3,6 +3,7 @@ package com.innovaturelabs.training.employee.management.controller;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -106,8 +107,13 @@ public class UsersController {
     }
 
     @GetMapping("/download")
-    public void userCsv(HttpServletResponse httpServletResponse) {
-        userService.userCsv(httpServletResponse);
+    public void userCsv(HttpServletResponse httpServletResponse,
+            @RequestParam(name = "status") Collection<Byte> status,
+            @RequestParam(name = "roles") Collection<Byte> roles,
+            @RequestParam(name = "startDate") Date startDate,
+            @RequestParam(name = "endDate") Date endDate) {
+
+        userService.userCsv(httpServletResponse, status, roles, startDate, endDate);
     }
 
     @PutMapping("/profile")

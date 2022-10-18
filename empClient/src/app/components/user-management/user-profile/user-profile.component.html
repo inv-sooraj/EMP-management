@@ -20,7 +20,7 @@
                             <p> Username :
                                 <em>{{userDetails.userName}}</em>
                             </p>
-                            <p>{{role[userDetails.role]}}</p>
+                            <p>{{role.get(userDetails.role)}}</p>
 
                             <button ngbTooltip="Edit Profile" (click)="open(formModule)" class="btn">
                                 <em class="bi bi-pencil-square"></em>
@@ -52,7 +52,7 @@
                                 <div class="row pt-1">
                                     <div class="col-6 mb-3">
                                         <h6>Qualification</h6>
-                                        <p class="text-muted mx-3">{{qualifications[userDetails.qualification]}}</p>
+                                        <p class="text-muted mx-3">{{qualifications.get(userDetails.qualification)}}</p>
                                     </div>
                                     <div class="col-6 mb-3">
                                         <h6>Address</h6>
