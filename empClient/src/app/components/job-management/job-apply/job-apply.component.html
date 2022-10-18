@@ -77,8 +77,7 @@
                         <td>{{ qualifications[job.qualification] }}</td>
                         <td>{{ job.openings }}</td>
                         <td>{{ job.userId }}</td>
-                        <td>{{ job.updateDate }}</td>
-                        <td>{{ job.status }}</td>
+                        <td>{{ job.updateDate|date }}</td>
 
                         <td>
                             <button *ngIf="!job.eligible" disabled class="btn btn-outline-dark">Not Eligible</button>

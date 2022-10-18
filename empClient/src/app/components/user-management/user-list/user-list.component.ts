@@ -12,6 +12,8 @@ import { UserService } from 'src/app/service/user.service';
 export class UserListComponent implements OnInit {
   role: number;
 
+  showSpinner: boolean = false
+
   status = this.userService.status;
 
   roles = this.userService.roles;
@@ -21,7 +23,7 @@ export class UserListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private modalService: NgbModal,
-    private service:AuthService
+    private service: AuthService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
@@ -111,12 +113,17 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(userId: number) {
+    this.showSpinner = true
+
     this.userService.deleteUser(userId).subscribe({
       next: (response: any) => {
+        this.showSpinner = false
+
         console.log('deleted', userId, response);
         this.listUsers();
       },
-      error(err) {
+      error:(err) =>{
+        this.showSpinner = false
         console.log(err);
       },
     });

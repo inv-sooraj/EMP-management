@@ -30,7 +30,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.logout();
+    
   }
 
   userEmailForm: FormGroup = new FormGroup({

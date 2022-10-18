@@ -101,7 +101,7 @@ public class EmailUtil {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
 
-            helper.setFrom("empmanagemenet@gmail.com", "Job Management");
+            helper.setFrom("empmanagemenet@gmail.com", "Bot Jobs");
             // helper.setBcc("aaaaa@gmail.com");
             message.setContent(body, "text/html");
             helper.setTo(toEmail);

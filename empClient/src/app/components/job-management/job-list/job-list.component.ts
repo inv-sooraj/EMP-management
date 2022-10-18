@@ -192,7 +192,6 @@ export class JobListComponent implements OnInit {
     if (this.checkedJobIds.size <= 0) {
       return;
     }
-
     this.jobService
       .changeJobsStatus(Array.from(this.checkedJobIds), status)
       .subscribe({
