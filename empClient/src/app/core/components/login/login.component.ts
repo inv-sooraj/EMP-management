@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HotToastService } from '@ngneat/hot-toast';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { AuthService } from '../../service/auth.service';
 export class LoginComponent implements OnInit {
   constructor(private router: Router,
     private service: AuthService,
-    private toastService: HotToastService) { }
+    private toastService: ToastrService) { }
 
   ngOnInit(): void {
     this.service.logout();
@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit {
         if (error.error.status == 400) {
           if (error.error.message == 'Invalid Username') {
             this.toastService.error('Invalid UserName!')
+            
           } else {
             this.toastService.error('Invalid Password!')
           }
