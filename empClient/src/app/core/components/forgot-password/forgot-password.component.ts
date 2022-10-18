@@ -29,8 +29,7 @@ export class ForgotPasswordComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   userEmailForm: FormGroup = new FormGroup({
     email: new FormControl('', [
@@ -94,6 +93,8 @@ export class ForgotPasswordComponent implements OnInit {
     this.service.resetPassword(this.token, password).subscribe({
       next: (response: any) => {
         console.log(response);
+        alert('Reset Success');
+        this.router.navigateByUrl('login');
       },
       error(err) {
         console.log(err);

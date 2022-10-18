@@ -6,6 +6,7 @@ import static com.innovaturelabs.training.employee.management.security.AccessTok
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -264,19 +265,28 @@ public class UserServiceImpl implements UserService {
             if (user.isPresent()) {
                 userRepository.save(user.get().delete());
             }
-
         }
-
     }
 
     @Override
-    public void userCsv(HttpServletResponse httpServletResponse) {
+    public void userCsv(HttpServletResponse httpServletResponse, Collection<Byte> status, Collection<Byte> roles,
+            Date startDate, Date endDate) {
 
         if (!SecurityUtil.isAdmin()) {
             throw new BadRequestException("permission Denied");
         }
 
-        Collection<User> exportlist = userRepository.findAll();
+        Collection<User> exportlist = userRepository.findQueryCsv(status, roles, startDate,
+                Date.from(endDate.toInstant().plus(Duration.ofDays(1))));
+
+        if (exportlist.isEmpty()) {
+            throw new NotFoundException("No Records Found");
+        }
+
+        if (exportlist.size() > CsvDownload.MAX_LENGTH) {
+            throw new BadRequestException(
+                    "Max Record Length : " + CsvDownload.MAX_LENGTH + " , Current : " + exportlist.size());
+        }
 
         CsvDownload.download(httpServletResponse, exportlist, "Users");
 
@@ -349,6 +359,8 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
             throw new BadRequestException("Password Doesnot Match");
         }
+
+        emailUtil.changePasswordMail(user.getEmail(),user.getName());
 
         user.setPassword(passwordEncoder.encode(form.getNewPassword()));
 
