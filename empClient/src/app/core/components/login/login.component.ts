@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HotToastService } from '@ngneat/hot-toast';
 import { AuthService } from '../../service/auth.service';
 
 @Component({
@@ -9,7 +10,9 @@ import { AuthService } from '../../service/auth.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  constructor(private router: Router, private service: AuthService) {}
+  constructor(private router: Router,
+    private service: AuthService,
+    private toastService: HotToastService) { }
 
   ngOnInit(): void {
     this.service.logout();
@@ -35,7 +38,7 @@ export class LoginComponent implements OnInit {
       next: (response: any) => {
         console.log('Logged In');
         console.log(response);
-        localStorage.setItem('accessTokenExpiry',response.accessToken.expiry);
+        localStorage.setItem('accessTokenExpiry', response.accessToken.expiry);
         localStorage.setItem('accessToken', response.accessToken.value);
         localStorage.setItem('refreshToken', response.refreshToken.value);
         localStorage.setItem('name', response.name);
@@ -48,15 +51,15 @@ export class LoginComponent implements OnInit {
       },
       error: (error: any) => {
         console.log('Error', error.error);
-
         if (error.error.status == 400) {
           if (error.error.message == 'Invalid Username') {
-            alert('Invalid User');
+            this.toastService.error('Invalid UserName!')
           } else {
-            alert('Invalid Password');
+            this.toastService.error('Invalid Password!')
           }
         } else {
-          alert('Error');
+          this.toastService.error('Error!')
+
         }
       },
     });
