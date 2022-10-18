@@ -37,7 +37,7 @@ export class InterceptorInterceptor implements HttpInterceptor {
           ) {
             return this.refreshAccess(request, next);
           }
-          return EMPTY;
+          throw error;
         })
       );
     } else {

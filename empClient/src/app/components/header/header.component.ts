@@ -101,14 +101,14 @@ export class HeaderComponent implements OnInit {
         this.changePasswordForm.controls['currentPassword'].value,
       newPassword: this.changePasswordForm.controls['newPassword'].value,
     };
-
+    this.modalService.dismissAll();
     this.userService.changePassword(param).subscribe({
       next: (response: any) => {
         this.showSpinner = false
         console.log('Password Changed', response);
         this.toastService.success('Password Changed Successfully!')
         this.changePasswordForm.reset();
-        this.modalService.dismissAll();
+        
       },
       error: (error: any) => {
         this.showSpinner = false
