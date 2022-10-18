@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   role: number = 0;
 
   ngOnInit(): void {
-    this.showToast();
+    this.toaster.success("survey Added sucessfully!");
   }
 
   showToast() {
