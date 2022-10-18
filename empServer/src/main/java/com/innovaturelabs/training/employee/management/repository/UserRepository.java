@@ -21,7 +21,7 @@ public interface UserRepository extends Repository<User, Integer> {
             Boolean passwordResetRequest);
 
     @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND (user.name LIKE %?2% OR user.email LIKE %?2% OR user.address LIKE %?2% )")
-    Page<User> findAllByStatus(byte[] status, String search, Pageable page);
+    Page<User> findAllByStatus(Collection<Byte> status, String search, Pageable page);
 
     // Page<User> findByNameContaining(String name, Pageable page);
 
@@ -53,7 +53,7 @@ public interface UserRepository extends Repository<User, Integer> {
     Collection<StatusView> countUserRoles();
 
 
-    @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND user.createDate >= ?3 AND user.createDate <= ?4")
+    @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND user.createDate >= ?3 AND user.createDate <=   ?4")
     Collection<User> findQueryCsv(Collection<Byte> status,Collection<Byte> roles,Date startDate,Date endDate); 
 
 }

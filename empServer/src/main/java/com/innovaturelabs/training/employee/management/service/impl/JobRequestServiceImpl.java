@@ -134,8 +134,9 @@ public class JobRequestServiceImpl implements JobRequestService {
                     .map(JobRequestView::new).collect(Collectors.toList());
 
         }
+        String[] exclude = {};
 
-        CsvDownload.download(httpServletResponse, exportlist, "Job_Requests");
+        CsvDownload.download(httpServletResponse, exportlist, "Job_Requests", exclude);
 
     }
 
@@ -168,10 +169,10 @@ public class JobRequestServiceImpl implements JobRequestService {
             if (job.getOpenings() <= 0) {
                 job.setStatus(Job.Status.COMPLETED.value);
             }
-            
-            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(),jobRequest.getUser().getName(), jobRequestId,
-                    jobRequest.getJob().getTitle(),form.getRemark(), true);
 
+            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequest.getUser().getName(),
+                    jobRequestId,
+                    jobRequest.getJob().getTitle(), form.getRemark(), true);
 
             jobRepository.save(job);
 
@@ -182,9 +183,9 @@ public class JobRequestServiceImpl implements JobRequestService {
                 job.setStatus(Job.Status.APPROVED.value);
             }
 
-            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(),jobRequest.getUser().getName(), jobRequestId,
-                    jobRequest.getJob().getTitle(), form.getRemark(),false);
-
+            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequest.getUser().getName(),
+                    jobRequestId,
+                    jobRequest.getJob().getTitle(), form.getRemark(), false);
 
             job.setOpenings(job.getOpenings() + 1);
 

@@ -29,6 +29,7 @@ import { UserchartComponent } from './components/user-management/userchart/userc
 import { ToastrModule } from 'ngx-toastr';
 import { HotToastModule } from '@ngneat/hot-toast';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -50,9 +51,6 @@ import { HotToastModule } from '@ngneat/hot-toast';
     TestComponentComponent,
 
     UserchartComponent,
-
-  
-
   ],
 
   imports: [
@@ -65,8 +63,8 @@ import { HotToastModule } from '@ngneat/hot-toast';
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot(),
-    HotToastModule.forRoot()
-
+    HotToastModule.forRoot(),
+    BrowserAnimationsModule,
   ],
   providers: [
     {

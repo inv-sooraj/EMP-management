@@ -146,7 +146,7 @@ public class User {
 
     public User delete() {
 
-        this.status = User.Status.INACTIVE.value;
+        this.status = User.Status.REJECTED.value;
 
         this.updateDate = new Date();
 

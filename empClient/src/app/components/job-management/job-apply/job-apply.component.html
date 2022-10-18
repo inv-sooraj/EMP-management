@@ -74,7 +74,7 @@
                         <td>{{ job.jobId }}</td>
                         <td>{{ job.title }}</td>
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
-                        <td>{{ qualifications[job.qualification] }}</td>
+                        <td>{{ qualifications.get(job.qualification) }}</td>
                         <td>{{ job.openings }}</td>
                         <td>{{ job.userId }}</td>
                         <td>{{ job.updateDate|date }}</td>

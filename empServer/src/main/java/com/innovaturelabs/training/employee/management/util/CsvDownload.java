@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
@@ -22,22 +23,27 @@ public class CsvDownload {
     private CsvDownload() {
     }
 
-    public static void download(HttpServletResponse httpServletResponse, Collection<?> exportlist, String fileName) {
+    public static void download(HttpServletResponse httpServletResponse, Collection<?> exportlist, String fileName,
+            String[] exclude) {
 
         Collection<String> csvHeader = new ArrayList<>();
         Collection<String> nameMapping = new ArrayList<>();
 
         for (Field field : exportlist.iterator().next().getClass().getDeclaredFields()) {
-            csvHeader.add(field.getName());
-            nameMapping.add(field.getName());
+
+            if (!Arrays.asList(exclude).contains(field.getName())) {
+                csvHeader.add(field.getName());
+                nameMapping.add(field.getName());
+            }
         }
 
-        download(httpServletResponse, exportlist, fileName, csvHeader, nameMapping);
+        download(httpServletResponse, exportlist, fileName, csvHeader.toArray(String[]::new),
+                nameMapping.toArray(String[]::new));
 
     }
 
     public static void download(HttpServletResponse httpServletResponse, Collection<?> exportlist, String fileName,
-            Collection<String> csvHeader, Collection<String> nameMapping) {
+            String[] csvHeader, String[] nameMapping) {
 
         Date dt = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -54,10 +60,10 @@ public class CsvDownload {
             ICsvBeanWriter csvWriter = new CsvBeanWriter(httpServletResponse.getWriter(),
                     CsvPreference.STANDARD_PREFERENCE);
 
-            csvWriter.writeHeader(csvHeader.toArray(String[]::new));
+            csvWriter.writeHeader(csvHeader);
 
             for (Object reservation : exportlist) {
-                csvWriter.write(reservation, nameMapping.toArray(String[]::new));
+                csvWriter.write(reservation, nameMapping);
             }
 
             csvWriter.close();
