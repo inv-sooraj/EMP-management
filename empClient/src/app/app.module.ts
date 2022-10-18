@@ -26,6 +26,9 @@ import { TestComponentComponent } from './components/test-component/test-compone
 
 import { UserchartComponent } from './components/user-management/userchart/userchart.component';
 
+import { ToastrModule } from 'ngx-toastr';
+import { HotToastModule } from '@ngneat/hot-toast';
+
 
 @NgModule({
   declarations: [
@@ -48,6 +51,8 @@ import { UserchartComponent } from './components/user-management/userchart/userc
 
     UserchartComponent,
 
+  
+
   ],
 
   imports: [
@@ -57,7 +62,11 @@ import { UserchartComponent } from './components/user-management/userchart/userc
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgIdleModule.forRoot()
+    NgIdleModule.forRoot(),
+
+    ToastrModule.forRoot(),
+    HotToastModule.forRoot()
+
   ],
   providers: [
     {

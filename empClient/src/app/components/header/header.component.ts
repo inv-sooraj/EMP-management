@@ -9,6 +9,9 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  
+  showSpinner: boolean = false
+
   constructor(
     private router: Router,
     private modalService: NgbModal,
@@ -94,15 +97,19 @@ export class HeaderComponent implements OnInit {
   }
 
   deleteUserAccount() {
+    this.showSpinner = true
+
     this.userService.deactivateUser().subscribe({
       next: (response: any) => {
         console.log(response);
+        this.showSpinner = false
         alert('Your account has been deactivated');
         localStorage.clear();
         this.router.navigate(['login']);
       },
       error: (error: any) => {
         console.log(error);
+        this.showSpinner = false
       },
     });
   }

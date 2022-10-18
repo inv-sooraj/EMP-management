@@ -59,7 +59,7 @@
                             &nbsp;Delete Users
                         </button>
 
-                        <button (click)="downloadCsv()" class="btn btn-danger">
+                        <button (click)="open(csvDowloadModal);" class="btn btn-danger">
                             <em class="bi bi-download"></em>
                             &nbsp;Download
                         </button>
@@ -161,11 +161,11 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.updateDate }}</td>
                         <td >
-                            <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status[user.status] }}</span></p>
-                            <p *ngIf="user.status == 0" ><span class="badge bg-danger">{{ status[user.status] }}</span></p>
+                            <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status.get(user.status) }}</span></p>
+                            <p *ngIf="user.status == 0" ><span class="badge bg-danger">{{status.get(user.status) }}</span></p>
                         </td>
 
-                        <td>{{ roles[user.role] }}</td>
+                        <td>{{ roles.get(user.role) }}</td>
 
                         <td *ngIf="role==2">
                             <button placement="top" ngbTooltip="Edit user" class="btn"><a
@@ -255,3 +255,76 @@
 
     </div>
 </ng-template>
+
+
+<ng-template #csvDowloadModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Select Options</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col-6">
+
+                <label class="form-label">
+                    <strong>Roles</strong>
+                </label>
+                <div *ngFor="let role of roles|keyvalue">
+                    <input type="checkbox" (change)="changeCsvStat($event,role.key,csvData.roles)"
+                        [checked]="csvData.roles.has(role.key)"
+                        [disabled]="csvData.roles.size==1 && csvData.roles.has(role.key)">
+                    {{role.value}}
+                </div>
+
+            </div>
+            <div class="col-6">
+                <label class="form-label">
+                    <strong>Status</strong>
+                </label>
+
+                <div class="col-6" *ngFor="let stat of status|keyvalue">
+                    <input type="checkbox" (change)="changeCsvStat($event,stat.key,csvData.status)"
+                        [checked]="csvData.status.has(stat.key)"
+                        [disabled]="csvData.status.size==1 && csvData.status.has(stat.key)">
+                    {{stat.value}}
+                </div>
+            </div>
+            <hr class="mt-2">
+
+            <div class="col-6">
+                <label for="startDate" class="form-label d-inline me-2">Start</label>
+                <input [max]="today" onkeydown="return false" [formControl]="csvData.startDate" id="startDate"
+                    type="date" class="form-control w-75 d-inline">
+
+                <div class="text-danger" *ngIf="csvData.startDate.errors?.['required'] && csvData.startDate.touched ">
+                    Select Start date
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <label for="startDate" class="form-label  d-inline me-2">End</label>
+                <input [max]="today" onkeydown="return false" [formControl]="csvData.endDate" type="date"
+                    class="form-control w-75  d-inline">
+
+                <div class="text-danger" *ngIf="csvData.endDate.errors?.['required'] ">
+                    Select End date
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-primary" (click)="downloadCsv()"> Download
+        </button>
+
+    </div>
+</ng-template>
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>

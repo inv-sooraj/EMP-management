@@ -7,9 +7,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav" *ngIf="getName()">
-                <!-- <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" routerLink="/user-profile">Home</a>
-                </li> -->
                 <li class="nav-item" *ngIf="getRole()==2">
                     <a class="nav-link active" aria-current="page" routerLink="/user-list">Users</a>
                 </li>
@@ -133,3 +130,6 @@
         <button type="button" class="btn btn-outline-dark" (click)="changePassword()">Save</button>
     </div>
 </ng-template>
+
+<!-- Spinner -->
+<div *ngIf="showSpinner" class="loading">Loading&#8230;</div>

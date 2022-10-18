@@ -27,7 +27,6 @@ export class ForgotPasswordComponent implements OnInit {
       this.token = '';
       router.navigate(['/forgot-password']);
     }
-  }
 
   ngOnInit(): void {}
 
@@ -93,6 +92,8 @@ export class ForgotPasswordComponent implements OnInit {
     this.service.resetPassword(this.token, password).subscribe({
       next: (response: any) => {
         console.log(response);
+        alert('Reset Success');
+        this.router.navigateByUrl('login');
       },
       error(err) {
         console.log(err);

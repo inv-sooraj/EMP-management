@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { UserService } from 'src/app/service/user.service';
@@ -12,6 +13,8 @@ import { UserService } from 'src/app/service/user.service';
 export class UserListComponent implements OnInit {
   role: number;
 
+  showSpinner: boolean = false
+
   status = this.userService.status;
 
   roles = this.userService.roles;
@@ -21,14 +24,22 @@ export class UserListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private modalService: NgbModal,
-    private service:AuthService
+    private service: AuthService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
+  today: string = '';
 
   ngOnInit(): void {
     this.listUsers();
     this.getRoleStat();
+    
+    console.log(this.csvData);
+    this.today = new Date().toISOString().split('T')[0];
+    console.log(this.today);
+
+    this.csvData.endDate.value = this.today;
+
   }
 
   page: number = 1;
@@ -111,12 +122,17 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(userId: number) {
+    this.showSpinner = true
+
     this.userService.deleteUser(userId).subscribe({
       next: (response: any) => {
+        this.showSpinner = false
+
         console.log('deleted', userId, response);
         this.listUsers();
       },
-      error(err) {
+      error:(err) =>{
+        this.showSpinner = false
         console.log(err);
       },
     });
@@ -178,7 +194,20 @@ export class UserListComponent implements OnInit {
   }
 
   downloadCsv(): void {
-    this.userService.downloadCsv().subscribe({
+    if (!this.csvData.startDate.valid || !this.csvData.endDate.valid) {
+      this.csvData.startDate.touched = true;
+      return;
+    }
+
+    let queryParams = new HttpParams()
+      .append('roles', Array.from(this.csvData.roles).join(',').toString())
+      .append('status', Array.from(this.csvData.status).join(',').toString())
+      .append('startDate', this.csvData.startDate.value.replaceAll('-', '/'))
+      .append('endDate', this.csvData.endDate.value.replaceAll('-', '/'));
+
+    console.log(queryParams);
+
+    this.userService.downloadCsv(queryParams).subscribe({
       next: (response: any) => {
         let anchor = document.createElement('a');
         anchor.download = response.headers.get('Content-Disposition');
@@ -186,9 +215,19 @@ export class UserListComponent implements OnInit {
           new Blob([response.body], { type: response.body.type })
         );
         anchor.click();
+
+        this.modalService.dismissAll();
       },
       error(err) {
         console.log(err);
+
+        if (err.status == 404) {
+          alert('No Record Found');
+        } else if (err.status == 400) {
+          err.error.text().then((text: any) => {
+            alert(JSON.parse(text).message);
+          });
+        }
       },
     });
   }
@@ -212,12 +251,34 @@ export class UserListComponent implements OnInit {
         response.forEach((element: any) => {
           console.log(element);
 
-          this.roleStatusCount[this.roles[element.status]] = element.count;
+          this.roleStatusCount[this.roles.get(element.status) as string] =
+            element.count;
         });
       },
       error(err) {
         console.log(err);
       },
     });
+  }
+
+  csvData: any = {
+    roles: new Set<number>(this.roles.keys()),
+    status: new Set<number>(this.status.keys()),
+    startDate: new FormControl('', [Validators.required]),
+    endDate: new FormControl('', [Validators.required]),
+  };
+
+  changeCsvStat(event: any, stat: any, data: Set<number>): void {
+    if (event.target.checked) {
+      data.add(stat);
+    } else {
+      data.delete(stat);
+    }
+
+    console.log(this.csvData);
+  }
+
+  openLg(content: any) {
+    this.modalService.open(content, { size: 'lg' });
   }
 }
