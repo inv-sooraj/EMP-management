@@ -5,7 +5,6 @@ import static com.innovaturelabs.training.employee.management.security.AccessTok
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,13 +56,11 @@ import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
 
-import net.bytebuddy.utility.RandomString;
-
 @Service
 public class UserServiceImpl implements UserService {
 
     private static final String PURPOSE_REFRESH_TOKEN = "REFRESH_TOKEN";
-    private static final String PURPOSE_FORGOT_PASSWORD_TOKEN = "FORGOT_PASSWORD_TOKEN";
+    private static final String PURPOSE_RESET_PASSWORD_TOKEN = "RESET_PASSWORD_TOKEN";
     private static final String PURPOSE_REGISTRATION = "REGISTRATION";
 
     @Autowired
@@ -101,17 +98,62 @@ public class UserServiceImpl implements UserService {
             role = User.Role.EMPLOYER.value;
         }
 
-        String data = form.getEmail();
+        String data = form.getEmail() + "#" + new Date();
 
-        Token token = tokenGenerator.create(PURPOSE_REGISTRATION, data, Duration.ZERO);
+        Token token = tokenGenerator.create(PURPOSE_REGISTRATION, data, Duration.ofMinutes(15));
 
-        System.err.println("Token : " + token.value);
+        emailUtil.userRegistrationConfirm(token, form.getEmail(), form.getName());
 
         return new UserView(userRepository.save(new User(
                 form.getName(),
                 form.getUserName(),
-                form.getEmail(),
+                data,
                 passwordEncoder.encode(form.getPassword()),
+                role)));
+    }
+
+    @Override
+    public UserView adminAdd(AdminAddUserForm form) {
+
+        if (!SecurityUtil.isAdmin()) {
+            throw new BadRequestException("Illegal Access");
+        }
+
+        if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+            throw userAlreadyNameExists();
+        }
+
+        if (userRepository.findByEmail(form.getEmail()).isPresent()) {
+            throw new BadRequestException("Email Already Exists");
+        }
+
+        Byte role = User.Role.EMPLOYEE.value;
+
+        if (form.getRole() == User.Role.EMPLOYER.value || form.getRole() == User.Role.ADMIN.value) {
+            role = form.getRole();
+        }
+
+        // SecureRandom rand = new SecureRandom();
+
+        // String password = "#" + rand.nextInt(1000)
+        // + (char) (rand.nextInt(26) + 'a') + (char) (rand.nextInt(26) + 'A')
+        // + RandomString.make(5);
+
+        // System.out.println("Paaaasword : " + password);
+
+        String data = form.getEmail() + "#" + new Date();
+
+        Token token = tokenGenerator.create(PURPOSE_RESET_PASSWORD_TOKEN, data, Duration.ofDays(1));
+
+        emailUtil.adminUserRegistrationConfirm(token, form.getEmail(), form.getName());
+
+        // emailUtil.sendRegisterSuccess(form.getEmail(), form.getUserName(), password);
+
+        return new UserView(userRepository.save(new User(
+                form.getName(),
+                form.getUserName(),
+                data,
+                null,
                 role)));
     }
 
@@ -120,9 +162,11 @@ public class UserServiceImpl implements UserService {
 
         Status status;
         try {
-            status = tokenGenerator.verify(PURPOSE_REGISTRATION, token, false);
+            status = tokenGenerator.verify(PURPOSE_REGISTRATION, token);
         } catch (InvalidTokenException e) {
             throw invalidToken(e);
+        } catch (TokenExpiredException e) {
+            throw new BadRequestException("Registration Token Expired", e);
         }
 
         String email;
@@ -132,12 +176,16 @@ public class UserServiceImpl implements UserService {
             throw invalidToken(e);
         }
 
+        String parsedEmail = email.split("#")[0];
+
+        if (userRepository.findByEmail(parsedEmail).isPresent()) {
+            throw new BadRequestException("Already Verified");
+        }
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(NotFoundException::new);
 
-        if (user.getStatus() == User.Status.ACTIVE.value) {
-            throw new BadRequestException("Already Verified");
-        }
+        user.setEmail(parsedEmail);
 
         user.setStatus(User.Status.ACTIVE.value);
         user.setUpdateDate(new Date());
@@ -161,7 +209,8 @@ public class UserServiceImpl implements UserService {
             throw badRequestException();
         }
 
-        User user = userRepository.findByUserName(form.getUserName()).orElseThrow(UserServiceImpl::invalidUsername);
+        User user = userRepository.findByUserName(form.getUserName())
+                .orElseThrow(() -> new BadRequestException("Invalid Username"));
 
         if (user.getStatus() == User.Status.INACTIVE.value) {
             throw new BadRequestException("User Inactive");
@@ -442,11 +491,9 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Rejected User");
         }
 
-        String data = formatUserId(user.getUserId());
+        String data = user.getEmail();
 
-        // PasswordToken token = forgotPasswordTokenGenerator.create(data);
-
-        Token token2 = tokenGenerator.create(PURPOSE_FORGOT_PASSWORD_TOKEN, data, Duration.ofMinutes(10));
+        Token token2 = tokenGenerator.create(PURPOSE_RESET_PASSWORD_TOKEN, data, Duration.ofMinutes(10));
 
         emailUtil.sendForgotPasswordRequest(token2, email);
 
@@ -461,64 +508,31 @@ public class UserServiceImpl implements UserService {
 
         Status status;
         try {
-            status = tokenGenerator.verify(PURPOSE_FORGOT_PASSWORD_TOKEN, token);
+            status = tokenGenerator.verify(PURPOSE_RESET_PASSWORD_TOKEN, token);
         } catch (InvalidTokenException e) {
             throw invalidToken(e);
         } catch (TokenExpiredException e) {
             throw new BadRequestException("Token expired", e);
         }
 
-        Integer userId;
-        try {
-            userId = Integer.parseInt(status.data.substring(0, 10));
-        } catch (NumberFormatException e) {
-            throw invalidToken(e);
-        }
+        // Integer userId;
+        // try {
+        // userId = Integer.parseInt(status.data.substring(0, 10));
+        // } catch (NumberFormatException e) {
+        // throw invalidToken(e);
+        // }
 
-        User user = userRepository.findByUserIdAndStatusAndPasswordResetRequest(userId, User.Status.ACTIVE.value, true)
-                .orElseThrow(() -> new BadRequestException("Invalid Request"));
+        String email = status.data;
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(NotFoundException::new);
+
+        if (!user.isPasswordResetRequest() && user.getPassword() != null) {
+            throw new BadRequestException("Invalid Request");
+        }
 
         userRepository.save(user.resetPassword(passwordEncoder.encode(password)));
 
-    }
-
-    @Override
-    public UserView adminAdd(AdminAddUserForm form) {
-
-        if (!SecurityUtil.isAdmin()) {
-            throw new BadRequestException("Illegal Access");
-        }
-
-        if (userRepository.findByUserName(form.getUserName()).isPresent()) {
-            throw userAlreadyNameExists();
-        }
-
-        if (userRepository.findByEmail(form.getEmail()).isPresent()) {
-            throw new BadRequestException("Email Already Exists");
-        }
-
-        Byte role = User.Role.EMPLOYEE.value;
-
-        if (form.getRole() == User.Role.EMPLOYER.value || form.getRole() == User.Role.ADMIN.value) {
-            role = form.getRole();
-        }
-
-        SecureRandom rand = new SecureRandom();
-
-        String password = "#" + rand.nextInt(1000)
-                + (char) (rand.nextInt(26) + 'a') + (char) (rand.nextInt(26) + 'A')
-                + RandomString.make(5);
-
-        // System.out.println("Paaaasword : " + password);
-
-        emailUtil.sendRegisterSuccess(form.getEmail(), form.getUserName(), password);
-
-        return new UserView(userRepository.save(new User(
-                form.getName(),
-                form.getUserName(),
-                form.getEmail(),
-                passwordEncoder.encode(password),
-                role)));
     }
 
     private static BadRequestException badRequestException() {
@@ -527,10 +541,6 @@ public class UserServiceImpl implements UserService {
 
     private static BadRequestException userAlreadyNameExists() {
         return new BadRequestException("Username Already Exists");
-    }
-
-    private static BadRequestException invalidUsername() {
-        return new BadRequestException("Invalid Username");
     }
 
     private static BadRequestException invalidToken(Exception e) {

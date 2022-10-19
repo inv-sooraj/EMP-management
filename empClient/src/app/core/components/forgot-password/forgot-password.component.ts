@@ -25,7 +25,7 @@ export class ForgotPasswordComponent implements OnInit {
     if (timeDiff >= 0) {
       alert('Session Expired');
       this.token = '';
-      router.navigate(['/forgot-password']);
+      router.navigate(['/reset-password']);
     }
   }
 

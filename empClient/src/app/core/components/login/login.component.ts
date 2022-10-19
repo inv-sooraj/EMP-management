@@ -57,10 +57,10 @@ export class LoginComponent implements OnInit {
         console.log('Error', error.error);
         if (error.error.status == 400) {
           if (error.error.message == 'Invalid Username') {
-            this.toastService.error('Invalid UserName!');
+            this.toastService.error('Invalid UserName!')
             
           } else {
-            this.toastService.error('Invalid Password!')
+            this.toastService.error('','Invalid Password!')
           }
         } else {
           this.toastService.error('Error!')
