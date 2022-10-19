@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.innovaturelabs.training.employee.management.form.AdminAddUserForm;
 import com.innovaturelabs.training.employee.management.form.ChangePasswordForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 import com.innovaturelabs.training.employee.management.form.UserEditForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
-import com.innovaturelabs.training.employee.management.form.UserProfilePicForm;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.Pager;
@@ -44,6 +43,11 @@ public class UsersController {
     @PostMapping
     public UserView add(@Valid @RequestBody UserForm form) {
         return userService.add(form);
+    }
+
+    @PutMapping("/verify-user")
+    public UserView verifyUser(@RequestBody String token) {
+        return userService.verifyUser(token);
     }
 
     @PostMapping("/admin-register")
@@ -71,7 +75,7 @@ public class UsersController {
             @RequestParam(name = "search", defaultValue = "") String search) {
 
         page = page <= 0 ? 1 : page;
-        return userService.list(page, limit, sortBy, search,status, desc);
+        return userService.list(page, limit, sortBy, search, status, desc);
     }
 
     @PutMapping("/username")
@@ -118,10 +122,10 @@ public class UsersController {
     }
 
     @PutMapping("/profile")
-    public void setProfile(@ModelAttribute UserProfilePicForm form)
+    public void setProfile(@RequestParam("profilePic") MultipartFile profilePic)
             throws IOException {
 
-        userService.setProfilePic(form);
+        userService.setProfilePic(profilePic);
     }
 
     @GetMapping("/profile")
