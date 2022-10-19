@@ -10,20 +10,22 @@ import { JobService } from 'src/app/service/job.service';
 })
 export class JobFormComponent implements OnInit {
   @Input() jobId: number = 0;
-
   @Output() public completedEvent = new EventEmitter();
 
   button: string = '';
 
   title: string = '';
 
-  qualifications = this.jobService.qualifications
+  qualifications = this.jobService.qualifications;
 
   constructor(private jobService: JobService, private router: Router) {}
 
   ngOnInit(): void {
-    this.patchValue(this.jobId);
+    this.checkAddOrEdit();
+  }
 
+  checkAddOrEdit() {
+    this.patchValue(this.jobId);
     if (this.jobId) {
       this.button = 'Edit';
       this.title = 'Edit Job';
@@ -34,16 +36,22 @@ export class JobFormComponent implements OnInit {
   }
 
   jobForm: FormGroup = new FormGroup({
-    title: new FormControl('', [Validators.required,Validators.maxLength(50)]),
-    description: new FormControl('', [Validators.required,Validators.maxLength(255)]),
+    title: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+    description: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(255),
+    ]),
     qualification: new FormControl(0, [Validators.required]),
-    openings: new FormControl(0, [Validators.required,Validators.max(2147483647),Validators.min(0)]),
+    openings: new FormControl(0, [
+      Validators.required,
+      Validators.max(2147483647),
+      Validators.min(0),
+    ]),
   });
 
   formAction() {
+    console.log('Errors : ', this.jobForm);
 
-    console.log("Errors : ",this.jobForm);
-    
     if (!this.jobForm.valid) {
       this.jobForm.markAllAsTouched();
       return;
@@ -91,9 +99,7 @@ export class JobFormComponent implements OnInit {
     if (!jobId) {
       return;
     }
-
     console.log('patch');
-
     this.jobService.getJob(jobId).subscribe({
       next: (response: any) => {
         console.log(response);

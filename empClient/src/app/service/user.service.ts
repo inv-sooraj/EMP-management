@@ -83,11 +83,15 @@ export class UserService {
     });
   }
 
+  deleteProfilePic(userId:number): Observable<any> {
+    return this.http.delete(this.apiUrl + '/users/profile/deleted' + userId);
+  }
+
   getRoleStat(): Observable<any> {
     return this.http.get(this.apiUrl + '/users/role-stat');
   }
 
   deactivateUser() {
-    return this.http.put(this.apiUrl + '/users/delete','');
+    return this.http.put(this.apiUrl + '/users/delete', '');
   }
 }
