@@ -10,39 +10,33 @@
                 <li class="nav-item" *ngIf="getRole()==2">
                     <a class="nav-link active" aria-current="page" routerLink="/user-list">Users</a>
                 </li>
-
                 <li class="nav-item " *ngIf="getRole() == 1 || getRole()==2">
                     <a class="nav-link active" aria-current="page" routerLink="/job-list">Job Manageent</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" routerLink="/job-request-list">Job Requests</a>
                 </li>
-
                 <li class="nav-item " *ngIf="getRole()!=2">
-                    <a  class="nav-link active" aria-current="page" routerLink="/job-apply">Job Apply</a>
+                    <a class="nav-link active" aria-current="page" routerLink="/job-apply">Job Apply</a>
                 </li>
-
             </ul>
         </div>
     </div>
-
     <div class="col">
         <div ngbDropdown class="d-inline-block mx-2" display="dynamic">
             <button type="button" class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle>
                 <span class="bi bi-person-circle" style="color: beige;"></span></button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="background:darkslategrey;">
                 <button class="btn btn-dark text-white" ngbDropdownItem routerLink="/user-profile">Profile</button>
-                <button class="btn btn-dark text-white" ngbDropdownItem (click)="open(changePasswordModal)">Change Password</button>
-                <button class="btn btn-dark text-white" ngbDropdownItem (click)="deleteUserAccount()">Deactivate Account</button>
+                <button class="btn btn-dark text-white" ngbDropdownItem (click)="open(changePasswordModal)">Change
+                    Password</button>
+                <button class="btn btn-dark text-white" ngbDropdownItem (click)="deleteUserAccount()">Deactivate
+                    Account</button>
                 <button (click)="logout()" class="btn btn-dark text-white" ngbDropdownItem>Logout</button>
             </div>
         </div>
     </div>
-
 </nav>
-
-
 <ng-template #changePasswordModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Change Password</h4>
@@ -117,10 +111,8 @@
                                 *ngIf="changePasswordForm.controls['confirmNewPassword'].value != changePasswordForm.controls['newPassword'].value">
                                 Password Should match
                             </div>
-
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
