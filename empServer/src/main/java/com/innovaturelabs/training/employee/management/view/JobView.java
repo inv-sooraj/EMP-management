@@ -16,7 +16,9 @@ public class JobView {
 
     private final Integer openings;
 
-    private final String userId;
+    private final Integer userId;
+
+    private final String userName;
 
     private final Byte status;
 
@@ -33,7 +35,8 @@ public class JobView {
         this.description = job.getDescription();
         this.qualification = job.getQualification();
         this.openings = job.getOpenings();
-        this.userId = job.getUser().getUserName();
+        this.userName = job.getUser().getUserName();
+        this.userId = job.getUser().getUserId();
         this.status = job.getStatus();
         this.createDate = job.getCreateDate();
         this.updateDate = job.getUpdateDate();
@@ -47,7 +50,8 @@ public class JobView {
         this.description = job.getDescription();
         this.qualification = job.getQualification();
         this.openings = job.getOpenings();
-        this.userId = job.getUser().getUserName();
+        this.userId = job.getUser().getUserId();
+        this.userName = job.getUser().getUserName();
         this.status = job.getStatus();
         this.createDate = job.getCreateDate();
         this.updateDate = job.getUpdateDate();
@@ -75,7 +79,7 @@ public class JobView {
         return openings;
     }
 
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
@@ -93,6 +97,10 @@ public class JobView {
 
     public boolean isEligible() {
         return eligible;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
 }

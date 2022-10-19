@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { JobService } from 'src/app/service/job.service';
@@ -11,8 +12,13 @@ import { JobService } from 'src/app/service/job.service';
 })
 export class JobListComponent implements OnInit {
   role: number;
+  today: string = '';
 
-  constructor(private jobService: JobService, private modalService: NgbModal, private service: AuthService) {
+  constructor(
+    private jobService: JobService,
+    private modalService: NgbModal,
+    private service: AuthService
+  ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
 
@@ -21,7 +27,7 @@ export class JobListComponent implements OnInit {
   page: number = 1;
 
   sortBy: string = 'jobId';
-  
+
   sortDesc: boolean = false;
 
   limit: number = 5;
@@ -32,13 +38,17 @@ export class JobListComponent implements OnInit {
 
   status = this.jobService.status;
 
-  showSpinner: boolean = false
+  showSpinner: boolean = false;
 
   statusCount: { [key: string]: number } = {};
 
   ngOnInit(): void {
     this.listJobs();
-    this.service.checkExpired()
+    this.service.checkExpired();
+
+    this.today = new Date().toISOString().split('T')[0];
+
+    this.csvData.endDate.value = this.today;
   }
 
   numSeq(n: number): Array<number> {
@@ -150,8 +160,36 @@ export class JobListComponent implements OnInit {
     console.log(this.checkedJobIds);
   }
 
+  csvData: any = {
+    status: new Set<number>(this.status.keys()),
+    startDate: new FormControl('', [Validators.required]),
+    endDate: new FormControl('', [Validators.required]),
+  };
+
+  changeCsvStat(event: any, stat: any, data: Set<number>): void {
+    if (event.target.checked) {
+      data.add(stat);
+    } else {
+      data.delete(stat);
+    }
+
+    console.log(this.csvData);
+  }
+
   downloadCsv(): void {
-    this.jobService.downloadCsv().subscribe({
+    if (!this.csvData.startDate.valid || !this.csvData.endDate.valid) {
+      this.csvData.startDate.touched = true;
+      return;
+    }
+
+    let queryParams = new HttpParams()
+      .append('status', Array.from(this.csvData.status).join(',').toString())
+      .append('startDate', this.csvData.startDate.value.replaceAll('-', '/'))
+      .append('endDate', this.csvData.endDate.value.replaceAll('-', '/'));
+
+    console.log(queryParams);
+
+    this.jobService.downloadCsv(queryParams).subscribe({
       next: (response: any) => {
         console.log("re",response);
         
@@ -161,9 +199,19 @@ export class JobListComponent implements OnInit {
           new Blob([response.body], { type: response.body.type })
         );
         anchor.click();
+
+        this.modalService.dismissAll();
       },
       error(err) {
         console.log(err);
+
+        if (err.status == 404) {
+          alert('No Record Found');
+        } else if (err.status == 400) {
+          err.error.text().then((text: any) => {
+            alert(JSON.parse(text).message);
+          });
+        }
       },
     });
   }
@@ -176,14 +224,14 @@ export class JobListComponent implements OnInit {
   }
 
   changeJobStatus(jobId: number, status: number): void {
-    this.showSpinner = true
+    this.showSpinner = true;
     this.jobService.changeJobStatus(jobId, status).subscribe({
       next: (response: any) => {
         console.log('Status Changed', response);
-        this.showSpinner = false
+        this.showSpinner = false;
         this.listJobs();
       },
-      error:(error:any) =>{
+      error: (error: any) => {
         console.log(error);
         this.showSpinner = false;
       },
@@ -221,7 +269,8 @@ export class JobListComponent implements OnInit {
         response.forEach((element: any) => {
           console.log(element);
 
-          this.statusCount[this.status[element.status]] = element.count;
+          this.statusCount[this.status.get(element.status) as string] =
+            element.count;
         });
       },
       error(err) {

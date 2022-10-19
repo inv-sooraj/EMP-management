@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -185,7 +186,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc) {
+    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc) {
 
         if (!SecurityUtil.isAdmin()) {
             throw new BadRequestException("Illegal Access");
@@ -197,9 +198,21 @@ public class UserServiceImpl implements UserService {
 
         sortBy = userFields.contains(sortBy) ? sortBy : "userId";
 
-        byte[] status = { User.Status.INACTIVE.value, User.Status.ACTIVE.value };
+        Collection<Byte> statuss = new ArrayList<>();
 
-        Page<User> users = userRepository.findAllByStatus(status, search,
+        if (status.equals(User.Status.INACTIVE.value) || status.equals(User.Status.ACTIVE.value)
+                || status.equals(User.Status.REJECTED.value)) {
+            statuss.add(status);
+
+        } else {
+            statuss.add(User.Status.INACTIVE.value);
+            statuss.add(User.Status.ACTIVE.value);
+            statuss.add(User.Status.REJECTED.value);
+        }
+
+        // byte[] statuss = { User.Status.INACTIVE.value, User.Status.ACTIVE.value };
+
+        Page<User> users = userRepository.findAllByStatus(statuss, search,
                 PageRequest.of(page - 1, limit, Sort.by(
                         desc.booleanValue() ? Direction.DESC : Direction.ASC,
                         sortBy)));
@@ -239,12 +252,12 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.findByUserId(userId)
                     .orElseThrow(NotFoundException::new);
 
-            if (user.getStatus() == User.Status.INACTIVE.value) {
+            if (user.getStatus() == User.Status.REJECTED.value) {
                 user.setStatus(User.Status.ACTIVE.value);
                 emailUtil.sendUserActiveAlertMAil(userId, user.getEmail(), user.getName());
             } else {
 
-                user.setStatus(User.Status.INACTIVE.value);
+                user.setStatus(User.Status.REJECTED.value);
                 emailUtil.sendUserDeleteAlertMail(userId, user.getEmail(), user.getName());
             }
             user.setUpdateDate(new Date());
@@ -289,7 +302,9 @@ public class UserServiceImpl implements UserService {
                     "Max Record Length : " + CsvDownload.MAX_LENGTH + " , Current : " + exportlist.size());
         }
 
-        CsvDownload.download(httpServletResponse, exportlist, "Users");
+        String[] exclude = { "password", "passwordResetRequest", "profilePic" };
+
+        CsvDownload.download(httpServletResponse, exportlist, "Users", exclude);
 
     }
 

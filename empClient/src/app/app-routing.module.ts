@@ -16,7 +16,6 @@ import { RegisterComponent } from './core/components/register/register.component
 
 const routes: Routes = [
   {
-    
     path: 'login',
     component: LoginComponent,
     canActivate: [LoginGuard],
@@ -24,7 +23,7 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
-    canActivate: [LoginGuard]
+    canActivate: [LoginGuard],
   },
   {
     path: 'user-list',
@@ -64,14 +63,14 @@ const routes: Routes = [
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
+    canActivate: [LoginGuard],
   },
   { path: 'userchart', component: UserchartComponent },
   {
     path: '**',
     redirectTo: 'login',
-    pathMatch:'full'
+    pathMatch: 'full',
   },
-  
 ];
 
 @NgModule({

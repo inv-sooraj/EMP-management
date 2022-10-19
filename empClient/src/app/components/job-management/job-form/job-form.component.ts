@@ -36,17 +36,12 @@ export class JobFormComponent implements OnInit {
   }
 
   jobForm: FormGroup = new FormGroup({
-    title: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-    description: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(255),
-    ]),
-    qualification: new FormControl(0, [Validators.required]),
-    openings: new FormControl(0, [
-      Validators.required,
-      Validators.max(2147483647),
-      Validators.min(0),
-    ]),
+
+    title: new FormControl('', [Validators.required,Validators.maxLength(50)]),
+    description: new FormControl('', [Validators.required,Validators.maxLength(255)]),
+    qualification: new FormControl('', [Validators.required]),
+    openings: new FormControl(0, [Validators.required,Validators.max(2147483647),Validators.min(0)]),
+
   });
 
   formAction() {

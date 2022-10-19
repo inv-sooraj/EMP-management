@@ -2,6 +2,7 @@
 package com.innovaturelabs.training.employee.management.service;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +26,8 @@ public interface JobService {
     Pager<JobView> list(Integer page, Integer limit, String sortBy, Boolean desc, String search, Integer data,
             Boolean apply);
 
-    void jobCsv(HttpServletResponse httpServletResponse);
+    void jobCsv(HttpServletResponse httpServletResponse, Collection<Byte> status,
+            Date startDate, Date endDate);
 
     Collection<StatusView> getStat();
 
