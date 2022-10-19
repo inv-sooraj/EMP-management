@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" *ngIf="getRole()">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" *ngIf="[0, 1, 2].includes(getRole())">
     <div class="container-fluid">
         <a class="navbar-brand mb-0 h1" routerLink="/user-profile">{{getName()}}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -11,7 +11,7 @@
                     <a class="nav-link active" aria-current="page" routerLink="/user-list">Users</a>
                 </li>
 
-                <li class="nav-item " *ngIf="getRole() == 1 || getRole()==2">
+                <li class="nav-item " *ngIf="[1, 2].includes(getRole())">
                     <a class="nav-link active" aria-current="page" routerLink="/job-list">Job Manageent</a>
                 </li>
 
@@ -20,7 +20,7 @@
                 </li>
 
                 <li class="nav-item " *ngIf="getRole()!=2">
-                    <a  class="nav-link active" aria-current="page" routerLink="/job-apply">Job Apply</a>
+                    <a class="nav-link active" aria-current="page" routerLink="/job-apply">Job Apply</a>
                 </li>
 
             </ul>
@@ -33,8 +33,10 @@
                 <span class="bi bi-person-circle" style="color: beige;"></span></button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="background:darkslategrey;">
                 <button class="btn btn-dark text-white" ngbDropdownItem routerLink="/user-profile">Profile</button>
-                <button class="btn btn-dark text-white" ngbDropdownItem (click)="open(changePasswordModal)">Change Password</button>
-                <button class="btn btn-dark text-white" ngbDropdownItem (click)="deleteUserAccount()">Deactivate Account</button>
+                <button class="btn btn-dark text-white" ngbDropdownItem (click)="open(changePasswordModal)">Change
+                    Password</button>
+                <button class="btn btn-dark text-white" ngbDropdownItem (click)="deleteUserAccount()">Deactivate
+                    Account</button>
                 <button (click)="logout()" class="btn btn-dark text-white" ngbDropdownItem>Logout</button>
             </div>
         </div>

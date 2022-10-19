@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.exception.NotFoundException;
@@ -18,7 +19,6 @@ import com.innovaturelabs.training.employee.management.form.LoginForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 import com.innovaturelabs.training.employee.management.form.UserEditForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
-import com.innovaturelabs.training.employee.management.form.UserProfilePicForm;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
@@ -28,6 +28,8 @@ import com.innovaturelabs.training.employee.management.view.UserView;
 public interface UserService {
 
     UserView add(UserForm form);
+
+    UserView verifyUser(String token);
 
     UserView adminAdd(AdminAddUserForm form);
 
@@ -47,7 +49,7 @@ public interface UserService {
 
     LoginView refresh(String refreshToken) throws BadRequestException;
 
-    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search,Byte status, Boolean desc);
+    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc);
 
     UserDetailView updateUserDetails(UserDetailForm form);
 
@@ -55,9 +57,10 @@ public interface UserService {
 
     UserView changePassword(ChangePasswordForm form);
 
-    void userCsv(HttpServletResponse httpServletResponse,Collection<Byte> status,Collection<Byte> roles,Date startDate,Date endDate) ;
+    void userCsv(HttpServletResponse httpServletResponse, Collection<Byte> status, Collection<Byte> roles,
+            Date startDate, Date endDate);
 
-    void setProfilePic(UserProfilePicForm form) throws IOException;
+    void setProfilePic(MultipartFile profilePic) throws IOException;
 
     HttpEntity<byte[]> getProfilePic(Integer userId);
 

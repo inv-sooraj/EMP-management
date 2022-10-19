@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
-import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator.PasswordToken;
+import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 
 @Component
 public class EmailUtil {
@@ -21,9 +21,9 @@ public class EmailUtil {
     private JavaMailSender mailSender;
 
     // Email service for forgot passord
-    public void sendForgotPasswordRequest(PasswordToken token, String email) {
+    public void sendForgotPasswordRequest(Token token, String email) {
 
-        String url = "http://localhost:4200/forgot-password?token=" + token.data + "&expiry=" + token.expiry;
+        String url = "http://localhost:4200/forgot-password?token=" + token.value + "&expiry=" + token.expiry;
 
         System.err.println("Token Url : " + url);
 

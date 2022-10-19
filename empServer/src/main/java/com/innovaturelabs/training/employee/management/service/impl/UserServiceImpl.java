@@ -28,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.innovaturelabs.training.employee.management.entity.User;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
@@ -38,7 +39,6 @@ import com.innovaturelabs.training.employee.management.form.LoginForm;
 import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 import com.innovaturelabs.training.employee.management.form.UserEditForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
-import com.innovaturelabs.training.employee.management.form.UserProfilePicForm;
 import com.innovaturelabs.training.employee.management.repository.UserRepository;
 import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
 import com.innovaturelabs.training.employee.management.security.util.InvalidTokenException;
@@ -51,9 +51,6 @@ import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.CsvDownload;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.FileUtil;
-import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator;
-import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator.PasswordStatus;
-import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator.PasswordToken;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
@@ -66,6 +63,8 @@ import net.bytebuddy.utility.RandomString;
 public class UserServiceImpl implements UserService {
 
     private static final String PURPOSE_REFRESH_TOKEN = "REFRESH_TOKEN";
+    private static final String PURPOSE_FORGOT_PASSWORD_TOKEN = "FORGOT_PASSWORD_TOKEN";
+    private static final String PURPOSE_REGISTRATION = "REGISTRATION";
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -81,9 +80,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private EmailUtil emailUtil;
-
-    @Autowired
-    private ForgotPasswordTokenGenerator forgotPasswordTokenGenerator;
 
     private final Set<String> userFields = Arrays.stream(User.class.getDeclaredFields()).map(Field::getName)
             .collect(Collectors.toSet());
@@ -105,12 +101,50 @@ public class UserServiceImpl implements UserService {
             role = User.Role.EMPLOYER.value;
         }
 
+        String data = form.getEmail();
+
+        Token token = tokenGenerator.create(PURPOSE_REGISTRATION, data, Duration.ZERO);
+
+        System.err.println("Token : " + token.value);
+
         return new UserView(userRepository.save(new User(
                 form.getName(),
                 form.getUserName(),
                 form.getEmail(),
                 passwordEncoder.encode(form.getPassword()),
                 role)));
+    }
+
+    @Override
+    public UserView verifyUser(String token) {
+
+        Status status;
+        try {
+            status = tokenGenerator.verify(PURPOSE_REGISTRATION, token, false);
+        } catch (InvalidTokenException e) {
+            throw invalidToken(e);
+        }
+
+        String email;
+        try {
+            email = status.data;
+        } catch (NumberFormatException e) {
+            throw invalidToken(e);
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(NotFoundException::new);
+
+        if (user.getStatus() == User.Status.ACTIVE.value) {
+            throw new BadRequestException("Already Verified");
+        }
+
+        user.setStatus(User.Status.ACTIVE.value);
+        user.setUpdateDate(new Date());
+        userRepository.save(user);
+
+        return null;
+
     }
 
     @Override
@@ -173,7 +207,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserServiceImpl::badRequestException);
 
         if (user.getStatus() == User.Status.INACTIVE.value) {
-            throw new BadRequestException("Invalid User");
+            throw new BadRequestException("Inactive User");
+        } else if (user.getStatus() == User.Status.REJECTED.value) {
+            throw new BadRequestException("Rejected User");
         }
 
         String id = formatUserId(user.getUserId());
@@ -334,14 +370,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setProfilePic(UserProfilePicForm form) throws IOException {
+    public void setProfilePic(MultipartFile profilePic) throws IOException {
 
         User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new);
 
         String fileName = user.getUserId().toString() + ".png";
 
-        FileUtil.saveProfilePic(fileName, form.getProfilePic());
+        FileUtil.saveProfilePic(fileName, profilePic);
 
         user.setProfilePic(fileName);
 
@@ -397,14 +433,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void forgotPassword(String email) {
-        User user = userRepository.findByEmailAndStatus(email, User.Status.ACTIVE.value)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("User Not Found"));
+
+        if (user.getStatus() == User.Status.INACTIVE.value) {
+            throw new BadRequestException("Email not Verified");
+        } else if (user.getStatus() == User.Status.REJECTED.value) {
+            throw new BadRequestException("Rejected User");
+        }
 
         String data = formatUserId(user.getUserId());
 
-        PasswordToken token = forgotPasswordTokenGenerator.create(data);
+        // PasswordToken token = forgotPasswordTokenGenerator.create(data);
 
-        emailUtil.sendForgotPasswordRequest(token, email);
+        Token token2 = tokenGenerator.create(PURPOSE_FORGOT_PASSWORD_TOKEN, data, Duration.ofMinutes(10));
+
+        emailUtil.sendForgotPasswordRequest(token2, email);
 
         user.setPasswordResetRequest(true);
 
@@ -415,9 +459,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPassword(String token, String password) {
 
-        PasswordStatus status;
+        Status status;
         try {
-            status = forgotPasswordTokenGenerator.verify(token);
+            status = tokenGenerator.verify(PURPOSE_FORGOT_PASSWORD_TOKEN, token);
         } catch (InvalidTokenException e) {
             throw invalidToken(e);
         } catch (TokenExpiredException e) {
@@ -455,12 +499,8 @@ public class UserServiceImpl implements UserService {
 
         Byte role = User.Role.EMPLOYEE.value;
 
-        if (form.getRole() == User.Role.EMPLOYER.value) {
-            role = User.Role.EMPLOYER.value;
-        }
-
-        if (form.getRole() == User.Role.ADMIN.value) {
-            role = User.Role.ADMIN.value;
+        if (form.getRole() == User.Role.EMPLOYER.value || form.getRole() == User.Role.ADMIN.value) {
+            role = form.getRole();
         }
 
         SecureRandom rand = new SecureRandom();

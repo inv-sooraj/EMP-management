@@ -105,7 +105,7 @@ public class User {
         this.userName = userName;
         this.email = email;
         this.password = password;
-        this.status = Status.ACTIVE.value;
+        this.status = Status.INACTIVE.value;
 
         this.role = role;
 

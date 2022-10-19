@@ -28,6 +28,7 @@ import { UserchartComponent } from './components/user-management/userchart/userc
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { HotToastModule } from '@ngneat/hot-toast';
+import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { HotToastModule } from '@ngneat/hot-toast';
     TestComponentComponent,
 
     UserchartComponent,
+     UserVerifyComponent,
 
   ],
 
