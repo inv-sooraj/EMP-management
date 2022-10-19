@@ -104,8 +104,6 @@ public class JobRequest {
         }
     }
 
-  
-
     public String getRemark() {
         return remark;
     }

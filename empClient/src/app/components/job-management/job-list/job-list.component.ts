@@ -191,6 +191,8 @@ export class JobListComponent implements OnInit {
 
     this.jobService.downloadCsv(queryParams).subscribe({
       next: (response: any) => {
+        console.log("re",response);
+        
         let anchor = document.createElement('a');
         anchor.download = response.headers.get('Content-Disposition');
         anchor.href = URL.createObjectURL(
