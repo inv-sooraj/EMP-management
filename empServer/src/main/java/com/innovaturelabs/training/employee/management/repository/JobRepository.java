@@ -2,6 +2,7 @@
 package com.innovaturelabs.training.employee.management.repository;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -48,4 +49,9 @@ public interface JobRepository extends Repository<Job, Integer> {
     @Query(value = "SELECT job.status AS status, COUNT(*) AS count FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE job.user.userId=?1 GROUP BY job.status")
     Collection<StatusView> countStatusByUserId(Integer userId);
 
+    @Query(value = "SELECT job FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE job.status IN ?1  AND job.createDate >= ?2 AND job.createDate < ?3")
+    Collection<Job> findQueryCsv(Collection<Byte> status,Date startDate,Date endDate); 
+
+    @Query(value = "SELECT job FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE job.user.userId = ?1 AND job.status IN ?2  AND job.createDate >= ?3 AND job.createDate < ?4")
+    Collection<Job> findQueryCsvEmployer(Integer userId,Collection<Byte> status,Date startDate,Date endDate);
 }

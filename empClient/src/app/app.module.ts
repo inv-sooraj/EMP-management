@@ -29,7 +29,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { HotToastModule } from '@ngneat/hot-toast';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,9 +50,6 @@ import { HotToastModule } from '@ngneat/hot-toast';
 
     UserchartComponent,
 
-
-  
-
   ],
 
   imports: [
@@ -64,6 +60,7 @@ import { HotToastModule } from '@ngneat/hot-toast';
     ReactiveFormsModule,
     HttpClientModule,
     NgIdleModule.forRoot(),
+
     ToastrModule.forRoot({
       closeButton:true,
       positionClass:'toast-top-center',
@@ -72,6 +69,7 @@ import { HotToastModule } from '@ngneat/hot-toast';
       progressAnimation:'decreasing',
     }),
     BrowserAnimationsModule
+
 
   ],
   providers: [

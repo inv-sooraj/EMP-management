@@ -9,26 +9,28 @@ import { environment } from '../../environments/environment';
 export class JobService {
   private apiUrl: string = environment.apiUrl;
 
-  public qualifications: { [key: number]: string } = {
-    0: 'NIL',
-    1: 'SSLC ',
-    2: 'PLUS TWO',
-    3: 'UG ',
-    4: 'PG ',
-  };
+  
 
-  public status: { [key: number]: string } = {
-    0: 'PENDING',
-    1: 'APPROVED',
-    2: 'COMPLETED',
-    3: 'DELETED',
-  };
+  public qualifications = new Map<number, string>([
+    [0, 'NIL'],
+    [1, 'SSLC'],
+    [2, 'PLUS TWO'],
+    [3, 'UG'],
+    [4, 'PG'],
+  ]);
 
-  public employerStatus: { [key: number]: string } = {
-    0: 'PENDING',
-    1: 'APPROVED',
-    2: 'COMPLETED',
-  };
+  public status = new Map<number, string>([
+    [0, 'PENDING'],
+    [1, 'APPROVED'],
+    [2, 'COMPLETED'],
+    [3, 'DELETED'],
+  ]);
+
+  // public employerStatus: { [key: number]: string } = {
+  //   0: 'PENDING',
+  //   1: 'APPROVED',
+  //   2: 'COMPLETED',
+  // };
 
   constructor(private http: HttpClient) {}
 
@@ -59,10 +61,11 @@ export class JobService {
     );
   }
 
-  downloadCsv(): Observable<any> {
+  downloadCsv(quearyParam: HttpParams): Observable<any> {
     return this.http.get(this.apiUrl + '/job/download', {
       responseType: 'blob',
       observe: 'response',
+      params: quearyParam,
     });
   }
 

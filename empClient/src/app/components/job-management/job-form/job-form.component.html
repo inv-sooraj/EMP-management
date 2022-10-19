@@ -47,10 +47,12 @@
                     <label for="description" class="text-danger pt-1"></label>
                 </div>
 
+
+
                 <div class="col-12">
                     <label for="qualification" class="form-label">Qualification</label>
 
-                    <select type="text" id="qualification" formControlName="qualification" class="form-control"
+                    <select id="qualification" formControlName="qualification" class="form-control" 
                         [ngClass]="{'is-invalid':(jobForm.controls['qualification'].touched||jobForm.controls['qualification'].dirty) && jobForm.controls['qualification'].errors}">
 
                         <option value="" disabled selected>Select your Qualification</option>
@@ -95,8 +97,11 @@
                     <label for="openings" class="text-danger pt-1"></label>
                 </div>
 
-                
+
             </form>
         </div>
     </div>
 </div>
+
+
+
