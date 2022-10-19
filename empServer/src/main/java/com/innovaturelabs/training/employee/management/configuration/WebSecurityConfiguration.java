@@ -1,9 +1,9 @@
 package com.innovaturelabs.training.employee.management.configuration;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,7 +23,6 @@ import com.innovaturelabs.training.employee.management.security.AccessTokenProce
 import com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService;
 import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator;
-import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator;
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -52,8 +51,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(POST, "/users").anonymous()
                 .antMatchers("/login").anonymous()
                 .antMatchers(PUT, "/login/forgot-password").anonymous()
+                .antMatchers("/users/verify-user").anonymous()
                 .antMatchers(PUT, "/login/reset-password/**").anonymous()
-                .antMatchers(PUT, "/jobstatus").hasAnyRole(ADMIN,EMPLOYER)
+                .antMatchers(PUT, "/jobstatus").hasAnyRole(ADMIN, EMPLOYER)
                 .antMatchers(GET, "/job/page/**").hasAnyRole(EMPLOYER, ADMIN, EMPLOYEE)
                 .antMatchers(GET, "/users/page/**").hasAnyRole(ADMIN)
                 .antMatchers(GET, "/users/role-stat").hasAnyRole(ADMIN)
@@ -113,10 +113,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new TokenGenerator(securityConfig.getTokenGeneratorPassword(), securityConfig.getTokenGeneratorSalt());
     }
 
-    @Bean
-    @ConfigurationProperties("app.security.configuration")
-    public ForgotPasswordTokenGenerator forgotPasswordTokenGenerator(SecurityConfig securityConfig) {
-        return new ForgotPasswordTokenGenerator(securityConfig.getTokenGeneratorPassword(),
-                securityConfig.getTokenGeneratorSalt());
-    }
+    
 }
