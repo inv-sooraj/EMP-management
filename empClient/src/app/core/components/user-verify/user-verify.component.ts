@@ -64,6 +64,15 @@ export class UserVerifyComponent implements OnInit {
             }).then((result) => {
               this.router.navigate(['login']);
             });
+          } else if (err.error.message == 'Registration Token Expired') {
+            Swal.fire({
+              title: 'Expired!',
+              icon: 'error',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Register Again',
+            }).then((result) => {
+              this.router.navigate(['register']);
+            });
           }
         } else if (err.error.status == 404) {
           Swal.fire({

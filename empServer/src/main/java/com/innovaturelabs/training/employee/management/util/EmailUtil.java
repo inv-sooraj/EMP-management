@@ -14,7 +14,6 @@ import com.innovaturelabs.training.employee.management.exception.BadRequestExcep
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 
-
 @Component
 public class EmailUtil {
 
@@ -24,9 +23,7 @@ public class EmailUtil {
     // Email service for forgot passord
     public void sendForgotPasswordRequest(Token token, String email) {
 
-        String url = "http://localhost:4200/forgot-password?token=" + token.value + "&expiry=" + token.expiry;
-
-        System.err.println("Token Url : " + url);
+        String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
 
         String subject = "Reset password";
         String body = "<h4>Hi, </h4>"
@@ -51,10 +48,27 @@ public class EmailUtil {
     }
 
     // Email service when user registration
-    public void SendUserRegistrationConfirmService(Token token, String email, String name) {
+    public void userRegistrationConfirm(Token token, String email, String name) {
 
         String url = "http://localhost:4200/user-verify?token=" + token.value;
         String subject = "Verify Email";
+        String body = "<h4>Dear " + name + ",</h4> <br>"
+                + "<h2>Welcome to Botjobs </h2><br>"
+                + "Thank you for signing up with BOTJObs."
+                + "To get you started, please click on the button below to verify your account for the first time.<br>+"
+                + "<a href=" + url + ">Click here to verify</a><br>"
+                + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
+                + "Best regards,<br>"
+                + "<b>BOTJOBS</b>";
+        sendEmail(email, subject, body);
+
+    }
+
+    // Email service when user registration
+    public void adminUserRegistrationConfirm(Token token, String email, String name) {
+
+        String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
+        String subject = "Email Verification";
         String body = "<h4>Dear " + name + ",</h4> <br>"
                 + "<h2>Welcome to Botjobs </h2><br>"
                 + "Thank you for signing up with BOTJObs."
