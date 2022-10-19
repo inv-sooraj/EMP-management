@@ -27,7 +27,6 @@ import { TestComponentComponent } from './components/test-component/test-compone
 import { UserchartComponent } from './components/user-management/userchart/userchart.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
-import { HotToastModule } from '@ngneat/hot-toast';
 
 @NgModule({
   declarations: [
@@ -45,9 +44,7 @@ import { HotToastModule } from '@ngneat/hot-toast';
     AdminUserEditComponent,
     ForgotPasswordComponent,
     AdminUserAddComponent,
-
     TestComponentComponent,
-
     UserchartComponent,
 
   ],
@@ -67,8 +64,10 @@ import { HotToastModule } from '@ngneat/hot-toast';
       preventDuplicates:true,
       progressBar:true,
       progressAnimation:'decreasing',
+      enableHtml:true
     }),
     BrowserAnimationsModule
+    
 
 
   ],
