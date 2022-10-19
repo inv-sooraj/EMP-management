@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
-import com.innovaturelabs.training.employee.management.util.ForgotPasswordTokenGenerator.PasswordToken;
+import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 
 @Component
 public class EmailUtil {
@@ -21,11 +21,9 @@ public class EmailUtil {
     private JavaMailSender mailSender;
 
     // Email service for forgot passord
-    public void sendForgotPasswordRequest(PasswordToken token, String email) {
+    public void sendForgotPasswordRequest(Token token, String email) {
 
-        String url = "http://localhost:4200/forgot-password?token=" + token.data + "&expiry=" + token.expiry;
-
-        System.err.println("Token Url : " + url);
+        String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
 
         String subject = "Reset password";
         String body = "<h4>Hi, </h4>"
@@ -49,7 +47,41 @@ public class EmailUtil {
 
     }
 
-    // Email service for add new user
+    // Email service when user registration
+    public void userRegistrationConfirm(Token token, String email, String name) {
+
+        String url = "http://localhost:4200/user-verify?token=" + token.value;
+        String subject = "Verify Email";
+        String body = "<h4>Dear " + name + ",</h4> <br>"
+                + "<h2>Welcome to Botjobs </h2><br>"
+                + "Thank you for signing up with BOTJObs."
+                + "To get you started, please click on the button below to verify your account for the first time.<br>+"
+                + "<a href=" + url + ">Click here to verify</a><br>"
+                + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
+                + "Best regards,<br>"
+                + "<b>BOTJOBS</b>";
+        sendEmail(email, subject, body);
+
+    }
+
+    // Email service when user registration
+    public void adminUserRegistrationConfirm(Token token, String email, String name) {
+
+        String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
+        String subject = "Email Verification";
+        String body = "<h4>Dear " + name + ",</h4> <br>"
+                + "<h2>Welcome to Botjobs </h2><br>"
+                + "Thank you for signing up with BOTJObs."
+                + "To get you started, please click on the button below to verify your account for the first time.<br>+"
+                + "<a href=" + url + ">Click here to verify</a><br>"
+                + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
+                + "Best regards,<br>"
+                + "<b>BOTJOBS</b>";
+        sendEmail(email, subject, body);
+
+    }
+
+    // Email service for add new user by admin
     public void sendRegisterSuccess(String email, String userName, String password) {
 
         String subject = " Successfully registered to BOTJOBS";
@@ -70,8 +102,9 @@ public class EmailUtil {
 
         String subject = "Job request " + status;
 
-        String body = "<h4>Dear " + name + ",</h4> <br>" +
-                "We have " + status + " your request for adding new job title " + jobTitle + " with job id " + jobId
+        String body = "<h4>Dear " + name + ",</h4> <br>"
+                + "We have " + status + " your request for adding new job title "
+                + jobTitle + " with job id " + jobId
                 + ".<br><br> Best regards,<br><b>BOTJOBS</b><br><br><b>Remarks:If you have any queries please fell free to contact us at empmanagemenet@gmail.com. </b>";
 
         sendEmail(email, subject, body);
@@ -85,11 +118,12 @@ public class EmailUtil {
         String status = (approved.booleanValue() ? "Approved" : "Rejected");
 
         String subject = " Job Request " + status;
-        String body = "<h4>Dear " + name + ",</h4> <br>" +
-                "We have " + status + " your request for the profile " + jobTitle + " having <b>job request id "
-                + jobRequestId + "</b>.<br><br>" +
-                "Best regards,<br><b>BOTJOBS</b><br><br>" +
-                "Remark : " + message + "<br>";
+        String body = "<h4>Dear " + name + ",</h4> <br>"
+                + "We have " + status + " your request for the profile "
+                + jobTitle + " having <b>job request id "
+                + jobRequestId + "</b>.<br><br>"
+                + "Best regards,<br><b>BOTJOBS</b><br><br>"
+                + "Remark : " + message + "<br>";
 
         sendEmail(email, subject, body);
 

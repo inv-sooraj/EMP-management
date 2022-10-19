@@ -101,4 +101,16 @@ export class UserProfileComponent implements OnInit {
       },
     });
   }
+
+  // waiting code..................
+  deletePicture(userId: number) {
+    this.userService.deleteProfilePic(userId).subscribe({
+      next: (reponse: any) => {
+        console.log(reponse);
+      },
+      error: (error: any) => {
+        console.log(error);
+      }
+    });
+  }
 }

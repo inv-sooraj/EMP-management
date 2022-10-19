@@ -11,15 +11,14 @@ import Swal from 'sweetalert2';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-
-  showSpinner: boolean = false
+  showSpinner: boolean = false;
 
   constructor(
     private router: Router,
     private modalService: NgbModal,
     private userService: UserService,
     private toastService: ToastrService
-  ) { }
+  ) {}
   ngOnInit(): void {
     // No API call
   }
@@ -31,18 +30,14 @@ export class HeaderComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes'
+      confirmButtonText: 'Yes',
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
         this.router.navigate(['login']);
       }
-    })
-
-
+    });
   }
-
-
   getName(): string {
     return localStorage.getItem('name') as string;
   }
@@ -91,11 +86,11 @@ export class HeaderComponent implements OnInit {
       this.changePasswordForm.controls['newPassword'].value !=
       this.changePasswordForm.controls['confirmNewPassword'].value
     ) {
-      this.toastService.error(' Password Missmatch!')
+      this.toastService.error(' Password Missmatch!');
       return;
     }
 
-    this.showSpinner = true
+    this.showSpinner = true;
     let param = {
       currentPassword:
         this.changePasswordForm.controls['currentPassword'].value,
@@ -104,14 +99,13 @@ export class HeaderComponent implements OnInit {
     this.modalService.dismissAll();
     this.userService.changePassword(param).subscribe({
       next: (response: any) => {
-        this.showSpinner = false
+        this.showSpinner = false;
         console.log('Password Changed', response);
-        this.toastService.success('Password Changed Successfully!')
+        this.toastService.success('Password Changed Successfully!');
         this.changePasswordForm.reset();
-        
       },
       error: (error: any) => {
-        this.showSpinner = false
+        this.showSpinner = false;
         console.log('error', error.error);
       },
     });
@@ -124,24 +118,24 @@ export class HeaderComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes'
+      confirmButtonText: 'Yes',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.showSpinner = true
+        this.showSpinner = true;
         this.userService.deactivateUser().subscribe({
           next: (response: any) => {
             console.log(response);
-            this.showSpinner = false
-            this.toastService.warning('Account Deactivated!')
+            this.showSpinner = false;
+            this.toastService.warning('Account Deactivated!');
             localStorage.clear();
             this.router.navigate(['login']);
           },
           error: (error: any) => {
             console.log(error);
-            this.showSpinner = false
+            this.showSpinner = false;
           },
         });
       }
-    })
+    });
   }
 }

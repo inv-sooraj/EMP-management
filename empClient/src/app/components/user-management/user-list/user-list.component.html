@@ -175,14 +175,14 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.userName }}</td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.updateDate }}</td>
+                        <td>{{ user.updateDate | date : 'MMM-dd-YYYY h:mm a' : 'UTC+11'}}</td>
                         <td>
                             <p *ngIf="user.status == 0"><span class="badge bg-warning">{{status.get(user.status)
                                     }}</span></p>
                             <p *ngIf="user.status == 1"><span class="badge bg-success">{{ status.get(user.status)
                                     }}</span></p>
                             <p *ngIf="user.status == 2"><span class="badge bg-danger">{{status.get(user.status)
-                                    }}</span></p>
+                                    }}</span></p>   
                         </td>
 
                         <td>{{ roles.get(user.role) }}</td>
@@ -192,8 +192,9 @@
                                     (click)="open(userEditModal);userId=user.userId"
                                     class="bi bi-pencil-fill edit"></a></button>
                             &nbsp;
-                            <button *ngIf="user.status!=2" [disabled]="user.status==0" placement="top" ngbTooltip="Delete User : {{user.name}}"
-                                class="btn btn-sort" (click)="deleteUser(user.userId)">
+                            <button *ngIf="user.status!=2" [disabled]="user.status==0" placement="top"
+                                ngbTooltip="Delete User : {{user.name}}" class="btn btn-sort"
+                                (click)="deleteUser(user.userId)">
                                 <a class="bi bi-trash-fill delete"></a>
                             </button>
 

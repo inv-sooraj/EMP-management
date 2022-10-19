@@ -52,8 +52,7 @@ public interface UserRepository extends Repository<User, Integer> {
     @Query(value = "SELECT role as status, COUNT(*) as count FROM com.innovaturelabs.training.employee.management.entity.User GROUP BY role")
     Collection<StatusView> countUserRoles();
 
-
     @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND user.createDate >= ?3 AND user.createDate <=   ?4")
-    Collection<User> findQueryCsv(Collection<Byte> status,Collection<Byte> roles,Date startDate,Date endDate); 
+    Collection<User> findQueryCsv(Collection<Byte> status, Collection<Byte> roles, Date startDate, Date endDate);
 
 }

@@ -13,6 +13,7 @@ import { LoginGuard } from './core/auth/login.guard';
 import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { RegisterComponent } from './core/components/register/register.component';
+import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
 
 const routes: Routes = [
   {
@@ -61,8 +62,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'forgot-password',
+    path: 'reset-password',
     component: ForgotPasswordComponent,
+    canActivate: [LoginGuard],
+  },
+  {
+    path: 'user-verify',
+    component: UserVerifyComponent,
     canActivate: [LoginGuard],
   },
   { path: 'userchart', component: UserchartComponent },

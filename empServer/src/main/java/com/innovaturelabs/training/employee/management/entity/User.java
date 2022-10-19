@@ -67,7 +67,7 @@ public class User {
     @Column(length = 50, unique = true)
     private String userName;
 
-    @Column(length = 50, unique = true)
+    @Column(length = 255, unique = true)
     private String email;
 
     @Column(length = 255)
@@ -105,7 +105,7 @@ public class User {
         this.userName = userName;
         this.email = email;
         this.password = password;
-        this.status = Status.ACTIVE.value;
+        this.status = Status.INACTIVE.value;
 
         this.role = role;
 
@@ -154,6 +154,13 @@ public class User {
     }
 
     public User resetPassword(String newPassword) {
+
+        if (this.password == null) {
+            this.email = this.email.split("#")[0];
+            this.status = Status.ACTIVE.value;
+        }
+
+        this.status = this.password == null ? Status.ACTIVE.value : this.status;
 
         this.password = newPassword;
 

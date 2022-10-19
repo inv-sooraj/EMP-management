@@ -145,7 +145,7 @@ public class TokenGenerator {
         } else {
             e = 0;
             t = 0;
-            r = 0;
+            r = random.nextInt();
         }
 
         String token = purpose + SEPARATOR + encode(data) + SEPARATOR + t + SEPARATOR + e + SEPARATOR + r;
