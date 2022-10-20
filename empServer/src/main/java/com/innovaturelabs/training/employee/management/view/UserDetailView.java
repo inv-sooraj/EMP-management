@@ -15,10 +15,12 @@ public class UserDetailView {
     private final short status;
     private final short role;
     private final short qualification;
-
+    @Json.DateFormat
+    private final Date dob;
     private final String address;
+    private final String city;
+    private final String zipCode;
     private final String phone;
-
     @Json.DateTimeFormat
     private final Date createDate;
     @Json.DateTimeFormat
@@ -32,18 +34,15 @@ public class UserDetailView {
         this.userName = user.getUserName();
         this.email = user.getEmail();
         this.status = user.getStatus();
-
         this.role = user.getRole();
-
         this.qualification = user.getQualification();
-
+        this.dob = user.getDob();
         this.address = user.getAddress();
-
+        this.city=user.getCity();
         this.phone = user.getPhone();
-
+        this.zipCode = user.getZipCode();
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();
-
         this.hasProfilePic = (user.getProfilePic() != null);
 
     }
@@ -74,6 +73,18 @@ public class UserDetailView {
 
     public String getAddress() {
         return address;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getZipCode() {
+        return zipCode;
     }
 
     public String getPhone() {

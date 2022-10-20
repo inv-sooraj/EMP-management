@@ -27,9 +27,11 @@ import { TestComponentComponent } from './components/test-component/test-compone
 import { UserchartComponent } from './components/user-management/userchart/userchart.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+
 import { HotToastModule } from '@ngneat/hot-toast';
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+
 
 @NgModule({
   declarations: [
@@ -47,9 +49,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     AdminUserEditComponent,
     ForgotPasswordComponent,
     AdminUserAddComponent,
-
     TestComponentComponent,
-
     UserchartComponent,
     UserVerifyComponent,
   ],
@@ -64,14 +64,19 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
-      closeButton: true,
-      positionClass: 'toast-top-center',
-      preventDuplicates: true,
-      progressBar: true,
-      progressAnimation: 'decreasing',
+
+      closeButton:true,
+      positionClass:'toast-top-center',
+      preventDuplicates:true,
+      progressBar:true,
+      progressAnimation:'decreasing',
+      enableHtml:true
     }),
     BrowserAnimationsModule,
     InfiniteScrollModule,
+    
+
+
   ],
   providers: [
     {

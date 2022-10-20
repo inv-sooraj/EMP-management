@@ -19,8 +19,11 @@ export class UserEditComponent implements OnInit {
 
   userEditForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required,Validators.maxLength(50)]),
+    dob: new FormControl('',Validators.maxLength(13)),
     phone: new FormControl('',Validators.maxLength(13)),
     address: new FormControl('',Validators.maxLength(255)),
+    city: new FormControl('',Validators.maxLength(255)),
+    zipCode: new FormControl('',Validators.maxLength(255)),
     qualification: new FormControl('', [Validators.required,Validators.maxLength(1)]),
   });
 
@@ -37,8 +40,11 @@ export class UserEditComponent implements OnInit {
 
     let param = {
       name: this.userEditForm.controls['name'].value,
+      dob: this.userEditForm.controls['dob'].value,
       phone: this.userEditForm.controls['phone'].value,
       address: this.userEditForm.controls['address'].value,
+      city: this.userEditForm.controls['city'].value,
+      zipCode: this.userEditForm.controls['zipCode'].value,
       qualification: this.userEditForm.get('qualification')?.value,
     };
 

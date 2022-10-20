@@ -9,7 +9,7 @@
 
 
                 <div class="col-12 mt-0">
-                    <label for="name" class="form-label">Name</label>
+                    <label for="dob" class="form-label">Name</label>
                     <input type="text" formControlName="name" class="form-control"
                         [ngClass]="{'is-invalid':(userEditForm.controls['name'].touched||userEditForm.controls['name'].dirty) && userEditForm.controls['name'].errors}">
 
@@ -22,6 +22,20 @@
 
                         <div class="text-danger" *ngIf="userEditForm.controls['name'].errors?.['maxlength']">
                             Name Should be less than 50 characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-0">
+                    <label for="dob" class="form-label">Date of Birth</label>
+                    <input type="text"  formControlName="dob" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['dob'].touched||userEditForm.controls['dob'].dirty) && userEditForm.controls['dob'].errors}">
+
+                    <div *ngIf="userEditForm.controls['dob'].touched||userEditForm.controls['dob'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['dob'].errors?.['required']">
+                            Dob is required.
                         </div>
                     </div>
                 </div>
@@ -52,6 +66,34 @@
 
                         <div class="text-danger" *ngIf="userEditForm.controls['address'].errors?.['maxlength']">
                             Address Should be less than 255 characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-0">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" formControlName="city" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['city'].touched||userEditForm.controls['city'].dirty) && userEditForm.controls['city'].errors}">
+
+                    <div *ngIf="userEditForm.controls['city'].touched||userEditForm.controls['city'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['city'].errors?.['maxlength']">
+                            City Should be less than 255 characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-0">
+                    <label for="zipCode" class="form-label">Phone</label>
+                    <input type="text" formControlName="zipCode" class="form-control"
+                        [ngClass]="{'is-invalid':(userEditForm.controls['zipCode'].touched||userEditForm.controls['zipCode'].dirty) && userEditForm.controls['zipCode'].errors}">
+
+                    <div *ngIf="userEditForm.controls['zipCode'].touched||userEditForm.controls['zipCode'].dirty"
+                        class="is-invalid">
+
+                        <div class="text-danger" *ngIf="userEditForm.controls['zipCode'].errors?.['maxlength']">
+                            Zip Code Should be less than 8 characters.
                         </div>
                     </div>
                 </div>
