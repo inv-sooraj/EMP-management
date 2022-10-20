@@ -30,6 +30,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { HotToastModule } from '@ngneat/hot-toast';
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 
 @NgModule({
@@ -50,8 +51,7 @@ import { UserVerifyComponent } from './core/components/user-verify/user-verify.c
     AdminUserAddComponent,
     TestComponentComponent,
     UserchartComponent,
-     UserVerifyComponent,
-
+    UserVerifyComponent,
   ],
 
   imports: [
@@ -64,6 +64,7 @@ import { UserVerifyComponent } from './core/components/user-verify/user-verify.c
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
+
       closeButton:true,
       positionClass:'toast-top-center',
       preventDuplicates:true,
@@ -71,7 +72,8 @@ import { UserVerifyComponent } from './core/components/user-verify/user-verify.c
       progressAnimation:'decreasing',
       enableHtml:true
     }),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    InfiniteScrollModule,
     
 
 

@@ -29,6 +29,7 @@
     "bootstrap": "^5.2.1",
     "bootstrap-icons": "^1.9.1",
     "chart.js": "^3.9.1",
+    "ngx-infinite-scroll": "^13.1.0",
     "ngx-toastr": "^14.3.0",
     "rxjs": "~7.5.0",
     "sweetalert2": "^11.5.2",

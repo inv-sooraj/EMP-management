@@ -234,10 +234,12 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void changeSelectedStatus(Collection<Integer> jobIds, Byte status) {
+    public Collection<JobView> changeSelectedStatus(Collection<Integer> jobIds, Byte status) {
         if (SecurityUtil.isEmployee()) {
             throw illegalAccess();
         }
+
+        Collection<JobView> jobViews = new ArrayList<>();
 
         for (Integer jobId : jobIds) {
 
@@ -256,10 +258,11 @@ public class JobServiceImpl implements JobService {
 
             // }
 
-            this.updateStatus(jobId, status);
+            jobViews.add(this.updateStatus(jobId, status));
 
         }
 
+        return jobViews;
     }
 
     @Override
