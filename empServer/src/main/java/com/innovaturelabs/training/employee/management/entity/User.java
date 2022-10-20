@@ -82,8 +82,17 @@ public class User {
     @Column(length = 255)
     private String profilePic;
 
+    @Temporal(TemporalType.DATE)
+    private Date dob;
+
     @Column(length = 255)
-    private String address;
+    private String city="city";
+
+    @Column(length = 255)
+    private String zipCode="";
+
+    @Column(length = 255)
+    private String address="address";
 
     @Column(length = 10)
     private String phone;
@@ -121,10 +130,16 @@ public class User {
         this.name = form.getName();
 
         setQualification(form.getQualification());
+        
+        this.dob = form.getDob();
 
         this.address = form.getAddress();
 
+        this.city = form.getCity();
+
         this.phone = form.getPhone();
+
+        this.zipCode = form.getZipCode();
 
         this.updateDate = new Date();
 
@@ -250,6 +265,22 @@ public class User {
         this.address = address;
     }
 
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -288,6 +319,14 @@ public class User {
 
     public void setPasswordResetRequest(boolean passwordResetRequest) {
         this.passwordResetRequest = passwordResetRequest;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
 }
