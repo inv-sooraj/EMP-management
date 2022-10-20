@@ -20,8 +20,8 @@ public interface UserRepository extends Repository<User, Integer> {
     Optional<User> findByUserIdAndStatusAndPasswordResetRequest(Integer userId, Byte status,
             Boolean passwordResetRequest);
 
-    @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND (user.name LIKE %?2% OR user.email LIKE %?2% OR user.address LIKE %?2% )")
-    Page<User> findAllByStatus(Collection<Byte> status, String search, Pageable page);
+    @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND (user.name LIKE %?3% OR user.email LIKE %?3% OR user.address LIKE %?3% )")
+    Page<User> findAllByStatus(Collection<Byte> status,Collection<Byte> roles, String search, Pageable page);
 
     // Page<User> findByNameContaining(String name, Pageable page);
 
@@ -52,7 +52,7 @@ public interface UserRepository extends Repository<User, Integer> {
     @Query(value = "SELECT role as status, COUNT(*) as count FROM com.innovaturelabs.training.employee.management.entity.User GROUP BY role")
     Collection<StatusView> countUserRoles();
 
-    @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND user.createDate >= ?3 AND user.createDate <=   ?4")
+    @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND user.createDate >= ?3 AND user.createDate <=  ?4")
     Collection<User> findQueryCsv(Collection<Byte> status, Collection<Byte> roles, Date startDate, Date endDate);
 
 }

@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -34,33 +34,37 @@ export class UserListComponent implements OnInit {
   today: string = '';
 
   ngOnInit(): void {
-    this.listUsers();
-    this.getRoleStat();
-
     this.today = new Date().toISOString().split('T')[0];
 
     this.csvData.endDate.value = this.today;
+
+    this.listUsers();
   }
 
   page: number = 1;
 
   sortBy: string = 'userId';
 
-  limit: number = 5;
+  limit: number = 0;
 
   search: string = '';
 
   sortDesc: boolean = false;
 
-  userList: any = {};
+  pagerInfo: any = {};
+
+  userDataList: Array<any> = [];
 
   selectedStatus: number = 3;
+  selectedRole: number = 3;
 
   numSeq(n: number): Array<number> {
     return Array(n);
   }
 
   prevPage() {
+    this.userDataList = [];
+
     this.page -= 1;
     this.listUsers();
   }
@@ -76,9 +80,7 @@ export class UserListComponent implements OnInit {
   }
 
   setSort(sortBy: string) {
-    if (this.userList.result.length <= 1) {
-      return;
-    }
+    this.userDataList = [];
 
     if (this.sortBy == sortBy) {
       this.sortDesc = this.sortDesc ? false : true;
@@ -93,13 +95,16 @@ export class UserListComponent implements OnInit {
     this.listUsers();
   }
 
-  setLimit() {
+  resetList() {
+    this.userDataList = [];
+
     console.log(this.limit);
     this.page = 1;
     this.listUsers();
   }
 
   setSearch() {
+    this.userDataList = [];
     console.log(this.search);
     this.listUsers();
   }
@@ -107,16 +112,33 @@ export class UserListComponent implements OnInit {
   listUsers(): void {
     let queryParams = new HttpParams()
       .append('page', this.page)
-      .append('limit', this.limit)
+      .append(
+        'limit',
+        this.limit ? this.limit : (window.innerHeight / 100).toFixed(0)
+      )
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)
       .append('status', this.selectedStatus)
+      .append('role', this.selectedRole)
       .append('search', this.search);
 
     this.userService.getUsers(queryParams).subscribe({
       next: (response: any) => {
-        this.userList = response;
+        this.pagerInfo = response.pagerInfo;
+        this.pagerInfo['numPages'] = response.numPages;
+        this.pagerInfo['currentPage'] = response.currentPage;
+
+        if (this.limit == 0) {
+          this.userDataList.push(...response.result);
+        } else {
+          this.userDataList = response.result;
+        }
+
+        console.log(this.userDataList);
+
         console.log(response);
+
+        this.getRoleStat();
       },
       error: (err: any) => {
         console.error(err);
@@ -132,10 +154,16 @@ export class UserListComponent implements OnInit {
         this.showSpinner = false;
 
         console.log('deleted', userId, response);
-        this.listUsers();
+
+        this.userDataList.splice(
+          this.userDataList.findIndex((x) => x.userId == userId),
+          1,
+          response
+        );
+
+        // this.listUsers();
       },
       error: (err) => {
-
         this.showSpinner = false;
 
         console.log(err);
@@ -148,8 +176,8 @@ export class UserListComponent implements OnInit {
   checkAllButton(): boolean {
     let temp = true;
 
-    if (this.userList.result) {
-      this.userList.result.forEach((val: any) => {
+    if (this.userDataList) {
+      this.userDataList.forEach((val: any) => {
         if (!this.checkedUserIds.has(val.userId)) {
           temp = false;
         }
@@ -170,7 +198,7 @@ export class UserListComponent implements OnInit {
   }
 
   checkAll(event: any) {
-    this.userList.result.forEach((element: any) => {
+    this.userDataList.forEach((element: any) => {
       if (event.target.checked) {
         if (!this.checkedUserIds.has(element.userId)) {
           this.checkedUserIds.add(element.userId);
@@ -187,15 +215,24 @@ export class UserListComponent implements OnInit {
     if (this.checkedUserIds.size <= 0) {
       return;
     }
-    this.showSpinner = true
+    this.showSpinner = true;
     this.userService.deleteUsers(Array.from(this.checkedUserIds)).subscribe({
       next: (response: any) => {
-        this.showSpinner = false
+        this.showSpinner = false;
         console.log('deleted', this.checkedUserIds, response);
-        this.listUsers();
+
+        response.forEach((element: any) => {
+          this.userDataList.splice(
+            this.userDataList.findIndex((x) => x.userId == element.userId),
+            1,
+            element
+          );
+        });
+
+        // this.listUsers();
       },
       error: (err) => {
-        this.showSpinner = false
+        this.showSpinner = false;
         console.log(err);
       },
     });
@@ -228,10 +265,9 @@ export class UserListComponent implements OnInit {
       },
 
       error: (err: any) => {
-
         console.log(err);
         if (err.status == 404) {
-          this.toastService.warning('No Records Found!')
+          this.toastService.warning('No Records Found!');
         } else if (err.status == 400) {
           err.error.text().then((text: any) => {
             alert(JSON.parse(text).message);
@@ -291,5 +327,19 @@ export class UserListComponent implements OnInit {
     this.modalService.open(content, { size: 'lg' });
   }
 
-  
+  throttle = 300;
+  scrollDistance = 1;
+  scrollUpDistance = 2;
+
+  onScrollDown() {
+    if (this.limit) {
+      return;
+    }
+    this.page += 1;
+    this.listUsers();
+  }
+
+  onUp() {
+    console.log('Hellooo');
+  }
 }
