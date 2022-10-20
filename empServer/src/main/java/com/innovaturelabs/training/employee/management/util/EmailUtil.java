@@ -17,6 +17,9 @@ import com.innovaturelabs.training.employee.management.security.util.TokenGenera
 @Component
 public class EmailUtil {
 
+    private String start = "<h4>Dear %s ,</h4> <br>";
+    private String end = "Best regards,<br><b>BOTJOBS</b>";
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -29,20 +32,18 @@ public class EmailUtil {
         String body = "<h4>Hi, </h4>"
                 + "<p>A request has been received to change the password for your botjobs account. </p><br>"
                 + "<a href=" + url + ">Click here to reset password</a><br>"
-                + "Best regards,<br><b>BOTJOBS</b><br>"
+                + end
                 + "<b>Remarks:If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         sendEmail(email, subject, body);
-
     }
 
     // Email service for change password
     public void changePasswordMail(String email, String name) {
 
         String subject = "Change Password";
-        String body = "<h4>Dear " + name + ", </h4>"
-                + "<p>A request has been received to change the password for your botjobs account. </p><br>"
-                + "Best regards,<br><b>BOTJOBS</b><br>"
-                + "<b>Remarks:If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
+        String body = String.format(start, name)
+                + "<p>A request has been received to change the password for your botjobs account. </p><br>" + end +
+                "<br><b>Remarks:If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         sendEmail(email, subject, body);
 
     }
@@ -52,14 +53,13 @@ public class EmailUtil {
 
         String url = "http://localhost:4200/user-verify?token=" + token.value;
         String subject = "Verify Email";
-        String body = "<h4>Dear " + name + ",</h4> <br>"
+        String body = String.format(start, name)
                 + "<h2>Welcome to Botjobs </h2><br>"
                 + "Thank you for signing up with BOTJObs."
                 + "To get you started, please click on the button below to verify your account for the first time.<br>+"
                 + "<a href=" + url + ">Click here to verify</a><br>"
                 + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
-                + "Best regards,<br>"
-                + "<b>BOTJOBS</b>";
+                + end;
         sendEmail(email, subject, body);
 
     }
@@ -69,14 +69,13 @@ public class EmailUtil {
 
         String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
         String subject = "Email Verification";
-        String body = "<h4>Dear " + name + ",</h4> <br>"
+        String body = String.format(start, name)
                 + "<h2>Welcome to Botjobs </h2><br>"
                 + "Thank you for signing up with BOTJObs."
                 + "To get you started, please click on the button below to verify your account for the first time.<br>+"
                 + "<a href=" + url + ">Click here to verify</a><br>"
                 + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
-                + "Best regards,<br>"
-                + "<b>BOTJOBS</b>";
+                + end;
         sendEmail(email, subject, body);
 
     }
@@ -89,8 +88,8 @@ public class EmailUtil {
                 "We have received a request to create an account in botjobs.com. <p>Please use below credentials to login in.</p>"
                 + "<h4>Username :<b>" + userName + "</b> </h4>"
                 + "<h4>Password :<b>" + password + "</b> </h4><br>"
-                + "Best regards,<br><b>BOTJOBS</b><br>"
-                + "<b>Remarks:Kindly request you to change your password after login!!</b>";
+                + end
+                + "<br><b>Remarks:Kindly request you to change your password after login!!</b>";
         sendEmail(email, subject, body);
 
     }
@@ -102,10 +101,11 @@ public class EmailUtil {
 
         String subject = "Job request " + status;
 
-        String body = "<h4>Dear " + name + ",</h4> <br>"
+        String body = String.format(start, name)
                 + "We have " + status + " your request for adding new job title "
                 + jobTitle + " with job id " + jobId
-                + ".<br><br> Best regards,<br><b>BOTJOBS</b><br><br><b>Remarks:If you have any queries please fell free to contact us at empmanagemenet@gmail.com. </b>";
+                + ".<br><br>" + end
+                + "<br><br><b>Remarks:If you have any queries please fell free to contact us at empmanagemenet@gmail.com. </b>";
 
         sendEmail(email, subject, body);
 
@@ -118,12 +118,11 @@ public class EmailUtil {
         String status = (approved.booleanValue() ? "Approved" : "Rejected");
 
         String subject = " Job Request " + status;
-        String body = "<h4>Dear " + name + ",</h4> <br>"
+        String body = String.format(start, name)
                 + "We have " + status + " your request for the profile "
                 + jobTitle + " having <b>job request id "
                 + jobRequestId + "</b>.<br><br>"
-                + "Best regards,<br><b>BOTJOBS</b><br><br>"
-                + "Remark : " + message + "<br>";
+                + end + "<br>Remark : " + message + "<br>";
 
         sendEmail(email, subject, body);
 
@@ -135,11 +134,12 @@ public class EmailUtil {
         String subject = "User Account Deactivated";
         if (userId.equals(SecurityUtil.getCurrentUserId())) {
 
-            body = "<h4>Dear " + name + ",</h4> <br>" +
+            body = String.format(start, name) +
                     "<p>Your request for deactivating account in botjobs.com has successfully registred.  </p>  <br>Best regards, <br><b>BOTJOBS</b><br><b>Remark :  If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         } else {
-            body = "<h4>Dear " + name + ",</h4> <br>" +
-                    "<p>Your account in botjobs.com has been deactivated by higher authorities. </p> <br> <br>Best regards, <br><b>BOTJOBS</b><br><b>Remark :  If you have any queries please feel free to contact us at empmanagemenet@gmail.com. </b> ";
+            body = String.format(start, name) +
+                    "<p>Your account in botjobs.com has been deactivated by higher authorities. </p> <br> <br>" + end
+                    + "<br><b>Remark :  If you have any queries please feel free to contact us at empmanagemenet@gmail.com. </b> ";
 
         }
 
@@ -153,11 +153,14 @@ public class EmailUtil {
         String subject = "User Account Activated";
         if (userId.equals(SecurityUtil.getCurrentUserId())) {
 
-            body = "<h4>Dear " + name + ",</h4> <br>" +
-                    "<p>Your request for activating account in botjobs.com has successfully completed.  </p>  <br>Best regards, <br><b>BOTJOBS</b><br><b>Remark :  If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
+            body = String.format(start, name) +
+                    "<p>Your request for activating account in botjobs.com has successfully completed.  </p>  <br>"
+                    + end
+                    + "<br><b>Remark :  If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         } else {
-            body = "<h4>Dear " + name + ",</h4> <br>" +
-                    "<p>Your account in botjobs.com has been activated by higher authorities. </p> <br> <br>Best regards, <br><b>BOTJOBS</b><br><b>Remark :  If you have any queries please feel free to contact us at empmanagemenet@gmail.com. </b> ";
+            body = String.format(start, name) +
+                    "<p>Your account in botjobs.com has been activated by higher authorities. </p> <br> <br>" + end
+                    + "<br><b>Remark :  If you have any queries please feel free to contact us at empmanagemenet@gmail.com. </b> ";
 
         }
 
