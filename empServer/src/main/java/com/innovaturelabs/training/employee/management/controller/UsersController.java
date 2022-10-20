@@ -72,10 +72,11 @@ public class UsersController {
             @RequestParam(name = "desc", defaultValue = "false") Boolean desc,
             @RequestParam(name = "sortBy", defaultValue = "user_id") String sortBy,
             @RequestParam(name = "status", defaultValue = "3") Byte status,
+            @RequestParam(name = "role", defaultValue = "3") Byte role,
             @RequestParam(name = "search", defaultValue = "") String search) {
 
         page = page <= 0 ? 1 : page;
-        return userService.list(page, limit, sortBy, search, status, desc);
+        return userService.list(page, limit, sortBy, search, status, desc,role);
     }
 
     @PutMapping("/username")
@@ -97,8 +98,8 @@ public class UsersController {
     }
 
     @PutMapping("/delete/{UserId}")
-    public void delete(@PathVariable("UserId") Integer userId) {
-        userService.delete(userId);
+    public UserView delete(@PathVariable("UserId") Integer userId) {
+       return userService.delete(userId);
     }
 
     @PutMapping("/delete")
@@ -107,8 +108,8 @@ public class UsersController {
     }
 
     @PutMapping("/delete/selected")
-    public void deleteSelected(@RequestBody Collection<Integer> userIds) {
-        userService.deleteSelected(userIds);
+    public Collection<UserView> deleteSelected(@RequestBody Collection<Integer> userIds) {
+      return  userService.deleteSelected(userIds);
     }
 
     @GetMapping("/download")

@@ -1,3 +1,5 @@
+/* *{overflow: hidden;} */
+
 .nI-gNb-log-reg .nI-gNb-lg-rg__register {
   background-color: #ff7555;
   border-color: #ff7555;
@@ -1289,6 +1291,7 @@ button.bg-white:focus {
 @media (min-width: 1200px) {
   .mb-xl-0 {
     margin-bottom: 0 !important;
+    margin-top: 7%;
   }
 }
 

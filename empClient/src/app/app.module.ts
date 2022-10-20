@@ -29,6 +29,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -61,14 +62,20 @@ import { UserVerifyComponent } from './core/components/user-verify/user-verify.c
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
-      closeButton: true,
-      positionClass: 'toast-top-center',
-      preventDuplicates: true,
-      progressBar: true,
-      progressAnimation: 'decreasing',
-      enableHtml: true,
+
+
+      closeButton:true,
+      positionClass:'toast-top-center',
+      preventDuplicates:true,
+      progressBar:true,
+      progressAnimation:'decreasing',
+      enableHtml:true
     }),
     BrowserAnimationsModule,
+    InfiniteScrollModule,
+    
+
+
   ],
   providers: [
     {

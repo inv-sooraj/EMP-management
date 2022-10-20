@@ -87,8 +87,8 @@
 
                 <div class="col-2">
                     Show
-                    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="setLimit()">
-                        <option selected="selected" [ngValue]="3">3</option>
+                    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="resetList()">
+                        <option selected="selected" [ngValue]="0">All</option>
                         <option [ngValue]="4">4</option>
                         <option [ngValue]="5">5</option>
                     </select>
@@ -103,7 +103,7 @@
                         Status : &nbsp;
                     </label>
                     <select id="filter" class="form-select w-auto d-inline" [(ngModel)]="selectedStatus"
-                        (change)="setLimit()">
+                        (change)="resetList()">
                         <option selected="selected" [ngValue]="4">All</option>
                         <option *ngFor="let filter of status | keyvalue" [ngValue]="filter.key">{{filter.value}}
                         </option>
@@ -168,13 +168,13 @@
                     </tr>
                 </thead>
 
-                <tbody *ngIf="jobList">
-                    <tr *ngIf="jobList.result.length == 0">
+                <tbody *ngIf="pagerInfo">
+                    <tr *ngIf="jobDataList.length == 0">
                         <th class="text-center" id="NoRecordsFound" colspan="10">
                             No Records Found
                         </th>
                     </tr>
-                    <tr *ngFor="let job of jobList.result">
+                    <tr *ngFor="let job of jobDataList">
                         <td>
                             <span class="custom-checkbox">
                                 <input type="checkbox" id="checkbox{{ job.jobId }}" value="{{ job.jobId }}"
@@ -231,32 +231,37 @@
 
                         </td>
                     </tr>
+                    <tr *ngIf="!pagerInfo.hasNext && jobDataList.length != 0">
+                        <th class="text-center" id="NoRecordsFound" colspan="10">
+                            End of Records
+                        </th>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <div class="clearfix" *ngIf="jobList">
+    <div class="clearfix" *ngIf="pagerInfo && limit">
         <div class="hint-text">
             Showing &nbsp;
-            <strong>{{ jobList.itemStart }} </strong> to <strong> {{ jobList.itemEnd }} </strong> out of
-            <strong>{{ jobList.numItems }}</strong> &nbsp; entries
+            <strong>{{ pagerInfo.itemStart }} </strong> to <strong> {{ pagerInfo.itemEnd }} </strong> out of
+            <strong>{{ pagerInfo.numItems }}</strong> &nbsp; entries
         </div>
 
         <div>
             <ul class="pagination pagination-sm">
-                <li class="page-item" [class.disabled]="!jobList.hasPrevious">
+                <li class="page-item" [class.disabled]="!pagerInfo.hasPrev">
                     <button class="page-link" (click)="prevPage()">Previous</button>
                 </li>
 
-                <li class="page-item" *ngFor="let s of numSeq(jobList.numPages); let i = index"
-                    [ngClass]="{ active: jobList.currentPage == i + 1 }">
+                <li class="page-item" *ngFor="let s of numSeq(pagerInfo.numPages); let i = index"
+                    [ngClass]="{ active: pagerInfo.currentPage == i + 1 }">
                     <button (click)="gotoPage(i + 1)" class="page-link">
                         {{ i + 1 }}
                     </button>
                 </li>
 
-                <li class="page-item" [class.disabled]="!jobList.hasNext">
+                <li class="page-item" [class.disabled]="!pagerInfo.hasNext">
                     <button class="page-link" (click)="nextPage()">Next</button>
                 </li>
             </ul>
@@ -274,7 +279,7 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <app-job-form #form [jobId]="jobId" (completedEvent)="listJobs();modal.close('Save click')"></app-job-form>
+        <app-job-form #form [jobId]="jobId" (completedEvent)="saveCompleted($event);modal.close('Save click')"></app-job-form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
@@ -344,3 +349,14 @@
 
 <!-- Spinner -->
 <div *ngIf="showSpinner" class="loading">Loading&#8230;</div>
+
+
+
+<div class="search-results"
+      infinite-scroll
+      [infiniteScrollDistance]="scrollDistance"
+      [infiniteScrollUpDistance]="scrollUpDistance"
+      [infiniteScrollThrottle]="throttle"
+      (scrolled)="onScrollDown()">
+ 
+</div>

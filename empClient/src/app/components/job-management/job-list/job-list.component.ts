@@ -22,7 +22,9 @@ export class JobListComponent implements OnInit {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
 
-  jobList: any;
+  pagerInfo: any;
+
+  jobDataList: Array<any> = [];
 
   page: number = 1;
 
@@ -30,7 +32,7 @@ export class JobListComponent implements OnInit {
 
   sortDesc: boolean = false;
 
-  limit: number = 5;
+  limit: number = 0;
 
   search: string = '';
 
@@ -71,9 +73,7 @@ export class JobListComponent implements OnInit {
   }
 
   setSort(sortBy: string) {
-    if (this.jobList.result.length <= 1) {
-      return;
-    }
+    this.jobDataList = [];
 
     if (this.sortBy == sortBy) {
       this.sortDesc = this.sortDesc ? false : true;
@@ -88,7 +88,9 @@ export class JobListComponent implements OnInit {
     this.listJobs();
   }
 
-  setLimit() {
+  resetList() {
+    this.jobDataList = [];
+
     console.log(this.limit);
     this.page = 1;
     this.listJobs();
@@ -102,7 +104,10 @@ export class JobListComponent implements OnInit {
   listJobs(): void {
     let queryParams = new HttpParams()
       .append('page', this.page)
-      .append('limit', this.limit)
+      .append(
+        'limit',
+        this.limit ? this.limit : (window.innerHeight / 100).toFixed(0)
+      )
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)
       .append('filter', this.selectedStatus)
@@ -111,7 +116,16 @@ export class JobListComponent implements OnInit {
     this.jobService.getJobs(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.jobList = response;
+        this.pagerInfo = response.pagerInfo;
+
+        this.pagerInfo['numPages']=response.numPages
+        this.pagerInfo['currentPage']=response.currentPage
+
+        if (this.limit == 0) {
+          this.jobDataList.push(...response.result);
+        } else {
+          this.jobDataList = response.result;
+        }
         this.getStat();
       },
       error: (err: any) => {
@@ -125,8 +139,8 @@ export class JobListComponent implements OnInit {
   checkAllButton(): boolean {
     let temp = true;
 
-    if (this.jobList) {
-      this.jobList.result.forEach((val: any) => {
+    if (this.pagerInfo) {
+      this.jobDataList.forEach((val: any) => {
         if (!this.checkedJobIds.has(val.jobId)) {
           temp = false;
         }
@@ -147,7 +161,7 @@ export class JobListComponent implements OnInit {
   }
 
   checkAll(event: any) {
-    this.jobList.result.forEach((element: any) => {
+    this.jobDataList.forEach((element: any) => {
       if (event.target.checked) {
         if (!this.checkedJobIds.has(element.jobId)) {
           this.checkedJobIds.add(element.jobId);
@@ -191,8 +205,8 @@ export class JobListComponent implements OnInit {
 
     this.jobService.downloadCsv(queryParams).subscribe({
       next: (response: any) => {
-        console.log("re",response);
-        
+        console.log('re', response);
+
         let anchor = document.createElement('a');
         anchor.download = response.headers.get('Content-Disposition');
         anchor.href = URL.createObjectURL(
@@ -229,7 +243,13 @@ export class JobListComponent implements OnInit {
       next: (response: any) => {
         console.log('Status Changed', response);
         this.showSpinner = false;
-        this.listJobs();
+        // this.listJobs();
+
+        this.jobDataList.splice(
+          this.jobDataList.findIndex((x) => x.userId == jobId),
+          1,
+          response
+        );
       },
       error: (error: any) => {
         console.log(error);
@@ -247,7 +267,15 @@ export class JobListComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           console.log('Updated', this.checkedJobIds, ' : ', status, response);
-          this.listJobs();
+          // this.listJobs();
+
+          response.forEach((element: any) => {
+            this.jobDataList.splice(
+              this.jobDataList.findIndex((x) => x.jobId == element.jobId),
+              1,
+              element
+            );
+          });
         },
         error(err) {
           console.log(err);
@@ -280,4 +308,23 @@ export class JobListComponent implements OnInit {
   }
 
   selectedStatus: number = 4;
+
+  throttle = 300;
+  scrollDistance = 1;
+  scrollUpDistance = 2;
+  onScrollDown() {
+    if (this.limit) {
+      return;
+    }
+    this.page += 1;
+    this.listJobs();
+  }
+
+  saveCompleted(event: any) {
+    this.jobDataList.splice(
+      this.jobDataList.findIndex((x) => x.userId == event.jobId),
+      1,
+      event
+    );
+  }
 }

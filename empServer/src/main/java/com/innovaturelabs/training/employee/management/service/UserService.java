@@ -37,9 +37,9 @@ public interface UserService {
 
     UserView updateUserName(Integer userId, String name) throws NotFoundException;
 
-    void delete(Integer userId);
+    UserView delete(Integer userId);
 
-    void deleteSelected(Collection<Integer> userIds);
+    Collection<UserView> deleteSelected(Collection<Integer> userIds);
 
     UserDetailView currentUser();
 
@@ -49,7 +49,7 @@ public interface UserService {
 
     LoginView refresh(String refreshToken) throws BadRequestException;
 
-    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc);
+    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc,Byte role);
 
     UserDetailView updateUserDetails(UserDetailForm form);
 
