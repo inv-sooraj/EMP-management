@@ -13,6 +13,7 @@ import { AuthService } from '../../service/auth.service';
 export class RegisterComponent implements OnInit {
   constructor(private service: AuthService, private router: Router, private toastService: ToastrService) { }
   role: number = 0;
+  showSpinner: boolean = false
 
   ngOnInit(): void {
   }
@@ -53,6 +54,7 @@ export class RegisterComponent implements OnInit {
       this.toastService.warning("Password Should Match")
       return;
     }
+    this.showSpinner = true
 
     let param = {
       role: this.registrationForm.controls['role'].value,
@@ -64,11 +66,14 @@ export class RegisterComponent implements OnInit {
 
     this.service.register(param).subscribe({
       next: (response: any) => {
+        this.showSpinner = false
+
         console.log('User Registered', response);
-        this.toastService.success('Registered Successfully!')
+        this.toastService.success('An email has been sent to <br>' + this.registrationForm.get('email')?.value + '<br> for verification..!')
         this.router.navigate(['login']);
       },
       error: (error: any) => {
+        this.showSpinner = false
 
         console.log('error', error.error);
         if (error.error.status == 400) {
