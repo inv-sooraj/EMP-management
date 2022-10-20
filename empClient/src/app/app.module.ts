@@ -28,9 +28,7 @@ import { UserchartComponent } from './components/user-management/userchart/userc
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 
-import { HotToastModule } from '@ngneat/hot-toast';
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
-
 
 @NgModule({
   declarations: [
@@ -50,8 +48,7 @@ import { UserVerifyComponent } from './core/components/user-verify/user-verify.c
     AdminUserAddComponent,
     TestComponentComponent,
     UserchartComponent,
-     UserVerifyComponent,
-
+    UserVerifyComponent,
   ],
 
   imports: [
@@ -64,17 +61,14 @@ import { UserVerifyComponent } from './core/components/user-verify/user-verify.c
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
-      closeButton:true,
-      positionClass:'toast-top-center',
-      preventDuplicates:true,
-      progressBar:true,
-      progressAnimation:'decreasing',
-      enableHtml:true
+      closeButton: true,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true,
+      progressBar: true,
+      progressAnimation: 'decreasing',
+      enableHtml: true,
     }),
-    BrowserAnimationsModule
-    
-
-
+    BrowserAnimationsModule,
   ],
   providers: [
     {
