@@ -271,7 +271,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc) {
+    public Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc,
+            Byte role) {
 
         if (!SecurityUtil.isAdmin()) {
             throw new BadRequestException("Illegal Access");
@@ -295,9 +296,21 @@ public class UserServiceImpl implements UserService {
             statuss.add(User.Status.REJECTED.value);
         }
 
+        Collection<Byte> roles = new ArrayList<>();
+
+        if (role.equals(User.Role.ADMIN.value) || role.equals(User.Role.EMPLOYEE.value)
+                || role.equals(User.Role.EMPLOYER.value)) {
+            roles.add(role);
+
+        } else {
+            roles.add(User.Role.ADMIN.value);
+            roles.add(User.Role.EMPLOYEE.value);
+            roles.add(User.Role.EMPLOYER.value);
+        }
+
         // byte[] statuss = { User.Status.INACTIVE.value, User.Status.ACTIVE.value };
 
-        Page<User> users = userRepository.findAllByStatus(statuss, search,
+        Page<User> users = userRepository.findAllByStatus(statuss,roles, search,
                 PageRequest.of(page - 1, limit, Sort.by(
                         desc.booleanValue() ? Direction.DESC : Direction.ASC,
                         sortBy)));
@@ -331,7 +344,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Integer userId) {
+    public UserView delete(Integer userId) {
 
         if (SecurityUtil.isAdmin() || SecurityUtil.getCurrentUserId().equals(userId)) {
             User user = userRepository.findByUserId(userId)
@@ -346,7 +359,8 @@ public class UserServiceImpl implements UserService {
                 emailUtil.sendUserDeleteAlertMail(userId, user.getEmail(), user.getName());
             }
             user.setUpdateDate(new Date());
-            userRepository.save(user);
+
+            return new UserView(userRepository.save(user));
 
         } else
             throw new BadRequestException("Invalid user");
@@ -354,17 +368,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteSelected(Collection<Integer> userIds) {
+    public Collection<UserView> deleteSelected(Collection<Integer> userIds) {
+
+        Collection<UserView> userViews = new ArrayList<>();
 
         for (Integer userId : userIds) {
 
             Optional<User> user = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value);
 
             if (user.isPresent()) {
-                userRepository.save(user.get().delete());
+
+                userViews.add(new UserView(userRepository.save(user.get().delete())));
                 emailUtil.sendUserDeleteAlertMail(userId, user.get().getEmail(), user.get().getName());
             }
         }
+
+        return userViews;
     }
 
     @Override

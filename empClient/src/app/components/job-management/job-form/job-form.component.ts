@@ -82,7 +82,7 @@ export class JobFormComponent implements OnInit {
     this.jobService.editJob(jobId, body).subscribe({
       next: (response: any) => {
         console.log('Edited ', response);
-        this.completedEvent.emit();
+        this.completedEvent.emit(response);
       },
       error(err) {
         console.log(err);

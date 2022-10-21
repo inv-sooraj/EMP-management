@@ -36,9 +36,9 @@
 
 
 
-<div class="container">
+<div class="container" >
 
-    <div class="table-responsive">
+    <div class="table-responsive" id="pagerInfoTable">
 
 
         <div class="table-wrapper">
@@ -71,8 +71,8 @@
 
                 <div class="col-3">
                     Show
-                    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="setLimit()">
-                        <option selected="selected" [ngValue]="3">3</option>
+                    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="resetList()">
+                        <option selected="selected" [ngValue]="0">All</option>
                         <option [ngValue]="4">4</option>
                         <option [ngValue]="5">5</option>
                     </select>
@@ -80,14 +80,14 @@
                 </div>
 
 
-                <div class="col-3">
+                <div class="col-auto">
                     <label for="filter">
 
                         <em class="bi bi-funnel-fill"></em>
                         Status : &nbsp;
                     </label>
                     <select id="filter" class="form-select w-auto d-inline" [(ngModel)]="selectedStatus"
-                        (change)="setLimit()">
+                        (change)="resetList()">
                         <option selected="selected" [ngValue]="3">All</option>
                         <option *ngFor="let filter of status | keyvalue" [ngValue]="filter.key">{{filter.value}}
                         </option>
@@ -96,7 +96,23 @@
 
                 </div>
 
-                <div class="col-6 text-end">
+                <div class="col-auto" *ngIf="role==2">
+                    <label for="filter">
+
+                        <em class="bi bi-person-fill"></em>
+                        Roles : &nbsp;
+                    </label>
+                    <select id="filter" class="form-select w-auto d-inline" [(ngModel)]="selectedRole"
+                        (change)="resetList()">
+                        <option selected="selected" [ngValue]="3">All</option>
+                        <option *ngFor="let filter of roles | keyvalue" [ngValue]="filter.key">{{filter.value}}
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-3 text-end">
                     <input placeholder="search" class="form-control w-auto d-inline align-self-end" type="text"
                         id="search" [(ngModel)]="search" (keyup)="setSearch()" />
                 </div>
@@ -157,13 +173,13 @@
                     </tr>
                 </thead>
 
-                <tbody *ngIf="userList.result">
-                    <tr *ngIf="userList.result.length == 0">
+                <tbody *ngIf="userDataList" >
+                    <tr *ngIf="userDataList.length == 0">
                         <th class="text-center" id="NoRecordsFound" colspan="10">
                             No Records Found
                         </th>
                     </tr>
-                    <tr *ngFor="let user of userList.result">
+                    <tr *ngFor="let user of userDataList">
                         <td>
                             <span class="custom-checkbox">
                                 <input type="checkbox" id="checkbox{{ user.userId }}" value="{{ user.userId }}"
@@ -204,33 +220,43 @@
                             </button>
 
                         </td>
+
+                    
+                    </tr>
+
+
+
+                    <tr *ngIf="!pagerInfo.hasNext && userDataList.length != 0">
+                        <th class="text-center" id="NoRecordsFound" colspan="10">
+                            End of Records
+                        </th>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <div class="clearfix" *ngIf="userList">
+    <div class="clearfix" *ngIf="pagerInfo && limit">
         <div class="hint-text">
             Showing
-            <strong>{{ userList.itemStart }} </strong> to <strong> {{ userList.itemEnd }} </strong> out of
-            <strong>{{ userList.numItems }}</strong> entries
+            <strong>{{ pagerInfo.itemStart }} </strong> to <strong> {{ pagerInfo.itemEnd }} </strong> out of
+            <strong>{{ pagerInfo.numItems }}</strong> entries
         </div>
 
         <div>
             <ul class="pagination">
-                <li class="page-item" [class.disabled]="!userList.hasPrevious">
+                <li class="page-item" [class.disabled]="!pagerInfo.hasPrev">
                     <button class="page-link" (click)="prevPage()">Previous</button>
                 </li>
 
-                <li class="page-item" *ngFor="let s of numSeq(userList.numPages); let i = index"
-                    [ngClass]="{ active: userList.currentPage == i + 1 }">
+                <li class="page-item" *ngFor="let s of numSeq(pagerInfo.numPages); let i = index"
+                    [ngClass]="{ active: pagerInfo.currentPage == i + 1 }">
                     <button (click)="gotoPage(i + 1)" class="page-link">
                         {{ i + 1 }}
                     </button>
                 </li>
 
-                <li class="page-item" [class.disabled]="!userList.hasNext">
+                <li class="page-item" [class.disabled]="!pagerInfo.hasNext">
                     <button class="page-link" (click)="nextPage()">Next</button>
                 </li>
             </ul>
@@ -349,3 +375,15 @@
 
 <!-- Spinner -->
 <div *ngIf="showSpinner" class="loading">Loading&#8230;</div>
+
+
+
+<div class="search-results"
+      infinite-scroll
+      [infiniteScrollDistance]="scrollDistance"
+      [infiniteScrollUpDistance]="scrollUpDistance"
+      [infiniteScrollThrottle]="throttle"
+      (scrolled)="onScrollDown()"
+      (scrolledUp)="onUp()">
+ 
+</div>

@@ -66,9 +66,9 @@ public class JobController {
     }
 
     @PutMapping("/status/selected/{status}")
-    public void changeSelectedStatus(@RequestBody Collection<Integer> jobIds,
+    public Collection<JobView> changeSelectedStatus(@RequestBody Collection<Integer> jobIds,
             @PathVariable(name = "status") Byte status) {
-        jobService.changeSelectedStatus(jobIds, status);
+       return jobService.changeSelectedStatus(jobIds, status);
     }
 
     @GetMapping("/download")
