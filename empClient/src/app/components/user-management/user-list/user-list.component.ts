@@ -160,8 +160,6 @@ export class UserListComponent implements OnInit {
           1,
           response
         );
-
-        // this.listUsers();
       },
       error: (err) => {
         this.showSpinner = false;
@@ -169,6 +167,14 @@ export class UserListComponent implements OnInit {
         console.log(err);
       },
     });
+  }
+
+  userEditComplete(response: any): void {
+    this.userDataList.splice(
+      this.userDataList.findIndex((x) => x.userId == response.userId),
+      1,
+      response
+    );
   }
 
   checkedUserIds: Set<number> = new Set();
@@ -216,6 +222,7 @@ export class UserListComponent implements OnInit {
       return;
     }
     this.showSpinner = true;
+
     this.userService.deleteUsers(Array.from(this.checkedUserIds)).subscribe({
       next: (response: any) => {
         this.showSpinner = false;
@@ -228,8 +235,6 @@ export class UserListComponent implements OnInit {
             element
           );
         });
-
-        // this.listUsers();
       },
       error: (err) => {
         this.showSpinner = false;
@@ -291,10 +296,10 @@ export class UserListComponent implements OnInit {
     };
     this.userService.getRoleStat().subscribe({
       next: (response: any) => {
-        console.log('Stat', response);
+        // console.log('Stat', response);
 
         response.forEach((element: any) => {
-          console.log(element);
+          // console.log(element);
 
           this.roleStatusCount[this.roles.get(element.status) as string] =
             element.count;

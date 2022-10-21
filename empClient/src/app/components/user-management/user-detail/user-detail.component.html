@@ -1,0 +1,104 @@
+<div>
+
+    <div class="container emp-profile">
+
+        <form>
+
+            <div class="row">
+
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Name </label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{userDetail?.name}}</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Role </label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ role.get(userDetail?.role) }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Qualification </label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{(userDetail?.qualification)? qualifications.get(userDetail?.qualification):"Nill"}}</p>
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Date of Birth</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{(userDetail?.date)? userDetail.date:"Nill"}}</p>
+                        </div>
+                    </div>
+                    
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Phone</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{(userDetail?.phone)? userDetail.phone:"Nill"}}</p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Email</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{userDetail?.email}}</p>
+                    </div>
+                </div>
+
+
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Address</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{(userDetail?.address)? userDetail.address:"Nill"}}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>City</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{(userDetail?.city)? userDetail.city:"Nill"}}</p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Zipcode</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{(userDetail?.zipCode)? userDetail.zipCode:"Nill"}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+
+                <div class="profilePhoto">
+
+                    <img id="profilePicture" src="assets/User-Profile.png" alt="" />
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>

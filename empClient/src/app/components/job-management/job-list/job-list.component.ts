@@ -118,8 +118,8 @@ export class JobListComponent implements OnInit {
         console.log(response);
         this.pagerInfo = response.pagerInfo;
 
-        this.pagerInfo['numPages']=response.numPages
-        this.pagerInfo['currentPage']=response.currentPage
+        this.pagerInfo['numPages'] = response.numPages;
+        this.pagerInfo['currentPage'] = response.currentPage;
 
         if (this.limit == 0) {
           this.jobDataList.push(...response.result);
@@ -243,7 +243,6 @@ export class JobListComponent implements OnInit {
       next: (response: any) => {
         console.log('Status Changed', response);
         this.showSpinner = false;
-        // this.listJobs();
 
         this.jobDataList.splice(
           this.jobDataList.findIndex((x) => x.userId == jobId),
@@ -267,7 +266,6 @@ export class JobListComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           console.log('Updated', this.checkedJobIds, ' : ', status, response);
-          // this.listJobs();
 
           response.forEach((element: any) => {
             this.jobDataList.splice(
@@ -322,7 +320,7 @@ export class JobListComponent implements OnInit {
 
   saveCompleted(event: any) {
     this.jobDataList.splice(
-      this.jobDataList.findIndex((x) => x.userId == event.jobId),
+      this.jobDataList.findIndex((x) => x.jobId == event.jobId),
       1,
       event
     );

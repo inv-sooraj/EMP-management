@@ -47,7 +47,7 @@ import com.innovaturelabs.training.employee.management.security.util.TokenGenera
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Status;
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator.Token;
 import com.innovaturelabs.training.employee.management.service.UserService;
-import com.innovaturelabs.training.employee.management.util.CsvDownload;
+import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.FileUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         // + (char) (rand.nextInt(26) + 'a') + (char) (rand.nextInt(26) + 'A')
         // + RandomString.make(5);
 
-        // System.out.println("Paaaasword : " + password);
+        // System.out.println("Password : " + password);
 
         String data = form.getEmail() + "#" + new Date();
 
@@ -284,16 +284,16 @@ public class UserServiceImpl implements UserService {
 
         sortBy = userFields.contains(sortBy) ? sortBy : "userId";
 
-        Collection<Byte> statuss = new ArrayList<>();
+        Collection<Byte> statuses = new ArrayList<>();
 
         if (status.equals(User.Status.INACTIVE.value) || status.equals(User.Status.ACTIVE.value)
                 || status.equals(User.Status.REJECTED.value)) {
-            statuss.add(status);
+            statuses.add(status);
 
         } else {
-            statuss.add(User.Status.INACTIVE.value);
-            statuss.add(User.Status.ACTIVE.value);
-            statuss.add(User.Status.REJECTED.value);
+            statuses.add(User.Status.INACTIVE.value);
+            statuses.add(User.Status.ACTIVE.value);
+            statuses.add(User.Status.REJECTED.value);
         }
 
         Collection<Byte> roles = new ArrayList<>();
@@ -308,9 +308,9 @@ public class UserServiceImpl implements UserService {
             roles.add(User.Role.EMPLOYER.value);
         }
 
-        // byte[] statuss = { User.Status.INACTIVE.value, User.Status.ACTIVE.value };
+        // byte[] statuses = { User.Status.INACTIVE.value, User.Status.ACTIVE.value };
 
-        Page<User> users = userRepository.findAllByStatus(statuss,roles, search,
+        Page<User> users = userRepository.findAllByStatus(statuses, roles, search,
                 PageRequest.of(page - 1, limit, Sort.by(
                         desc.booleanValue() ? Direction.DESC : Direction.ASC,
                         sortBy)));
@@ -394,21 +394,21 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("permission Denied");
         }
 
-        Collection<User> exportlist = userRepository.findQueryCsv(status, roles, startDate,
+        Collection<User> exportList = userRepository.findQueryCsv(status, roles, startDate,
                 Date.from(endDate.toInstant().plus(Duration.ofDays(1))));
 
-        if (exportlist.isEmpty()) {
+        if (exportList.isEmpty()) {
             throw new NotFoundException("No Records Found");
         }
 
-        if (exportlist.size() > CsvDownload.MAX_LENGTH) {
+        if (exportList.size() > CsvUtil.MAX_LENGTH) {
             throw new BadRequestException(
-                    "Max Record Length : " + CsvDownload.MAX_LENGTH + " , Current : " + exportlist.size());
+                    "Max Record Length : " + CsvUtil.MAX_LENGTH + " , Current : " + exportList.size());
         }
 
         String[] exclude = { "password", "passwordResetRequest", "profilePic" };
 
-        CsvDownload.download(httpServletResponse, exportlist, "Users", exclude);
+        CsvUtil.download(httpServletResponse, exportList, "Users", exclude);
 
     }
 
@@ -458,6 +458,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public HttpEntity<byte[]> getProfilePic(Integer userId) {
 
+        if (!SecurityUtil.isAdmin() || userId == 0) {
+            userId = SecurityUtil.getCurrentUserId();
+        }
+
         String profilePic = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new).getProfilePic();
 
@@ -477,7 +481,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(NotFoundException::new);
 
         if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
-            throw new BadRequestException("Password Doesnot Match");
+            throw new BadRequestException("Password Does not Match");
         }
 
         emailUtil.changePasswordMail(user.getEmail(), user.getName());

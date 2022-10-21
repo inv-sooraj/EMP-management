@@ -76,7 +76,7 @@ public class UsersController {
             @RequestParam(name = "search", defaultValue = "") String search) {
 
         page = page <= 0 ? 1 : page;
-        return userService.list(page, limit, sortBy, search, status, desc,role);
+        return userService.list(page, limit, sortBy, search, status, desc, role);
     }
 
     @PutMapping("/username")
@@ -99,7 +99,7 @@ public class UsersController {
 
     @PutMapping("/delete/{UserId}")
     public UserView delete(@PathVariable("UserId") Integer userId) {
-       return userService.delete(userId);
+        return userService.delete(userId);
     }
 
     @PutMapping("/delete")
@@ -109,7 +109,7 @@ public class UsersController {
 
     @PutMapping("/delete/selected")
     public Collection<UserView> deleteSelected(@RequestBody Collection<Integer> userIds) {
-      return  userService.deleteSelected(userIds);
+        return userService.deleteSelected(userIds);
     }
 
     @GetMapping("/download")
@@ -130,9 +130,8 @@ public class UsersController {
     }
 
     @GetMapping("/profile")
-    public HttpEntity<byte[]> getProfilePic() {
-
-        return userService.getProfilePic(SecurityUtil.getCurrentUserId());
+    public HttpEntity<byte[]> getProfilePic(@RequestParam(name = "userId", defaultValue = "0") Integer userId) {
+        return userService.getProfilePic(userId);
 
     }
 
