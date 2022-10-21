@@ -188,7 +188,7 @@
                             </span>
                         </td>
                         <td>{{ user.userId }}</td>
-                        <td>{{ user.name }}</td>
+                        <td (click)="open(userDetailsModule);userId=user.userId" >{{ user.name }}</td>
                         <td>{{ user.userName }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.updateDate | date : 'MMM-dd-YYYY h:mm a' : 'UTC+11'}}</td>
@@ -387,3 +387,13 @@
       (scrolledUp)="onUp()">
  
 </div>
+
+<ng-template #userDetailsModule let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">User Details</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <app-user-detail [userId]="userId"></app-user-detail>
+    </div>
+</ng-template>

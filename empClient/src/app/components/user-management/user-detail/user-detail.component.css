@@ -1,0 +1,56 @@
+/* img{
+    height: 50%;
+    width: 50%;
+    
+} */
+p{
+    font-size: medium;
+}
+.manager-title{
+    font-size: large;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+label{
+    font-weight: bold;
+}
+.alert{
+    color: red;
+}
+/* .profilePhoto > img{
+    border-radius: 100%;
+    object-fit: cover;
+    object-position: center;
+    background-color: rgb(193, 234, 255);
+    border: none;
+}
+
+.profilePhoto{
+    position: relative;
+} */
+
+
+.page{
+margin-left: 35%;
+
+}
+
+.profilePhoto{
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    
+}
+
+.profilePhoto > img{
+    height: 200px;
+    width: 200px;
+    right: 1%;
+    top: -1%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    background-color: rgb(193, 234, 255);
+    border: none;
+    margin: 20px;
+    position: absolute;
+}

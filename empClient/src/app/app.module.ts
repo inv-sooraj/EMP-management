@@ -30,6 +30,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { UserDetailComponent } from './components/user-management/user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     TestComponentComponent,
     UserchartComponent,
     UserVerifyComponent,
+    UserDetailComponent,
   ],
 
   imports: [
