@@ -16,20 +16,20 @@ import org.supercsv.prefs.CsvPreference;
 
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 
-public class CsvDownload {
+public class CsvUtil {
 
     public static final Integer MAX_LENGTH = 10;
 
-    private CsvDownload() {
+    private CsvUtil() {
     }
 
-    public static void download(HttpServletResponse httpServletResponse, Collection<?> exportlist, String fileName,
+    public static void download(HttpServletResponse httpServletResponse, Collection<?> exportList, String fileName,
             String[] exclude) {
 
         Collection<String> csvHeader = new ArrayList<>();
         Collection<String> nameMapping = new ArrayList<>();
 
-        for (Field field : exportlist.iterator().next().getClass().getDeclaredFields()) {
+        for (Field field : exportList.iterator().next().getClass().getDeclaredFields()) {
 
             if (!Arrays.asList(exclude).contains(field.getName())) {
                 csvHeader.add(field.getName());
@@ -37,12 +37,12 @@ public class CsvDownload {
             }
         }
 
-        download(httpServletResponse, exportlist, fileName, csvHeader.toArray(String[]::new),
+        download(httpServletResponse, exportList, fileName, csvHeader.toArray(String[]::new),
                 nameMapping.toArray(String[]::new));
 
     }
 
-    public static void download(HttpServletResponse httpServletResponse, Collection<?> exportlist, String fileName,
+    public static void download(HttpServletResponse httpServletResponse, Collection<?> exportList, String fileName,
             String[] csvHeader, String[] nameMapping) {
 
         Date dt = new Date();
@@ -62,7 +62,7 @@ public class CsvDownload {
 
             csvWriter.writeHeader(csvHeader);
 
-            for (Object reservation : exportlist) {
+            for (Object reservation : exportList) {
                 csvWriter.write(reservation, nameMapping);
             }
 

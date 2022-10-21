@@ -28,7 +28,7 @@ import com.innovaturelabs.training.employee.management.repository.JobRepository;
 import com.innovaturelabs.training.employee.management.repository.UserRepository;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.JobService;
-import com.innovaturelabs.training.employee.management.util.CsvDownload;
+import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.JobView;
@@ -164,32 +164,32 @@ public class JobServiceImpl implements JobService {
     public void jobCsv(HttpServletResponse httpServletResponse, Collection<Byte> status,
             Date startDate, Date endDate) {
 
-        Collection<JobView> exportlist;
+        Collection<JobView> exportList;
 
         if (SecurityUtil.isAdmin()) {
-            exportlist = jobRepository.findQueryCsv(status, startDate,
+            exportList = jobRepository.findQueryCsv(status, startDate,
                     Date.from(endDate.toInstant().plus(Duration.ofDays(1)))).stream().map(JobView::new)
                     .collect(Collectors.toList());
         } else {
 
-            exportlist = jobRepository.findQueryCsvEmployer(SecurityUtil.getCurrentUserId(), status, startDate,
+            exportList = jobRepository.findQueryCsvEmployer(SecurityUtil.getCurrentUserId(), status, startDate,
                     Date.from(endDate.toInstant().plus(Duration.ofDays(1)))).stream().map(JobView::new)
                     .collect(Collectors.toList());
 
         }
 
-        if (exportlist.isEmpty()) {
+        if (exportList.isEmpty()) {
             throw new NotFoundException("No Records Found");
         }
 
-        if (exportlist.size() > CsvDownload.MAX_LENGTH) {
+        if (exportList.size() > CsvUtil.MAX_LENGTH) {
             throw new BadRequestException(
-                    "Max Record Length : " + CsvDownload.MAX_LENGTH + " , Current : " + exportlist.size());
+                    "Max Record Length : " + CsvUtil.MAX_LENGTH + " , Current : " + exportList.size());
         }
 
         String[] exclude = { "eligible" };
 
-        CsvDownload.download(httpServletResponse, exportlist, "Jobs", exclude);
+        CsvUtil.download(httpServletResponse, exportList, "Jobs", exclude);
 
     }
 
