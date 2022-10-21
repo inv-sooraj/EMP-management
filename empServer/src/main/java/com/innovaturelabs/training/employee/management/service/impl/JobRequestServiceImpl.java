@@ -28,7 +28,7 @@ import com.innovaturelabs.training.employee.management.repository.JobRequestRepo
 import com.innovaturelabs.training.employee.management.repository.UserRepository;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.JobRequestService;
-import com.innovaturelabs.training.employee.management.util.CsvDownload;
+import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
 import com.innovaturelabs.training.employee.management.view.JobRequestView;
@@ -67,7 +67,7 @@ public class JobRequestServiceImpl implements JobRequestService {
 
         if (userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new).getQualification() < job.getQualification()) {
-            throw new BadRequestException("Insufficien Qualification");
+            throw new BadRequestException("Insufficient Qualification");
 
         }
         return new JobRequestView(
@@ -124,19 +124,19 @@ public class JobRequestServiceImpl implements JobRequestService {
             throw new BadRequestException("Access Denied");
         }
 
-        Collection<JobRequestView> exportlist;
+        Collection<JobRequestView> exportList;
 
         if (SecurityUtil.isAdmin()) {
-            exportlist = jobRequestRepository.findAll().stream().map(JobRequestView::new)
+            exportList = jobRequestRepository.findAll().stream().map(JobRequestView::new)
                     .collect(Collectors.toList());
         } else {
-            exportlist = jobRequestRepository.findAllByUserUserId(SecurityUtil.getCurrentUserId()).stream()
+            exportList = jobRequestRepository.findAllByUserUserId(SecurityUtil.getCurrentUserId()).stream()
                     .map(JobRequestView::new).collect(Collectors.toList());
 
         }
         String[] exclude = {};
 
-        CsvDownload.download(httpServletResponse, exportlist, "Job_Requests", exclude);
+        CsvUtil.download(httpServletResponse, exportList, "Job_Requests", exclude);
 
     }
 
