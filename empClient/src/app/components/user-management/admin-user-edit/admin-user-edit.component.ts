@@ -56,7 +56,7 @@ export class AdminUserEditComponent implements OnInit {
     this.userService.updateUser(this.userId, body).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.completedEvent.emit();
+        this.completedEvent.emit(response);
       },
       error(err) {
         console.log(err);

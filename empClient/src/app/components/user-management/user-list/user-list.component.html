@@ -273,7 +273,7 @@
     </div>
     <div class="modal-body">
 
-        <app-admin-user-edit (completedEvent)="listUsers();modal.dismiss('Save')" #adminUserEditComponent
+        <app-admin-user-edit (completedEvent)="userEditComplete($event);modal.dismiss('Save')" #adminUserEditComponent
             [userId]="userId">
         </app-admin-user-edit>
 

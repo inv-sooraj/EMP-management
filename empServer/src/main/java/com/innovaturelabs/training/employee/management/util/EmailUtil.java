@@ -23,7 +23,7 @@ public class EmailUtil {
     @Autowired
     private JavaMailSender mailSender;
 
-    // Email service for forgot passord
+    // Email service for forgot password
     public void sendForgotPasswordRequest(Token token, String email) {
 
         String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
@@ -147,7 +147,7 @@ public class EmailUtil {
 
     }
 
-    // Email service for activate user After deteting
+    // Email service for user activation
     public void sendUserActiveAlertMAil(Integer userId, String email, String name) {
         String body;
         String subject = "User Account Activated";
