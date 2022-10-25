@@ -1,4 +1,5 @@
 import { Input, Component, OnInit } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -25,9 +26,9 @@ export class UserDetailComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.userDetail = response;
-        if (response) {
-          this.getProfilePic();
+        this.userDetail = response
+        if(response.hasProfilePic){
+          this.getProfilePic(this.userId);
         }
       },
       error: (error: any) => {
@@ -36,8 +37,10 @@ export class UserDetailComponent implements OnInit {
     });
   }
 
-  getProfilePic(): void {
-    this.userService.getProfile().subscribe({
+  getProfilePic(id:number): void {
+    let queryParams = new HttpParams()
+    .append('userId',id)
+    this.userService.getProfile(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
 

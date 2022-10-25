@@ -77,14 +77,14 @@ export class UserService {
     return this.http.put(this.apiUrl + '/users/profile', requestBody);
   }
 
-  getProfile(): Observable<any> {
-    return this.http.get(this.apiUrl + '/users/profile', {
+  getProfile(quearyParam: HttpParams): Observable<any> {
+    return this.http.get(this.apiUrl + '/users/profile',{params: quearyParam,
       responseType: 'blob',
     });
   }
 
   deleteProfilePic(userId:number): Observable<any> {
-    return this.http.delete(this.apiUrl + '/users/profile/deleted' + userId);
+    return this.http.put(this.apiUrl +'/users/profile/deleted/' + userId,'');
   }
 
   getRoleStat(): Observable<any> {

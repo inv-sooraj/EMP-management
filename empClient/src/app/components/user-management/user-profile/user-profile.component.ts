@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,7 +12,7 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private modalService: NgbModal
-  ) {}
+  ) { }
 
   userDetails: any = {};
 
@@ -50,7 +51,7 @@ export class UserProfileComponent implements OnInit {
         console.log(response);
         this.userDetails = response;
 
-        if (response.hasProfilePic) {
+        if (this.userDetails.hasProfilePic) {
           this.getProfilePic();
         }
       },
@@ -73,6 +74,8 @@ export class UserProfileComponent implements OnInit {
   }
 
   uploadProfilePic(): void {
+
+
     let formData = new FormData();
 
     formData.append('profilePic', this.file);
@@ -80,6 +83,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.uploadProfile(formData).subscribe({
       next: (response: any) => {
         console.log(response);
+       
         this.getProfilePic();
       },
       error(err) {
@@ -89,7 +93,15 @@ export class UserProfileComponent implements OnInit {
   }
 
   getProfilePic(): void {
-    this.userService.getProfile().subscribe({
+
+    if (!this.userDetails.hasProfilePic) {
+      (document.getElementById('profilePicture') as HTMLImageElement).src = '../../../../assets/User-Profile.png'
+      return
+    }
+
+    let queryParams = new HttpParams()
+      .append('userId', 0)
+    this.userService.getProfile(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
 
@@ -104,9 +116,12 @@ export class UserProfileComponent implements OnInit {
 
   // waiting code..................
   deletePicture(userId: number) {
+    console.log("hhh");
+
     this.userService.deleteProfilePic(userId).subscribe({
       next: (reponse: any) => {
         console.log(reponse);
+        this.getProfilePic()
       },
       error: (error: any) => {
         console.log(error);
