@@ -38,12 +38,12 @@ public class UserDetailView {
         this.qualification = user.getQualification();
         this.dob = user.getDob();
         this.address = user.getAddress();
-        this.city=user.getCity();
+        this.city = user.getCity();
         this.phone = user.getPhone();
         this.zipCode = user.getZipCode();
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();
-        this.hasProfilePic = (user.getProfilePic() != null);
+        this.hasProfilePic = !(user.getProfilePic() == null || user.getProfilePic().isEmpty());
 
     }
 

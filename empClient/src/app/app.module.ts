@@ -31,6 +31,12 @@ import { ToastrModule } from 'ngx-toastr';
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
+import { LandingPageComponent } from './components/user-management/landing-page/landing-page.component';
+import { PageErrorComponent } from './components/page-error/page-error.component';
+
+import { UserDetailComponent } from './components/user-management/user-detail/user-detail.component';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,6 +56,12 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     TestComponentComponent,
     UserchartComponent,
     UserVerifyComponent,
+
+    LandingPageComponent,
+    PageErrorComponent,
+
+    UserDetailComponent,
+
   ],
 
   imports: [
@@ -62,8 +74,6 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
-
-
       closeButton:true,
       positionClass:'toast-top-center',
       preventDuplicates:true,

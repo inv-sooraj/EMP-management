@@ -320,7 +320,7 @@ export class JobListComponent implements OnInit {
 
   saveCompleted(event: any) {
     this.jobDataList.splice(
-      this.jobDataList.findIndex((x) => x.userId == event.jobId),
+      this.jobDataList.findIndex((x) => x.jobId == event.jobId),
       1,
       event
     );

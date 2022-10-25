@@ -145,7 +145,7 @@ public class UsersController {
         return userService.getRoleStat();
     }
 
-    @DeleteMapping("/profile/deleted/{userId}")
+    @PutMapping("/profile/deleted/{userId}")
     public UserDetailView deleteProfilePic(@PathVariable Integer userId) {
         return userService.deleteProfilePic(userId);
     }

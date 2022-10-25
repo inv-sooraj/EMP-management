@@ -458,12 +458,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public HttpEntity<byte[]> getProfilePic(Integer userId) {
 
-        if (!SecurityUtil.isAdmin() || userId == 0) {
+        if (!SecurityUtil.isAdmin() || userId.equals(0)) {
             userId = SecurityUtil.getCurrentUserId();
         }
 
         String profilePic = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new).getProfilePic();
+                
+                
 
         byte[] file = FileUtil.getProfilePic(profilePic);
 
@@ -577,12 +579,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailView deleteProfilePic(Integer userId) {
 
-        return new UserDetailView(userRepository.findByUserId(userId).map(
-                user -> {
-                    user.setProfilePic(null);
-                    user.setUpdateDate(new Date());
-                    return user;
-                }).orElseThrow(() -> new BadRequestException("Invalid User")));
+        if (!SecurityUtil.isAdmin() && !userId.equals(SecurityUtil.getCurrentUserId())) {
+            throw new BadRequestException("Invalid");
+        }
+
+        return userRepository.findByUserId(userId).map(
+                u -> {
+                    u.setProfilePic("");
+                    u.setUpdateDate(new Date());
+                    return new UserDetailView(userRepository.save(u));
+                }).orElseThrow(NotFoundException::new);
+
+        // user.setProfilePic("");
+        // user.setUpdateDate(new Date());
+        // userRepository.save(user);
+        // return new UserDetailView(user);
+
+        // return new UserDetailView(userRepository.findByUserId(userId).map(
+        // user -> {
+        // user.setProfilePic("null");
+        // user.setUpdateDate(new Date());
+        // return user;
+        // }).orElseThrow(() -> new BadRequestException("Invalid User")));
     }
 
 }

@@ -296,10 +296,10 @@ export class UserListComponent implements OnInit {
     };
     this.userService.getRoleStat().subscribe({
       next: (response: any) => {
-        console.log('Stat', response);
+        // console.log('Stat', response);
 
         response.forEach((element: any) => {
-          console.log(element);
+          // console.log(element);
 
           this.roleStatusCount[this.roles.get(element.status) as string] =
             element.count;
