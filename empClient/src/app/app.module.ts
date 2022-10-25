@@ -74,8 +74,6 @@ import { UserDetailComponent } from './components/user-management/user-detail/us
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
-
-
       closeButton:true,
       positionClass:'toast-top-center',
       preventDuplicates:true,
