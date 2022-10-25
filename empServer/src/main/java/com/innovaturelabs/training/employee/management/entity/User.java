@@ -1,5 +1,6 @@
 package com.innovaturelabs.training.employee.management.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -101,6 +102,12 @@ public class User {
     private Date createDate;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
+    
+   
+    
+    
+
+
 
     public User() {
     }
@@ -119,7 +126,6 @@ public class User {
         this.role = role;
 
         this.qualification = Qualification.NIL.value;
-
         Date date = new Date();
         this.createDate = date;
         this.updateDate = date;
@@ -328,5 +334,8 @@ public class User {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
+    
+    
 
 }

@@ -25,6 +25,10 @@ public class UserDetailView {
     private final Date createDate;
     @Json.DateTimeFormat
     private final Date updateDate;
+    
+
+    
+    
 
     private final boolean hasProfilePic;
 
@@ -106,5 +110,6 @@ public class UserDetailView {
     public boolean isHasProfilePic() {
         return hasProfilePic;
     }
+
 
 }
