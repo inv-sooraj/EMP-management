@@ -1,15 +1,20 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
-  styleUrls: ['./landing-page.component.css']
+  styleUrls: ['./landing-page.component.css'],
 })
 export class LandingPageComponent implements OnInit {
+  // flag: boolean = false;
 
-  constructor() { }
+  constructor(private viewportScroller: ViewportScroller) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  onClickScroll(elementId: string): void {
+    // this.flag = true;
+    this.viewportScroller.scrollToAnchor(elementId);
   }
-
 }

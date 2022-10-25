@@ -149,5 +149,4 @@ public class UsersController {
     public UserDetailView deleteProfilePic(@PathVariable Integer userId) {
         return userService.deleteProfilePic(userId);
     }
-
 }
