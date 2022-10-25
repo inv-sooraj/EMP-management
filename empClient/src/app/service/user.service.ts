@@ -94,4 +94,8 @@ export class UserService {
   deactivateUser() {
     return this.http.put(this.apiUrl + '/users/delete', '');
   }
+
+  getUserCount(): Observable<any> {
+    return this.http.get(this.apiUrl + '/users/chart');
+  }
 }

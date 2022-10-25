@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
+import org.aspectj.weaver.tools.Trace;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import com.innovaturelabs.training.employee.management.entity.User;
+import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 
 public interface UserRepository extends Repository<User, Integer> {
@@ -21,7 +23,7 @@ public interface UserRepository extends Repository<User, Integer> {
             Boolean passwordResetRequest);
 
     @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND (user.name LIKE %?3% OR user.email LIKE %?3% OR user.address LIKE %?3% )")
-    Page<User> findAllByStatus(Collection<Byte> status,Collection<Byte> roles, String search, Pageable page);
+    Page<User> findAllByStatus(Collection<Byte> status, Collection<Byte> roles, String search, Pageable page);
 
     // Page<User> findByNameContaining(String name, Pageable page);
 
@@ -48,6 +50,9 @@ public interface UserRepository extends Repository<User, Integer> {
     void delete(User user);
 
     void deleteById(Integer userId);
+
+    @Query(value = "select date(create_date) as date ,count(*) as count  from user_tbl group by date(create_date)", nativeQuery = true)
+    Collection<ChartView> findJoinDates();
 
     @Query(value = "SELECT role as status, COUNT(*) as count FROM com.innovaturelabs.training.employee.management.entity.User GROUP BY role")
     Collection<StatusView> countUserRoles();
