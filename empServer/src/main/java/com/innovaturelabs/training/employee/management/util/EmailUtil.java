@@ -27,7 +27,6 @@ public class EmailUtil {
     public void sendForgotPasswordRequest(Token token, String email) {
 
         String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
-
         String subject = "Reset password";
         String body = "<h4>Hi, </h4>"
                 + "<p>A request has been received to change the password for your botjobs account. </p><br>"
@@ -90,6 +89,7 @@ public class EmailUtil {
                 + "<h4>Password :<b>" + password + "</b> </h4><br>"
                 + end
                 + "<br><b>Remarks:Kindly request you to change your password after login!!</b>";
+
         sendEmail(email, subject, body);
 
     }

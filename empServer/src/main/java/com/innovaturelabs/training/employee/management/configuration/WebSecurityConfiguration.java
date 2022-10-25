@@ -113,5 +113,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new TokenGenerator(securityConfig.getTokenGeneratorPassword(), securityConfig.getTokenGeneratorSalt());
     }
 
-    
 }

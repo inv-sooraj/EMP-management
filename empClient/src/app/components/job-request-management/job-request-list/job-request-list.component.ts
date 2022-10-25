@@ -1,11 +1,11 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { JobRequestService } from 'src/app/service/job-request.service';
-import { JobService } from 'src/app/service/job.service';
+
 
 @Component({
   selector: 'app-job-request-list',
