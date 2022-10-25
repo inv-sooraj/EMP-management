@@ -97,6 +97,7 @@ export class JobListComponent implements OnInit {
   }
 
   setSearch() {
+    this.jobDataList = [];
     console.log(this.search);
     this.listJobs();
   }
