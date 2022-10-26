@@ -55,7 +55,7 @@
                     <select id="qualification" formControlName="qualification" class="" 
                         [ngClass]="{'is-invalid':(jobForm.controls['qualification'].touched||jobForm.controls['qualification'].dirty) && jobForm.controls['qualification'].errors}">
 
-                        <option value="" disabled selected>Select your Qualification</option>
+                        <option value="" disabled selected> Select Qualification</option>
 
                         <option *ngFor="let qualification of qualifications | keyvalue" value="{{qualification.key}}">
                             {{qualification.value}}</option>

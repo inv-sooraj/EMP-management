@@ -24,6 +24,10 @@ import { UserVerifyComponent } from './core/components/user-verify/user-verify.c
 
 const routes: Routes = [
   {
+    path: '',
+    component: LandingPageComponent,
+  },
+  {
     path: 'login',
     component: LoginComponent,
     canActivate: [LoginGuard],
@@ -90,7 +94,7 @@ const routes: Routes = [
   { path: 'homejob', component: HomepagejobviewComponent },
   {
     path: '**',
-    redirectTo: 'login',
+    redirectTo: '404-page',
     pathMatch: 'full',
   },
 ];
@@ -98,7 +102,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: true,
+      useHash: false,
       anchorScrolling: 'enabled',
     }),
   ],

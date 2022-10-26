@@ -48,7 +48,7 @@
                     </div>
                     <div class="col-sm-6" *ngIf="role==2 || role==1">
 
-                        <button placement="bottom" ngbTooltip="Delete selected jobs from table"
+                        <button placement="bottom" ngbTooltip="Complete selected jobs from table"
                             (click)="changeJobsStatus(2)" class="btn btn-secondary" [disabled]="!checkedJobIds.size">
                             <em class="bi-c-circle"></em>
                             &nbsp;Completed
@@ -67,8 +67,8 @@
                             &nbsp;Approve Jobs
                         </button>
 
-                        <button placement="bottom" ngbTooltip="Download job list as Csv" (click)="open(csvDowloadModal);"
-                            class="btn btn-secondary">
+                        <button placement="bottom" ngbTooltip="Download job list as Csv"
+                            (click)="open(csvDowloadModal);" class="btn btn-secondary">
                             <em class="bi bi-download"></em>
                             &nbsp;Download
                         </button>
@@ -191,8 +191,8 @@
                             <div ngbTooltip="User Id : {{job.userId}}">
 
                                 {{ job.userName }}
-                            </div> 
-                         </td>
+                            </div>
+                        </td>
                         <td>{{ job.updateDate|date}}</td>
                         <td>
                             <p *ngIf="job.status == 0"><span class="badge bg-warning clr">{{ status.get(job.status)
@@ -279,7 +279,8 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <app-job-form #form [jobId]="jobId" (completedEvent)="saveCompleted($event);modal.close('Save click')"></app-job-form>
+        <app-job-form #form [jobId]="jobId" (completedEvent)="saveCompleted($event);modal.close('Save click')">
+        </app-job-form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
@@ -299,7 +300,7 @@
 
         <div class="row">
 
-            
+
             <div class="col-6">
                 <label class="form-label">
                     <strong>Status</strong>
@@ -352,11 +353,7 @@
 
 
 
-<div class="search-results"
-      infinite-scroll
-      [infiniteScrollDistance]="scrollDistance"
-      [infiniteScrollUpDistance]="scrollUpDistance"
-      [infiniteScrollThrottle]="throttle"
-      (scrolled)="onScrollDown()">
- 
+<div class="search-results" infinite-scroll [infiniteScrollDistance]="scrollDistance"
+    [infiniteScrollUpDistance]="scrollUpDistance" [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()">
+
 </div>
