@@ -4,6 +4,7 @@ package com.innovaturelabs.training.employee.management.service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +21,6 @@ import com.innovaturelabs.training.employee.management.form.UserDetailForm;
 import com.innovaturelabs.training.employee.management.form.UserEditForm;
 import com.innovaturelabs.training.employee.management.form.UserForm;
 import com.innovaturelabs.training.employee.management.util.Pager;
-import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
@@ -56,7 +56,7 @@ public interface UserService {
 
     UserView updateUser(UserEditForm form, Integer userId);
     
-    Collection<ChartView> getUserCount();
+    Map<String, Integer> getUserCount();
 
     UserView changePassword(ChangePasswordForm form);
 
