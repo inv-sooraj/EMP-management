@@ -145,10 +145,11 @@ body {
 }
 .wrapper .btn {
     background: rgb(0,195,154);
-    padding: 20px;
+    padding: 5px;
     font-size: 1.5rem;
     text-decoration: none;
     color: #fff;
 }
 .wrapper .btn:hover {background: rgb(0,231,201);}
 .wrapper .copyRights {margin-top: 50px;}
+
