@@ -1,28 +1,26 @@
+import { Input, Component, OnInit } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Input } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.css']
+  styleUrls: ['./user-detail.component.css'],
 })
 export class UserDetailComponent implements OnInit {
-  @Input() userId: number = 0
-  constructor(private userService: UserService) { }
-  userDetail: any
+  @Input() userId: number = 0;
+  constructor(private userService: UserService) {}
+  userDetail: any;
   ngOnInit(): void {
     this.getDetail();
   }
-  
+
   role = this.userService.roles;
   qualifications = this.userService.qualifications;
 
   getDetail() {
-
     if (!this.userId) {
-      return
+      return;
     }
 
     this.userService.getUser(this.userId).subscribe({
@@ -32,10 +30,11 @@ export class UserDetailComponent implements OnInit {
         if(response.hasProfilePic){
           this.getProfilePic(this.userId);
         }
-      }, error: (error: any) => {
+      },
+      error: (error: any) => {
         console.log(error);
-      }
-    })
+      },
+    });
   }
 
   getProfilePic(id:number): void {
@@ -53,5 +52,4 @@ export class UserDetailComponent implements OnInit {
       },
     });
   }
-
 }

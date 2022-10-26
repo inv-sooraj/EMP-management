@@ -5,6 +5,7 @@ import { JobListComponent } from './components/job-management/job-list/job-list.
 import { JobRequestListComponent } from './components/job-request-management/job-request-list/job-request-list.component';
 import { PageErrorComponent } from './components/page-error/page-error.component';
 import { TestComponentComponent } from './components/test-component/test-component.component';
+import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
 
 import { LandingPageComponent } from './components/user-management/landing-page/landing-page.component';
 
@@ -85,7 +86,8 @@ const routes: Routes = [
   },
   { path: 'userchart', component: UserchartComponent },
   { path: 'landingpage', component: LandingPageComponent },
-  {path:'404-page',component:PageErrorComponent},
+  { path: '404-page', component: PageErrorComponent },
+  { path: 'homejob', component: HomepagejobviewComponent },
   {
     path: '**',
     redirectTo: 'login',
@@ -94,7 +96,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      anchorScrolling: 'enabled',
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
