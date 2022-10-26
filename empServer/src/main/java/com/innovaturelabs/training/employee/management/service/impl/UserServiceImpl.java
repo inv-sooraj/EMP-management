@@ -10,12 +10,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -465,8 +471,6 @@ public class UserServiceImpl implements UserService {
 
         String profilePic = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new).getProfilePic();
-                
-                
 
         byte[] file = FileUtil.getProfilePic(profilePic);
 
@@ -605,8 +609,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<ChartView> getUserCount() {
-        return userRepository.findJoinDates();
+    public Map<String, Integer> getUserCount() {
+
+        Collection<ChartView> chartViewvalues = userRepository.findJoinDates();
+        DateTime today = new DateTime();
+
+        String StToday = today.toString("yyyy-MM-dd");
+        int n = 7;
+        int i;
+
+        HashMap<String, Integer> datawithdate = new HashMap<>();
+
+        ArrayList<String> dat = new ArrayList<>();
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+
+        for (i = 0; i < n; i++) {
+
+            for (ChartView chart : chartViewvalues) {
+                if (formatter.parseLocalDate(today.toString("yyyy-MM-dd"))
+                        .isEqual(formatter.parseLocalDate(chart.getDate()))) {
+                    datawithdate.put(chart.getDate(), chart.getCount());
+
+                } else {
+                    datawithdate.putIfAbsent(today.toString("yyyy-MM-dd"), 0);
+                }
+            }
+            today = today.minusDays(1);
+        }
+        Map<String, Integer> treeMap = new TreeMap<String, Integer>(datawithdate);
+
+        System.out.println(treeMap);
+
+        return treeMap;
+
+    }
+
+    public static String addOneDayJodaTime(String date) {
+        DateTime dateTime = new DateTime(date);
+        return dateTime
+                .minusDays(1)
+                .toString("yyyy-MM-dd");
     }
 
 }
