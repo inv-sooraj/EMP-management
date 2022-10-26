@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -154,4 +153,13 @@ public class UsersController {
     public UserDetailView deleteProfilePic(@PathVariable Integer userId) {
         return userService.deleteProfilePic(userId);
     }
+
+    // @GetMapping("/")
+    // public String helloworld(){
+    //     return "Hello World";
+    // }
+    // @GetMapping("/restricted")
+    // public String restricted(){
+    //     return "welcome ";
+    // }
 }
