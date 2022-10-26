@@ -9,8 +9,8 @@ import { UserService } from 'src/app/service/user.service';
 export class UserchartComponent implements OnInit {
   constructor(private service: UserService) { }
   myChart: any;
-  day:any=[]
-  count:any=[];
+  day: Array<string> = new Array<string>();
+  count: Array<number> = new Array<number>();
 
   ngOnInit(): void {
     this.userCounts();
@@ -20,8 +20,25 @@ export class UserchartComponent implements OnInit {
     this.service.getUserCount().subscribe({
       next: (res: any) => {
         console.log(res);
-        this.setCounts(res);
-        this.setDates(res);
+
+        const map1 = new Map(Object.entries(res));
+
+        console.log(map1.values());
+        console.log(map1.keys());
+
+        for(let key of map1.keys()) {
+          console.log(key);
+          this.day.push(key)
+       }
+
+       for(let key of map1.values()) {
+        // console.log(key);
+        this.count.push(parseInt(key as string))
+     }
+
+
+        // this.setCounts(map1.values());
+        // this.setDates(map1.keys());
         this.getChart();
       },
       error: (err: any) => {
@@ -50,14 +67,14 @@ export class UserchartComponent implements OnInit {
   getChart() {
     Chart.register(...registerables);
     const myChart = new Chart('myChart', {
-      type: 'bar',
+      type: 'line',
       data: {
 
-        labels:this.getDates,
+        labels: this.getDates,
         datasets: [
           {
             label: 'No of users registered',
-            data:this.getCounts,
+            data: this.getCounts,
             // fill: false,
             borderColor: '#c9ac7d',
             // tension: 0.1,
@@ -70,7 +87,10 @@ export class UserchartComponent implements OnInit {
 
 
   setCounts(count: any) {
-    this.count = count.map(({ count }: any) => (count));
+
+
+
+    this.count = count;
     console.log("list **", this.count);
 
   }
@@ -82,7 +102,7 @@ export class UserchartComponent implements OnInit {
   }
 
   setDates(dates: any) {
-    this.day = dates.map(({ date }: any) => (date));
+    this.day = dates;
     console.log("list **", this.day);
 
   }

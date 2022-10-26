@@ -4,13 +4,13 @@ package com.innovaturelabs.training.employee.management.controller;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +29,6 @@ import com.innovaturelabs.training.employee.management.form.UserForm;
 import com.innovaturelabs.training.employee.management.security.util.SecurityUtil;
 import com.innovaturelabs.training.employee.management.service.UserService;
 import com.innovaturelabs.training.employee.management.util.Pager;
-import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
 import com.innovaturelabs.training.employee.management.view.UserView;
@@ -146,7 +145,7 @@ public class UsersController {
         return userService.getRoleStat();
     }
     @GetMapping("/chart")
-    public Collection<ChartView> chart() {
+    public Map<String, Integer> chart() {
         return userService.getUserCount();
     }
 
