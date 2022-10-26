@@ -55,7 +55,7 @@ public class EmailUtil {
         String body = String.format(start, name)
                 + "<h2>Welcome to Botjobs </h2><br>"
                 + "Thank you for signing up with BOTJObs."
-                + "To get you started, please click on the button below to verify your account for the first time.<br>+"
+                + "To get you started, please click on the button below to verify your account for the first time.<br>"
                 + "<a href=" + url + ">Click here to verify</a><br>"
                 + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
                 + end;
