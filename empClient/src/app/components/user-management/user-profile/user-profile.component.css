@@ -1543,6 +1543,7 @@ a.text-white:focus {
 
 .card-profile-image img {
   position: absolute;
+  margin-top: 20%;
   left: 50%;
   max-width: 200px;
   transition: all 0.15s ease;

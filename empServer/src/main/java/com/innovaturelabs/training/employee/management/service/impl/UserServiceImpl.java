@@ -51,6 +51,7 @@ import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.FileUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
+import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
@@ -601,6 +602,11 @@ public class UserServiceImpl implements UserService {
         // user.setUpdateDate(new Date());
         // return user;
         // }).orElseThrow(() -> new BadRequestException("Invalid User")));
+    }
+
+    @Override
+    public Collection<ChartView> getUserCount() {
+        return userRepository.findJoinDates();
     }
 
 }
