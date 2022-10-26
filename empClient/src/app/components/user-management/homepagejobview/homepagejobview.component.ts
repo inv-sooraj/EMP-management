@@ -14,7 +14,7 @@ export class HomepagejobviewComponent implements OnInit {
 
   alert() {
     if (localStorage.getItem('accessToken')) {
-      this.route.navigate(['/job-list']);
+      this.route.navigate(['/job-apply']);
     } else {
       Swal.fire({
         title: 'Please login first..!',
