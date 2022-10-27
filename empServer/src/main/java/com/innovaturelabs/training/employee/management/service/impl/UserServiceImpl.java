@@ -611,16 +611,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Integer> getUserCount() {
 
-        Collection<ChartView> chartViewvalues = userRepository.findJoinDates();
+        Collection<ChartView> chartViewvalues = userRepository.getJoinDates();
         DateTime today = new DateTime();
-
-        String StToday = today.toString("yyyy-MM-dd");
         int n = 7;
         int i;
-
         HashMap<String, Integer> datawithdate = new HashMap<>();
-
-        ArrayList<String> dat = new ArrayList<>();
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 
