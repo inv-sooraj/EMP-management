@@ -3,6 +3,7 @@ package com.innovaturelabs.training.employee.management.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +21,8 @@ public interface JobService {
     JobView update(JobForm form, Integer jobId);
 
     JobView updateStatus(Integer jobId, Byte status);
+
+    Map<String, Integer> getJobCount();
 
     Collection<JobView> changeSelectedStatus(Collection<Integer> jobIds, Byte status);
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
+import { JobService } from 'src/app/service/job.service';
 import { UserService } from 'src/app/service/user.service';
 @Component({
   selector: 'app-userchart',
@@ -7,38 +8,61 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./userchart.component.css'],
 })
 export class UserchartComponent implements OnInit {
-  constructor(private service: UserService) { }
+  constructor(private userService: UserService,private jobService: JobService) { }
   myChart: any;
-  day: Array<string> = new Array<string>();
-  count: Array<number> = new Array<number>();
+  userDay: Array<string> = new Array<string>();
+  userCount: Array<number> = new Array<number>();
+  jobDay: Array<string> = new Array<string>();
+  jobCount: Array<number> = new Array<number>();
 
   ngOnInit(): void {
     this.userCounts();
   }
 
   userCounts() {
-    this.service.getUserCount().subscribe({
+    this.userService.getUserCount().subscribe({
       next: (res: any) => {
-        console.log(res);
+        // console.log(res);
 
         const map1 = new Map(Object.entries(res));
 
-        console.log(map1.values());
-        console.log(map1.keys());
+        // console.log(map1.values());
+        // console.log(map1.keys());
 
         for(let key of map1.keys()) {
-          console.log(key);
-          this.day.push(key)
+          // console.log(key);
+          this.userDay.push(key)
        }
 
        for(let key of map1.values()) {
-        // console.log(key);
-        this.count.push(parseInt(key as string))
+        this.userCount.push(parseInt(key as string))
      }
+     this.jobCounts();
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    })
+  }
 
+  jobCounts() {
+    this.jobService.getJobCount().subscribe({
+      next: (res: any) => {
+        console.log(res);
 
-        // this.setCounts(map1.values());
-        // this.setDates(map1.keys());
+        const map2 = new Map(Object.entries(res));
+
+        console.log(map2.values());
+        console.log(map2.keys());
+
+        for(let key of map2.keys()) {
+          console.log(key);
+          this.jobDay.push(key)
+       }
+
+       for(let key of map2.values()) {
+        this.jobCount.push(parseInt(key as string))
+     }
         this.getChart();
       },
       error: (err: any) => {
@@ -47,22 +71,6 @@ export class UserchartComponent implements OnInit {
     })
   }
 
-  // setData() {
-
-  //   let ff = new Date()
-  //   console.log(ff.getDate() - 1 + "-" + ff.getMonth() + "-" + ff.getFullYear());
-
-  //   for (let i = 0; i <= 6; i++) {
-  //     this.dates[i] = ff.getDate() - 1 + "-" + ff.getMonth() + "-" + ff.getFullYear()
-  //     console.log(this.dates[i]);
-
-  //   }
-  //   this.myChart.data.datasets = this.dates
-  //   this.myChart.update()
-
-  // }
-
-
 
   getChart() {
     Chart.register(...registerables);
@@ -70,46 +78,97 @@ export class UserchartComponent implements OnInit {
       type: 'line',
       data: {
 
-        labels: this.getDates,
+        labels: this.getUserDates,
         datasets: [
           {
-            label: 'No of users registered',
-            data: this.getCounts,
-            // fill: false,
-            borderColor: '#c9ac7d',
-            // tension: 0.1,
+            label: 'Users Registered',
+            data: this.getUserCounts,
+            fill: true,
+            // borderColor: '#c9ac7d',
+            tension: 0.3,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 3
+          },
+
+          {
+            label: 'Job Posted',
+            data: this.getJobCounts,
+            fill: true,
+            // borderColor: '#c9ac7d',
+            tension: 0.1,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 3
           },
         ],
       },
+      options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
     });
   }
 
 
 
-  setCounts(count: any) {
+ 
 
+  get getUserCounts() {
+    console.log("list", this.userCount);
 
-
-    this.count = count;
-    console.log("list **", this.count);
-
+    return this.userCount
   }
 
-  get getCounts() {
-    console.log("list", this.count);
+ 
+  get getUserDates() {
+    console.log("list", this.userDay);
 
-    return this.count
+    return this.userDay
   }
 
-  setDates(dates: any) {
-    this.day = dates;
-    console.log("list **", this.day);
 
+  get getJobCounts() {
+    console.log("list", this.userCount);
+
+    return this.jobCount
   }
 
-  get getDates() {
-    console.log("list", this.day);
+ 
+  get getJobDates() {
+    console.log("list", this.jobDay);
 
-    return this.day
+    return this.userDay
   }
 }
