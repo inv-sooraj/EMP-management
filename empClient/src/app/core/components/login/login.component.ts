@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('role', response.role);
         this.service.startTimer();
 
-        if (response.role == 2) this.router.navigate(['user-list']);
+        if (response.role == 2) this.router.navigate(['userchart']);
         else if (response.role == 1) this.router.navigate(['job-list']);
         else this.router.navigate(['job-apply']);
       },
