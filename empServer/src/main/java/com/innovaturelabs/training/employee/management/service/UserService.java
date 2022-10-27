@@ -56,7 +56,7 @@ public interface UserService {
 
     UserView updateUser(UserEditForm form, Integer userId);
     
-    Map<String, Integer> getUserCount();
+    Map<String, Integer> getUserCount(Integer days);
 
     UserView changePassword(ChangePasswordForm form);
 

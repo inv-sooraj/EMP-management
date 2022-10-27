@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -296,11 +296,7 @@ export class UserListComponent implements OnInit {
     };
     this.userService.getRoleStat().subscribe({
       next: (response: any) => {
-        // console.log('Stat', response);
-
         response.forEach((element: any) => {
-          // console.log(element);
-
           this.roleStatusCount[this.roles.get(element.status) as string] =
             element.count;
         });
