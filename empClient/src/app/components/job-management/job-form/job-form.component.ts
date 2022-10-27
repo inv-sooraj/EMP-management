@@ -45,7 +45,6 @@ export class JobFormComponent implements OnInit {
   });
 
   formAction() {
-    console.log('Errors : ', this.jobForm);
 
     if (!this.jobForm.valid) {
       this.jobForm.markAllAsTouched();
@@ -70,7 +69,7 @@ export class JobFormComponent implements OnInit {
     this.jobService.addJob(body).subscribe({
       next: (response: any) => {
         console.log('Added ', response);
-        this.completedEvent.emit();
+        this.completedEvent.emit(response);
       },
       error(err) {
         console.log(err);

@@ -1,6 +1,5 @@
 package com.innovaturelabs.training.employee.management.entity;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -87,13 +86,13 @@ public class User {
     private Date dob;
 
     @Column(length = 255)
-    private String city="city";
+    private String city = "city";
 
     @Column(length = 255)
-    private String zipCode="";
+    private String zipCode = "";
 
     @Column(length = 255)
-    private String address="address";
+    private String address = "address";
 
     @Column(length = 10)
     private String phone;
@@ -102,12 +101,6 @@ public class User {
     private Date createDate;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
-    
-   
-    
-    
-
-
 
     public User() {
     }
@@ -136,7 +129,7 @@ public class User {
         this.name = form.getName();
 
         setQualification(form.getQualification());
-        
+
         this.dob = form.getDob();
 
         this.address = form.getAddress();
@@ -334,8 +327,5 @@ public class User {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
-
-    
-    
 
 }
