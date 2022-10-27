@@ -288,11 +288,11 @@ public class JobServiceImpl implements JobService {
         return new BadRequestException("Illegal Access");
     }
 
-    public Map<String, Integer> getJobCount() {
+    public Map<String, Integer> getJobCount(Integer days) {
 
         Collection<ChartView> chartViewvalues = jobRepository.getJobPostDates();
         DateTime today = new DateTime();
-        int n = 7;
+        int n = days;
         int i;
         HashMap<String, Integer> datawithdate = new HashMap<>();
 

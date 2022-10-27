@@ -144,9 +144,11 @@ public class UsersController {
     public Collection<StatusView> count() {
         return userService.getRoleStat();
     }
+
     @GetMapping("/chart")
-    public Map<String, Integer> chart() {
-        return userService.getUserCount();
+    public Map<String, Integer> chart(
+            @RequestParam(name = "days") Integer days) {
+        return userService.getUserCount(days);
     }
 
     @PutMapping("/profile/deleted/{userId}")
@@ -156,10 +158,10 @@ public class UsersController {
 
     // @GetMapping("/")
     // public String helloworld(){
-    //     return "Hello World";
+    // return "Hello World";
     // }
     // @GetMapping("/restricted")
     // public String restricted(){
-    //     return "welcome ";
+    // return "welcome ";
     // }
 }

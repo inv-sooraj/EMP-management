@@ -22,7 +22,7 @@ public interface JobService {
 
     JobView updateStatus(Integer jobId, Byte status);
 
-    Map<String, Integer> getJobCount();
+    Map<String, Integer> getJobCount(Integer days);
 
     Collection<JobView> changeSelectedStatus(Collection<Integer> jobIds, Byte status);
 

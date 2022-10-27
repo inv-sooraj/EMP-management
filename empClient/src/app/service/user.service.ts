@@ -95,7 +95,7 @@ export class UserService {
     return this.http.put(this.apiUrl + '/users/delete', '');
   }
 
-  getUserCount(): Observable<any> {
-    return this.http.get(this.apiUrl + '/users/chart');
+  getUserCount(quearyParam:HttpParams): Observable<any> {
+    return this.http.get(this.apiUrl + '/users/chart',{ params: quearyParam });
   }
 }

@@ -86,7 +86,8 @@ public class JobController {
     }
     
     @GetMapping("/chart")
-    public Map<String, Integer> chart() {
-        return jobService.getJobCount();
+    public Map<String, Integer> chart(
+            @RequestParam(name = "days") Integer days) {
+        return jobService.getJobCount(days);
     }
 }
