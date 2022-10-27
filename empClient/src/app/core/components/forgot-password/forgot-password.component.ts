@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth.service';
 
 @Component({
@@ -15,7 +16,8 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private service: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastrService
   ) {
     this.token = this.activatedRoute.snapshot.queryParams['token'];
     this.expiry = this.activatedRoute.snapshot.queryParams['expiry'];
@@ -23,13 +25,13 @@ export class ForgotPasswordComponent implements OnInit {
     let timeDiff = Date.now() - this.expiry;
 
     if (timeDiff >= 0) {
-      alert('Session Expired');
+      this.toastService.warning("Session Expired!");
       this.token = '';
       router.navigate(['/reset-password']);
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   userEmailForm: FormGroup = new FormGroup({
     email: new FormControl('', [
@@ -65,7 +67,8 @@ export class ForgotPasswordComponent implements OnInit {
     this.service.forgotPassword(email).subscribe({
       next: (response: any) => {
         console.log(response);
-        alert('Email has been sent');
+        this.toastService.success("Email has been sent");
+
       },
       error(err) {
         console.log(err);
@@ -93,7 +96,8 @@ export class ForgotPasswordComponent implements OnInit {
     this.service.resetPassword(this.token, password).subscribe({
       next: (response: any) => {
         console.log(response);
-        alert('Reset Success');
+        this.toastService.success("Password changed!");
+
         this.router.navigateByUrl('login');
       },
       error(err) {

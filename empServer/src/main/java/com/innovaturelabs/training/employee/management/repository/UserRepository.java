@@ -52,7 +52,7 @@ public interface UserRepository extends Repository<User, Integer> {
     void deleteById(Integer userId);
 
     @Query(value = "select date(create_date) as date ,count(*) as count  from user_tbl group by date(create_date)", nativeQuery = true)
-    Collection<ChartView> findJoinDates();
+    Collection<ChartView> getJoinDates();
 
     @Query(value = "SELECT role as status, COUNT(*) as count FROM com.innovaturelabs.training.employee.management.entity.User GROUP BY role")
     Collection<StatusView> countUserRoles();
