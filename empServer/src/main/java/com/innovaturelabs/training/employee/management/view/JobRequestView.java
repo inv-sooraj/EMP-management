@@ -1,4 +1,3 @@
-
 package com.innovaturelabs.training.employee.management.view;
 
 import java.util.Date;
@@ -12,7 +11,7 @@ public class JobRequestView {
 
     private final Integer userId;
     private final String userName;
-    
+
     private final Integer jobId;
     private final String jobTitle;
     private final Byte status;
