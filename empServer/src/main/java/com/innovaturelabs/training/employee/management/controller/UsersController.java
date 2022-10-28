@@ -155,13 +155,5 @@ public class UsersController {
     public UserDetailView deleteProfilePic(@PathVariable Integer userId) {
         return userService.deleteProfilePic(userId);
     }
-
-    // @GetMapping("/")
-    // public String helloworld(){
-    // return "Hello World";
-    // }
-    // @GetMapping("/restricted")
-    // public String restricted(){
-    // return "welcome ";
-    // }
+    
 }

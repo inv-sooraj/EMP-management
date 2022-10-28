@@ -18,7 +18,7 @@ import com.innovaturelabs.training.employee.management.security.util.TokenGenera
 public class EmailUtil {
 
     private String start = "<h4>Dear %s ,</h4> <br>";
-    private String end = "Best regards,<br><b>BOTJOBS</b>";
+    private String end = "Best regards,<br><b>TALENTJOBS</b>";
 
     @Autowired
     private JavaMailSender mailSender;
@@ -29,10 +29,10 @@ public class EmailUtil {
         String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
         String subject = "Reset password";
         String body = "<h4>Hi, </h4>"
-                + "<p>A request has been received to change the password for your botjobs account. </p><br>"
+                + "<p>A request has been received to change the password for your talentjobs account. </p><br>"
                 + "<a href=" + url + ">Click here to reset password</a><br>"
                 + end
-                + "<b>Remarks:If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
+                + "<br><b>Note:If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         sendEmail(email, subject, body);
     }
 
@@ -41,7 +41,7 @@ public class EmailUtil {
 
         String subject = "Change Password";
         String body = String.format(start, name)
-                + "<p>A request has been received to change the password for your botjobs account. </p><br>" + end +
+                + "<p>A request has been received to change the password for your talentjobs account. </p><br>" + end +
                 "<br><b>Remarks:If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         sendEmail(email, subject, body);
 
@@ -53,8 +53,8 @@ public class EmailUtil {
         String url = "http://localhost:4200/user-verify?token=" + token.value;
         String subject = "Verify Email";
         String body = String.format(start, name)
-                + "<h2>Welcome to Botjobs </h2><br>"
-                + "Thank you for signing up with BOTJObs."
+                + "<h2>Welcome to Talentjobs </h2><br>"
+                + "Thank you for signing up with TALENTJOBS."
                 + "To get you started, please click on the button below to verify your account for the first time.<br>"
                 + "<a href=" + url + ">Click here to verify</a><br>"
                 + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
@@ -69,9 +69,9 @@ public class EmailUtil {
         String url = "http://localhost:4200/reset-password?token=" + token.value + "&expiry=" + token.expiry;
         String subject = "Email Verification";
         String body = String.format(start, name)
-                + "<h2>Welcome to Botjobs </h2><br>"
-                + "Thank you for signing up with BOTJObs."
-                + "To get you started, please click on the button below to verify your account for the first time.<br>+"
+                + "<h2>Welcome to Talentjobs </h2><br>"
+                + "Thank you for signing up with TALENTJOBS."
+                + "To get you started, please click on the button below to verify your account for the first time.<br>"
                 + "<a href=" + url + ">Click here to verify</a><br>"
                 + "If you didn't request this email,there's nothing to worry about-  you can safely ignore it.<br>"
                 + end;
@@ -82,9 +82,9 @@ public class EmailUtil {
     // Email service for add new user by admin
     public void sendRegisterSuccess(String email, String userName, String password) {
 
-        String subject = " Successfully registered to BOTJOBS";
-        String body = "<h4>Hi,</h4>" +
-                "We have received a request to create an account in botjobs.com. <p>Please use below credentials to login in.</p>"
+        String subject = " Successfully registered to TALENTJOBS";
+        String body = "<h4>Hi,</h4>"
+                + "We have received a request to create an account in .com. <p>Please use below credentials to login in.</p>"
                 + "<h4>Username :<b>" + userName + "</b> </h4>"
                 + "<h4>Password :<b>" + password + "</b> </h4><br>"
                 + end
@@ -135,10 +135,10 @@ public class EmailUtil {
         if (userId.equals(SecurityUtil.getCurrentUserId())) {
 
             body = String.format(start, name) +
-                    "<p>Your request for deactivating account in botjobs.com has successfully registred.  </p>  <br>Best regards, <br><b>BOTJOBS</b><br><b>Remark :  If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
+                    "<p>Your request for deactivating account in talentjobs.com has successfully registred.  </p>  <br>Best regards, <br><b>TALENTJOBS</b><br><b>Remark :  If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         } else {
             body = String.format(start, name) +
-                    "<p>Your account in botjobs.com has been deactivated by higher authorities. </p> <br> <br>" + end
+                    "<p>Your account in talentjobs.com has been deactivated by higher authorities. </p> <br> <br>" + end
                     + "<br><b>Remark :  If you have any queries please feel free to contact us at empmanagemenet@gmail.com. </b> ";
 
         }
@@ -154,12 +154,12 @@ public class EmailUtil {
         if (userId.equals(SecurityUtil.getCurrentUserId())) {
 
             body = String.format(start, name) +
-                    "<p>Your request for activating account in botjobs.com has successfully completed.  </p>  <br>"
+                    "<p>Your request for activating account in talentjobs.com has successfully completed.  </p>  <br>"
                     + end
                     + "<br><b>Remark :  If you did not initiate this request,please contact us immediately at empmanagemenet@gmail.com</b>";
         } else {
             body = String.format(start, name) +
-                    "<p>Your account in botjobs.com has been activated by higher authorities. </p> <br> <br>" + end
+                    "<p>Your account in talentjobs.com has been activated by higher authorities. </p> <br> <br>" + end
                     + "<br><b>Remark :  If you have any queries please feel free to contact us at empmanagemenet@gmail.com. </b> ";
 
         }
@@ -174,7 +174,7 @@ public class EmailUtil {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
 
-            helper.setFrom("empmanagemenet@gmail.com", "Bot Jobs");
+            helper.setFrom("empmanagemenet@gmail.com", "Talentjobs");
             // helper.setBcc("aaaaa@gmail.com");
             message.setContent(body, "text/html");
             helper.setTo(toEmail);

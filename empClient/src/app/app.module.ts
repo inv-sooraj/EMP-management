@@ -35,7 +35,12 @@ import { LandingPageComponent } from './components/user-management/landing-page/
 import { PageErrorComponent } from './components/page-error/page-error.component';
 
 import { UserDetailComponent } from './components/user-management/user-detail/user-detail.component';
+
 import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
+
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { LoginGoogleComponent } from './core/components/login-google/login-google.component';
+
 
 @NgModule({
   declarations: [
@@ -61,7 +66,11 @@ import { HomepagejobviewComponent } from './components/user-management/homepagej
     PageErrorComponent,
 
     UserDetailComponent,
+
     HomepagejobviewComponent,
+
+     LoginGoogleComponent,
+
   ],
 
   imports: [
@@ -74,17 +83,18 @@ import { HomepagejobviewComponent } from './components/user-management/homepagej
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
-
       closeButton: true,
       positionClass: 'toast-top-center',
       preventDuplicates: true,
       progressBar: true,
       progressAnimation: 'decreasing',
       enableHtml: true,
-
     }),
     BrowserAnimationsModule,
     InfiniteScrollModule,
+
+    OAuthModule.forRoot(),
+
   ],
   providers: [
     {
