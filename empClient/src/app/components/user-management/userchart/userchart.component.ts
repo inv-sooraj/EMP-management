@@ -14,10 +14,10 @@ export class UserchartComponent implements OnInit {
     private jobService: JobService
   ) {}
   myChart: any;
-  
+
   userDay: Array<string> = new Array<string>();
   userCount: Array<number> = new Array<number>();
-  
+
   jobDay: Array<string> = new Array<string>();
   jobCount: Array<number> = new Array<number>();
 
@@ -34,8 +34,6 @@ export class UserchartComponent implements OnInit {
 
     this.getPieData();
     this.getUserPieData();
-    
-
   }
 
   changeDays() {
@@ -188,126 +186,111 @@ export class UserchartComponent implements OnInit {
     return this.userDay;
   }
 
-
-  getPieData(){
-    
+  getPieData() {
     this.jobService.getPieDatas().subscribe({
       next: (res: any) => {
-console.log(res);
+        console.log(res);
 
         const map3 = new Map(Object.entries(res));
 
         for (let key of map3.keys()) {
-          this.pieLabels.push(key)
+          this.pieLabels.push(key);
         }
 
         for (let key of map3.values()) {
-          this.pieData.push(parseInt(key as string))
+          this.pieData.push(parseInt(key as string));
         }
         this.getJobPieChart();
       },
       error: (err: any) => {
         console.log(err);
-      }
-    })
+      },
+    });
   }
 
-  getUserPieData(){
-    console.log("hhhh");
-    
+  getUserPieData() {
+    console.log('hhhh');
+
     this.userService.getUserPieDatas().subscribe({
       next: (res: any) => {
-console.log(res);
+        console.log(res);
 
         const map4 = new Map(Object.entries(res));
 
         for (let key of map4.keys()) {
-          this.userRoles.push(key)
+          this.userRoles.push(key);
         }
 
         for (let key of map4.values()) {
-          this.users.push(parseInt(key as string))
+          this.users.push(parseInt(key as string));
         }
         this.getUserPieChart();
       },
       error: (err: any) => {
         console.log(err);
-      }
-    })
+      },
+    });
   }
 
-
   getJobPieChart() {
-
     Chart.register(...registerables);
     const myPieChart1 = new Chart('myPieChart1', {
       type: 'pie',
       data: {
-
         labels: this.pieLabels,
-        datasets: [{
-          label: 'My First Dataset',
-          data:this.pieData,
-          backgroundColor: [
-            'lightgreen',
-            'cyan',
-            'red',
-            'yellow'
-          ],
-          hoverOffset: 50
-        }]
+        datasets: [
+          {
+            label: 'My First Dataset',
+            data: this.pieData,
+            backgroundColor: ['lightgreen', 'cyan', 'red', 'yellow'],
+            hoverOffset: 50,
+          },
+        ],
       },
       options: {
         plugins: {
-            title: {
-                display: true,
-                text: 'Job Status',
-                padding: {
-                  top: 10,
-                  bottom: 30
-              },
-              font:{weight:'bold',size:20}
-            }
-        }
-    }
-
-    });
-
-
-   
-}
-
-getUserPieChart(){
-  Chart.register(...registerables);
-  const myPieChart2 = new Chart('myPieChart2', {
-    type: 'pie',
-    data: {
-      labels: this.userRoles,
-      datasets: [{
-        label: 'My First Dataset',
-        data:this.users,
-        backgroundColor: [
-          'lightgreen',
-          'cyan',
-          'red',
-          'yellow'
-        ],
-        hoverOffset: 50
-      }]
-    },
-    options: {
-      plugins: {
           title: {
-              display: true,
-              text: 'User Types',
-              padding: {
-                top: 10,
-                bottom: 30
+            display: true,
+            text: 'Job Status',
+            padding: {
+              top: 10,
+              bottom: 30,
             },
-            font:{weight:'bold',size:20}
-          }
-      }
+            font: { weight: 'bold', size: 20 },
+          },
+        },
+      },
+    });
   }
-  });
-}
+
+  getUserPieChart() {
+    Chart.register(...registerables);
+    const myPieChart2 = new Chart('myPieChart2', {
+      type: 'pie',
+      data: {
+        labels: this.userRoles,
+        datasets: [
+          {
+            label: 'My First Dataset',
+            data: this.users,
+            backgroundColor: ['lightgreen', 'cyan', 'red', 'yellow'],
+            hoverOffset: 50,
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'User Types',
+            padding: {
+              top: 10,
+              bottom: 30,
+            },
+            font: { weight: 'bold', size: 20 },
+          },
+        },
+      },
+    });
+  }
 }
