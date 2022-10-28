@@ -1,0 +1,12 @@
+{
+  "web": {
+    "client_id": "97587627218-qgaitnpfp5q9nu8br0k4li9762b57scc.apps.googleusercontent.com",
+    "project_id": "empmanagement-366608",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": ["http://localhost:8080"],
+    "javascript_origins": ["http://localhost:8080"]
+  }
+}
