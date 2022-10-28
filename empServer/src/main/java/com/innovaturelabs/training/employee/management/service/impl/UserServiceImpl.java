@@ -509,6 +509,25 @@ public class UserServiceImpl implements UserService {
 
         throw new BadRequestException("Illegal");
     }
+    
+    @Override
+    public Map<String, Integer> getUserRoles() {
+        Collection<StatusView> statusViews = userRepository.countUserRoles();
+        Map<String, Integer> statusMap = new TreeMap<String, Integer>();
+            for (StatusView status : statusViews) {
+                if (status.getStatus().equals(0)) {
+                    statusMap.put("Employee", status.getCount());
+                } else if (status.getStatus().equals(1)) {
+                    statusMap.put("Employer", status.getCount());
+                }else if (status.getStatus().equals(2)) {
+                    statusMap.put("Admin", status.getCount());
+                }
+            }
+
+
+        return statusMap;
+
+    }
 
     @Override
     public void forgotPassword(String email) {
@@ -599,31 +618,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Integer> getUserCount(Integer days) {
 
+        String datePattern = "yyyy-MM-dd";
+
         Collection<ChartView> chartViewvalues = userRepository.getJoinDates();
         DateTime today = new DateTime();
+        int n = days;
+        int i;
         HashMap<String, Integer> datawithdate = new HashMap<>();
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(datePattern);
 
-        for (int i = 0; i < days; i++) {
+        for (i = 0; i < n; i++) {
 
             for (ChartView chart : chartViewvalues) {
-                if (formatter.parseLocalDate(today.toString("yyyy-MM-dd"))
+                if (formatter.parseLocalDate(today.toString(datePattern))
                         .isEqual(formatter.parseLocalDate(chart.getDate()))) {
                     datawithdate.put(chart.getDate(), chart.getCount());
 
                 } else {
-                    datawithdate.putIfAbsent(today.toString("yyyy-MM-dd"), 0);
+                    datawithdate.putIfAbsent(today.toString(datePattern), 0);
                 }
             }
             today = today.minusDays(1);
         }
-        Map<String, Integer> treeMap = new TreeMap<String, Integer>(datawithdate);
+        Map<String, Integer> treeMap = new TreeMap<>(datawithdate);
 
         System.out.println(treeMap);
 
         return treeMap;
 
     }
-
 }

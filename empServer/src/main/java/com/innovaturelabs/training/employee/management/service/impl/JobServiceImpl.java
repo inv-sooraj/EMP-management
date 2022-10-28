@@ -287,26 +287,51 @@ public class JobServiceImpl implements JobService {
     private static BadRequestException illegalAccess() {
         return new BadRequestException("Illegal Access");
     }
+    
+    
+    @Override
+    public Map<String, Integer> getJobStatuses() {
+        String datePattern = "yyyy-MM-dd";
+        Collection<StatusView> statusViews = jobRepository.countStatus();
+        Map<String, Integer> statusMap = new TreeMap<String, Integer>();
+            for (StatusView status : statusViews) {
+                if (status.getStatus().equals(0)) {
+                    statusMap.put("Pending", status.getCount());
+                } else if (status.getStatus().equals(1)) {
+                    statusMap.put("Approved", status.getCount());
+                }else if (status.getStatus().equals(2)) {
+                    statusMap.put("Completed", status.getCount());
+                }else if (status.getStatus().equals(3)) {
+                    statusMap.put("Deleted", status.getCount());
+                }
+            }
 
+
+        return statusMap;
+
+    }
+    
+
+    @Override
     public Map<String, Integer> getJobCount(Integer days) {
-
+        String datePattern = "yyyy-MM-dd";
         Collection<ChartView> chartViewvalues = jobRepository.getJobPostDates();
         DateTime today = new DateTime();
         int n = days;
         int i;
         HashMap<String, Integer> datawithdate = new HashMap<>();
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(datePattern);
 
         for (i = 0; i < n; i++) {
 
             for (ChartView chart : chartViewvalues) {
-                if (formatter.parseLocalDate(today.toString("yyyy-MM-dd"))
+                if (formatter.parseLocalDate(today.toString(datePattern))
                         .isEqual(formatter.parseLocalDate(chart.getDate()))) {
                     datawithdate.put(chart.getDate(), chart.getCount());
 
                 } else {
-                    datawithdate.putIfAbsent(today.toString("yyyy-MM-dd"), 0);
+                    datawithdate.putIfAbsent(today.toString(datePattern), 0);
                 }
             }
             today = today.minusDays(1);
