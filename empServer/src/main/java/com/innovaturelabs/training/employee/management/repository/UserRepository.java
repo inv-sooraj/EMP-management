@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
+import org.aspectj.weaver.tools.Trace;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import com.innovaturelabs.training.employee.management.entity.User;
+import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 
 public interface UserRepository extends Repository<User, Integer> {
@@ -50,6 +52,9 @@ public interface UserRepository extends Repository<User, Integer> {
     void delete(User user);
 
     void deleteById(Integer userId);
+
+    @Query(value = "select date(create_date) as date ,count(*) as count  from user_tbl group by date(create_date)", nativeQuery = true)
+    Collection<ChartView> getJoinDates();
 
     @Query(value = "SELECT role as status, COUNT(*) as count FROM com.innovaturelabs.training.employee.management.entity.User GROUP BY role")
     Collection<StatusView> countUserRoles();

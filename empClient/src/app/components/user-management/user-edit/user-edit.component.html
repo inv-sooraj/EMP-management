@@ -28,7 +28,7 @@
 
                 <div class="col-12 mt-0">
                     <label for="dob" class="form-label">Date of Birth</label>
-                    <input type="text"  formControlName="dob" class="form-control"
+                    <input type="date"  formControlName="dob" class="form-control"
                         [ngClass]="{'is-invalid':(userEditForm.controls['dob'].touched||userEditForm.controls['dob'].dirty) && userEditForm.controls['dob'].errors}">
 
                     <div *ngIf="userEditForm.controls['dob'].touched||userEditForm.controls['dob'].dirty"
@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="col-12 mt-0">
-                    <label for="zipCode" class="form-label">Phone</label>
+                    <label for="zipCode" class="form-label">Zipcode</label>
                     <input type="text" formControlName="zipCode" class="form-control"
                         [ngClass]="{'is-invalid':(userEditForm.controls['zipCode'].touched||userEditForm.controls['zipCode'].dirty) && userEditForm.controls['zipCode'].errors}">
 

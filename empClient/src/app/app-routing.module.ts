@@ -5,6 +5,7 @@ import { JobListComponent } from './components/job-management/job-list/job-list.
 import { JobRequestListComponent } from './components/job-request-management/job-request-list/job-request-list.component';
 import { PageErrorComponent } from './components/page-error/page-error.component';
 import { TestComponentComponent } from './components/test-component/test-component.component';
+import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
 
 import { LandingPageComponent } from './components/user-management/landing-page/landing-page.component';
 
@@ -23,6 +24,10 @@ import { RegisterComponent } from './core/components/register/register.component
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    component: LandingPageComponent,
+  },
   {
     path: 'login',
     component: LoginComponent,
@@ -87,16 +92,25 @@ const routes: Routes = [
   { path: 'userchart', component: UserchartComponent },
   { path: 'landingpage', component: LandingPageComponent },
   { path: '404-page', component: PageErrorComponent },
+
+  { path: 'homejob', component: HomepagejobviewComponent },
+
   { path: 'glogin', component: LoginGoogleComponent },
+
   {
     path: '**',
-    redirectTo: 'login',
+    redirectTo: '404-page',
     pathMatch: 'full',
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: false,
+      anchorScrolling: 'enabled',
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

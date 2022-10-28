@@ -4,6 +4,7 @@ package com.innovaturelabs.training.employee.management.service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,6 +55,8 @@ public interface UserService {
     UserDetailView updateUserDetails(UserDetailForm form);
 
     UserView updateUser(UserEditForm form, Integer userId);
+    
+    Map<String, Integer> getUserCount(Integer days);
 
     UserView changePassword(ChangePasswordForm form);
 

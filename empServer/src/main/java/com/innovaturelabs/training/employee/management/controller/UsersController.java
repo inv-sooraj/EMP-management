@@ -4,6 +4,7 @@ package com.innovaturelabs.training.employee.management.controller;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -142,6 +143,12 @@ public class UsersController {
     @GetMapping("/role-stat")
     public Collection<StatusView> count() {
         return userService.getRoleStat();
+    }
+
+    @GetMapping("/chart")
+    public Map<String, Integer> chart(
+            @RequestParam(name = "days") Integer days) {
+        return userService.getUserCount(days);
     }
 
     @PutMapping("/profile/deleted/{userId}")

@@ -246,7 +246,7 @@ export class JobListComponent implements OnInit {
         this.showSpinner = false;
 
         this.jobDataList.splice(
-          this.jobDataList.findIndex((x) => x.userId == jobId),
+          this.jobDataList.findIndex((x) => x.jobId == response.jobId),
           1,
           response
         );
@@ -320,10 +320,14 @@ export class JobListComponent implements OnInit {
   }
 
   saveCompleted(event: any) {
-    this.jobDataList.splice(
-      this.jobDataList.findIndex((x) => x.jobId == event.jobId),
-      1,
-      event
-    );
+    let index = this.jobDataList.findIndex((x) => x.jobId == event.jobId);
+    console.log(index);
+
+    if (index < 0) {
+      this.resetList()
+      return;
+    }
+
+    this.jobDataList.splice(index, 1, event);
   }
 }

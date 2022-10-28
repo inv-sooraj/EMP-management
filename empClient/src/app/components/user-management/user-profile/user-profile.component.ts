@@ -53,6 +53,8 @@ export class UserProfileComponent implements OnInit {
 
         if (this.userDetails.hasProfilePic) {
           this.getProfilePic();
+        }else{
+          (document.getElementById('profilePicture') as HTMLImageElement).src = '../../../../assets/User-Profile.png'
         }
       },
       error(err) {
@@ -82,9 +84,8 @@ export class UserProfileComponent implements OnInit {
 
     this.userService.uploadProfile(formData).subscribe({
       next: (response: any) => {
-        console.log(response);
-       
-        this.getProfilePic();
+        console.log(response,"dd");
+        this.getProfile();
       },
       error(err) {
         console.log(err);
@@ -121,7 +122,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.deleteProfilePic(userId).subscribe({
       next: (reponse: any) => {
         console.log(reponse);
-        this.getProfilePic()
+        this.getProfile()
       },
       error: (error: any) => {
         console.log(error);

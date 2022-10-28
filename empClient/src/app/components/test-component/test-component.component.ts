@@ -63,8 +63,9 @@ export class TestComponentComponent implements OnInit {
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
-
   ngOnInit(): void {
-    this.reset();
+    if (localStorage.getItem('accessToken')) {
+      this.reset();
+    }
   }
 }

@@ -17,7 +17,7 @@
                                             class="img-fluid img-thumbnail mt-4 mb-2" class="rounded-circle">
                                     </a>
                                 </div>
-                                
+
                             </div>
                         </div>
                         <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
@@ -26,42 +26,42 @@
                             </div>
                         </div>
                         <div class="card-body pt-0 pt-md-4">
+                            <div class="row" aria-hidden="true">
+                                <p></p>
+                                <p></p>
+                            </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                                         <div>
                                             <span class="heading"></span>
-                                            <button ngbTooltip="Edit Profile Picture" class="btn" (click)="profilePic.click()">
+                                            <button ngbTooltip="Edit Profile Picture" class="btn"
+                                                (click)="profilePic.click()">
                                                 <em class="bi bi-card-image"></em>
                                             </button>
-            
+
                                             <input #profilePic type="file" (change)="onChange($event)" accept="" hidden>
                                             <span class="description"></span>
                                         </div>
                                         <div>
                                             <span class="heading"></span>
-                                            <button ngbTooltip="Edit Profile Picture" class="btn" (click)="deletePicture(userDetails?.userId)">
-                                                <em class="bi bi-card-image"></em>
-                                            </button>
                                             <span class="description"></span>
                                         </div>
                                         <div>
                                             <span class="heading"></span>
-                                            <span class="description"></span>
+                                            <button ngbTooltip="Delete Profile Picture" class="btn"
+                                                (click)="deletePicture(userDetails?.userId)">
+                                                <em class="bi bi-trash-fill"></em>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="pic-btn">
-                               
-                            </div>
+                            
                             <div class="text-center">
                                 <h3>{{userDetails?.name}}
-                                    <span class="font-weight-light"></span>
                                 </h3>
-                                <div class="h5 font-weight-300">
-                                    <i class="ni location_pin mr-2"></i>{{userDetails?.job}}
-                                </div>
+                                
                                 <div class="h5 mt-4">
                                     <i class="ni business_briefcase-24 mr-2"></i>{{userDetails.email}}
                                 </div>
@@ -72,8 +72,7 @@
 
                                 <p>Hi {{userDetails.name}} you can easily updates your details from here</p>
 
-                                <!-- <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p> -->
-                                <!-- <a href="#">Show more</a> -->
+
                             </div>
                         </div>
                     </div>
@@ -104,11 +103,7 @@
 
                                             <label class="form-control-label" for="input-first-name">first name</label>
                                             <input type="text" id="input-firstName" readonly
-                                                class="form-control form-control-alternative"
-
-                                                 placeholder="Firstname"
-
-
+                                                class="form-control form-control-alternative" placeholder="Firstname"
                                                 value="{{userDetails.name}}">
 
                                         </div>
@@ -119,8 +114,8 @@
 
                                             <label class="form-control-label" for="input-last-name">Mob</label>
                                             <input type="text" id="input-lastName"
-                                                class="form-control form-control-alternative" readonly
-                                                placeholder="last name" value="{{userDetails.phone}}">
+                                                class="form-control form-control-alternative" readonly placeholder="dob"
+                                                value="{{userDetails.phone}}">
 
                                         </div>
                                     </div>
@@ -130,9 +125,7 @@
                                         <div class="form-group ">
                                             <label class="form-control-label" for="input-email">E-mail</label>
                                             <input type="text" id="input-emails"
-
                                                 class="form-control form-control-alternative" readonly
-
                                                 placeholder="email" value="{{userDetails.email}}">
 
                                         </div>
@@ -143,10 +136,8 @@
 
                                             <label class="form-control-label" for="input-email">date of birth</label>
                                             <input type="date" disable id="input-email"
-
-                                                class="form-control form-control-alternative" readonly
-
-                                                placeholder="dob" value="{{userDetails.dob}}">
+                                                class="form-control form-control-alternative" readonly placeholder="dob"
+                                                value="{{userDetails.dob}}">
                                         </div>
                                     </div>
                                 </div>
@@ -159,12 +150,12 @@
 
                                 <div class="pl-lg-4">
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-lg-12">
                                             <div class="form-group ">
                                                 <label class="form-control-label" for="input-address">Address</label>
                                                 <input id="input-address" class="form-control form-control-alternative"
-                                                    placeholder="Home Address" readonly
-                                                    value="{{userDetails.address}}" type="text">
+                                                    placeholder="Home Address" readonly value="{{userDetails.address}}"
+                                                    type="text">
                                             </div>
                                         </div>
                                     </div>
@@ -174,10 +165,7 @@
                                         <div class="form-group ">
                                             <label class="form-control-label" for="input-city">City</label>
                                             <input type="text" id="input-city"
-
                                                 class="form-control form-control-alternative" readonly
-
-
                                                 placeholder="City" value="{{userDetails.city        }}">
                                         </div>
                                     </div>
@@ -187,7 +175,7 @@
                                             <label class="form-control-label" for="input-country">Postal code</label>
                                             <input type="number" id="input-postal-code"
                                                 class="form-control form-control-alternative" readonly
-                                                placeholder="{{userDetails.zipCode}}">
+                                                placeholder="zipcode"  value="{{userDetails.zipCode}}">
                                         </div>
                                     </div>
                                 </div>

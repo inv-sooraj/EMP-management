@@ -132,6 +132,7 @@ public class User {
 
         this.qualification = Qualification.NIL.value;
 
+
         this.userType = UserType.NATIVE.value;
 
         Date date = new Date();

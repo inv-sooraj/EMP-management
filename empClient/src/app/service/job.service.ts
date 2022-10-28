@@ -72,4 +72,8 @@ export class JobService {
   getStat(): Observable<any> {
     return this.http.get(this.apiUrl + '/job/stat');
   }
+
+  getJobCount(quearyParam:HttpParams): Observable<any> {
+    return this.http.get(this.apiUrl + '/job/chart',{ params: quearyParam });
+  }
 }

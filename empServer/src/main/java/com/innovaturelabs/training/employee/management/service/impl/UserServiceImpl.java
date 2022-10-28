@@ -10,12 +10,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +57,7 @@ import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.FileUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
+import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 import com.innovaturelabs.training.employee.management.view.UserDetailView;
@@ -464,8 +471,6 @@ public class UserServiceImpl implements UserService {
 
         String profilePic = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
                 .orElseThrow(NotFoundException::new).getProfilePic();
-                
-                
 
         byte[] file = FileUtil.getProfilePic(profilePic);
 
@@ -601,6 +606,45 @@ public class UserServiceImpl implements UserService {
         // user.setUpdateDate(new Date());
         // return user;
         // }).orElseThrow(() -> new BadRequestException("Invalid User")));
+    }
+
+    @Override
+    public Map<String, Integer> getUserCount(Integer days) {
+
+        Collection<ChartView> chartViewvalues = userRepository.getJoinDates();
+        DateTime today = new DateTime();
+        int n = days;
+        int i;
+        HashMap<String, Integer> datawithdate = new HashMap<>();
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+
+        for (i = 0; i < n; i++) {
+
+            for (ChartView chart : chartViewvalues) {
+                if (formatter.parseLocalDate(today.toString("yyyy-MM-dd"))
+                        .isEqual(formatter.parseLocalDate(chart.getDate()))) {
+                    datawithdate.put(chart.getDate(), chart.getCount());
+
+                } else {
+                    datawithdate.putIfAbsent(today.toString("yyyy-MM-dd"), 0);
+                }
+            }
+            today = today.minusDays(1);
+        }
+        Map<String, Integer> treeMap = new TreeMap<String, Integer>(datawithdate);
+
+        System.out.println(treeMap);
+
+        return treeMap;
+
+    }
+
+    public static String addOneDayJodaTime(String date) {
+        DateTime dateTime = new DateTime(date);
+        return dateTime
+                .minusDays(1)
+                .toString("yyyy-MM-dd");
     }
 
 }

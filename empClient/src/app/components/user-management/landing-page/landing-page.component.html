@@ -1,17 +1,16 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>landing page</title>
 </head>
-
 <body>
     <div class="banner">
         <div class="navbar">
-            <img src="logo.png" class="logo">
+            <img src="" alt="" class="logo">
             <ul>
                 <li><a routerLink="/landingpage">Home</a></li>
-                <li><a routerLink="/landingpage">Contact</a></li>
                 <li><a routerLink="/landingpage">About</a></li>
+                <li><a routerLink="/landingpage">Contact</a></li>
                 <li><a routerLink="/register">Sign Up</a></li>
             </ul>
         </div>
@@ -19,16 +18,26 @@
             <h1>GET YOUR DREAM JOB</h1>
             <P>Join with us.Sign up for free</P>
             <div>
-                <button type="button"><span></span> VIEW JOBS</button>
+                <button type="button" (click)="onClickScroll('home')"><span></span> VIEW JOBS</button>
                 <button type="button" routerLink="/login"><span></span> GET STARTED</button>
             </div>
+
         </div>
+
     </div>
+
     <div>
 
     </div>
 
     <!-- Added content -->
+
+
 </body>
+
+<div class="flip" id="home">
+    <app-homepagejobview></app-homepagejobview>
+    <p></p>
+</div>
 
 </html>

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import com.innovaturelabs.training.employee.management.entity.Job;
+import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 
 public interface JobRepository extends Repository<Job, Integer> {
@@ -28,6 +29,10 @@ public interface JobRepository extends Repository<Job, Integer> {
     Collection<Job> findAll();
 
     Collection<Job> findAllByUserUserId(Integer userId);
+    
+    @Query(value = "select date(create_date) as date ,count(*) as count  from job_tbl group by date(create_date)", nativeQuery = true)
+    Collection<ChartView> getJobPostDates();
+
 
     // @Query(value = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='job_tbl'", nativeQuery = true)
     // ArrayList<String> findColumns();

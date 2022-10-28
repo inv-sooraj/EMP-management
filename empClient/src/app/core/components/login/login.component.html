@@ -1,22 +1,20 @@
-<div class="wrapper fadeInDown zero-raduis">
-    <div id="formContent">
+<div class="banner">
+    <div class="wrapper fadeInDown zero-raduis">
+        <div id="formContent">
 
-        <div class="fadeIn first">
-            <h2 class="my-5">Sign In</h2>
-        </div>
+            <div class="fadeIn first">
+                <h2 class="my-5">Sign In</h2>
+            </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="login()" autocomplete="off">
-            <input type="text" formControlName="username" class="fadeIn second zero-raduis" name="uname"
-                placeholder="username" />
+            <form [formGroup]="loginForm" (ngSubmit)="login()" autocomplete="off">
+                <input type="text" formControlName="username" class="fadeIn second zero-raduis" name="uname"
+                    placeholder="username" />
 
-
-
-            <input type="password" formControlName="password" class="fadeIn third zero-raduis" name="login"
-                placeholder="password" />
-
+                <input type="password" formControlName="password" class="fadeIn third zero-raduis" name="login"
+                    placeholder="password" />
 
 
-            <input type="submit" class="fadeIn fourth zero-raduis" value="login" />
+                <input type="submit" class="fadeIn fourth zero-raduis" value="login" />
 
 
 
@@ -26,18 +24,18 @@
 
 
 
-            <div class="mb-2">
 
-                <a class="form-label" routerLink="/reset-password">
-                    <h6>Forgot Password ?</h6>
-                </a>
-            </div>
+                <div class="mb-2">
 
+                    <a class="form-label" routerLink="/reset-password">
+                        <h6>Forgot Password ?</h6>
+                    </a>
+                </div>
 
-            <h2> don't have an account ?</h2>
-            <input type="button" class="fadeIn fourth zero-raduis pc" routerLink="/register" value="register" />
+                <h2> don't have an account ?</h2>
+                <input type="button" class="fadeIn fourth zero-raduis pc" routerLink="/register" value="register" />
 
-
-        </form>
+            </form>
+        </div>
     </div>
 </div>

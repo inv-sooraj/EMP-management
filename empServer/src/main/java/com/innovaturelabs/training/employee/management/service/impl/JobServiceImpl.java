@@ -7,11 +7,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +37,7 @@ import com.innovaturelabs.training.employee.management.service.JobService;
 import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
+import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.JobView;
 import com.innovaturelabs.training.employee.management.view.StatusView;
 
@@ -281,4 +288,34 @@ public class JobServiceImpl implements JobService {
         return new BadRequestException("Illegal Access");
     }
 
+    public Map<String, Integer> getJobCount(Integer days) {
+
+        Collection<ChartView> chartViewvalues = jobRepository.getJobPostDates();
+        DateTime today = new DateTime();
+        int n = days;
+        int i;
+        HashMap<String, Integer> datawithdate = new HashMap<>();
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+
+        for (i = 0; i < n; i++) {
+
+            for (ChartView chart : chartViewvalues) {
+                if (formatter.parseLocalDate(today.toString("yyyy-MM-dd"))
+                        .isEqual(formatter.parseLocalDate(chart.getDate()))) {
+                    datawithdate.put(chart.getDate(), chart.getCount());
+
+                } else {
+                    datawithdate.putIfAbsent(today.toString("yyyy-MM-dd"), 0);
+                }
+            }
+            today = today.minusDays(1);
+        }
+        Map<String, Integer> treeMap = new TreeMap<String, Integer>(datawithdate);
+
+        System.out.println(treeMap);
+
+        return treeMap;
+
+    }
 }

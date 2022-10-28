@@ -105,4 +105,12 @@ button:hover{
 
 }
 
-/* Added items */
+/*  */
+html {
+    scroll-behavior: smooth;
+}
+
+.flip{
+    background-color:#fff;
+}
+  
