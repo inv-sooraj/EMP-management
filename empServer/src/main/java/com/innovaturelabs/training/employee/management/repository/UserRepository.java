@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
-import org.aspectj.weaver.tools.Trace;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +17,10 @@ import com.innovaturelabs.training.employee.management.view.StatusView;
 public interface UserRepository extends Repository<User, Integer> {
 
     Optional<User> findByUserIdAndStatus(Integer userId, Byte status);
+
+    Optional<User> findByUserIdAndStatusAndUserType(Integer userId, Byte status, Byte userType);
+
+    Optional<User> findByUserIdAndUserType(Integer userId, Byte userType);
 
     Optional<User> findByUserIdAndStatusAndPasswordResetRequest(Integer userId, Byte status,
             Boolean passwordResetRequest);

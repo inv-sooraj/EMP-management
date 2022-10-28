@@ -260,7 +260,9 @@ public class UserServiceImpl implements UserService {
         String password = status.data.substring(10);
 
         User user = userRepository.findByUserIdAndPassword(userId, password)
-                .orElseThrow(UserServiceImpl::badRequestException);
+                .orElse(userRepository
+                        .findByUserIdAndUserType(userId, User.UserType.GOOGLE.value)
+                        .orElseThrow(UserServiceImpl::badRequestException));
 
         if (user.getStatus() == User.Status.INACTIVE.value) {
             throw new BadRequestException("Inactive User");
@@ -484,7 +486,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserView changePassword(ChangePasswordForm form) {
-        User user = userRepository.findByUserIdAndStatus(SecurityUtil.getCurrentUserId(), User.Status.ACTIVE.value)
+        User user = userRepository
+                .findByUserIdAndStatusAndUserType(
+                        SecurityUtil.getCurrentUserId(),
+                        User.Status.ACTIVE.value,
+                        User.UserType.NATIVE.value)
                 .orElseThrow(NotFoundException::new);
 
         if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
@@ -514,6 +520,10 @@ public class UserServiceImpl implements UserService {
     public void forgotPassword(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("User Not Found"));
+
+        if (user.getUserType() == User.UserType.GOOGLE.value) {
+            throw new BadRequestException("Contact Google for Password Reset");
+        }
 
         if (user.getStatus() == User.Status.INACTIVE.value) {
             throw new BadRequestException("Email not Verified");

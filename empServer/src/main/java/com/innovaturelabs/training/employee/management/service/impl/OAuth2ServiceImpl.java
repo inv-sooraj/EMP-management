@@ -17,6 +17,9 @@ import com.innovaturelabs.training.employee.management.view.LoginView;
 
 @Service
 public class OAuth2ServiceImpl implements OAuth2Service {
+
+    private static final String PURPOSE_REFRESH_TOKEN = "REFRESH_TOKEN";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -31,7 +34,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
 
         userRepository.findByEmailAndUserType(form.getEmail(), User.UserType.NATIVE.value).ifPresent(user -> {
             throw new BadRequestException(user.getEmail() + " : Already Registered");
-        }); 
+        });
 
         User user = userRepository.findByEmailAndUserType(form.getEmail(), User.UserType.GOOGLE.value)
                 .orElse(new User(form.getName(), form.getEmail(), User.Role.EMPLOYEE.value,
@@ -42,7 +45,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
         Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id + String.valueOf(user.getRole()),
                 securityConfig.getAccessTokenExpiry());
 
-        Token refreshToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id + user.getEmail(),
+        Token refreshToken = tokenGenerator.create(PURPOSE_REFRESH_TOKEN, id + user.getUserType(),
                 securityConfig.getRefreshTokenExpiry());
 
         return new LoginView(user, accessToken, refreshToken);
