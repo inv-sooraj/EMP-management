@@ -23,6 +23,8 @@ public interface JobService {
     JobView updateStatus(Integer jobId, Byte status);
 
     Map<String, Integer> getJobCount(Integer days);
+    
+    Map<String, Integer> getJobStatuses();
 
     Collection<JobView> changeSelectedStatus(Collection<Integer> jobIds, Byte status);
 
