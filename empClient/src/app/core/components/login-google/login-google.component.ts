@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  OauthgoogleService,
+  OAuthGoogleService,
   UserInfo,
 } from '../../service/oauthgoogle.service';
 
@@ -13,7 +13,7 @@ import {
 export class LoginGoogleComponent implements OnInit {
   userInfo?: UserInfo;
 
-  constructor(private service: OauthgoogleService, private router: Router) {
+  constructor(private service: OAuthGoogleService, private router: Router) {
     this.googleSignIn();
   }
 
@@ -22,12 +22,9 @@ export class LoginGoogleComponent implements OnInit {
     this.service.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
 
-      let body = {
-        email: info.info.email,
-        name: info.info.name,
-      };
+      let idToken = sessionStorage.getItem('id_token');
 
-      this.service.login(body).subscribe({
+      this.service.login(idToken).subscribe({
         next: (response: any) => {
           console.log(JSON.stringify(response, undefined, 4));
 

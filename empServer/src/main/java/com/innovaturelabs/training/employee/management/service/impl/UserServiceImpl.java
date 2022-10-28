@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
             role = User.Role.EMPLOYER.value;
         }
 
-        String data = form.getEmail() + "#" + new Date();
+        String data = form.getEmail() + "#" + System.currentTimeMillis();
 
         Token token = tokenGenerator.create(PURPOSE_REGISTRATION, data, Duration.ofMinutes(15));
 
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
 
         // System.out.println("Password : " + password);
 
-        String data = form.getEmail() + "#" + new Date();
+        String data = form.getEmail() + "#" + System.currentTimeMillis();
 
         Token token = tokenGenerator.create(PURPOSE_RESET_PASSWORD_TOKEN, data, Duration.ofDays(1));
 

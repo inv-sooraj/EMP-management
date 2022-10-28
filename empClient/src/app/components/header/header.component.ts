@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { OauthgoogleService } from 'src/app/core/service/oauthgoogle.service';
+import { OAuthGoogleService } from 'src/app/core/service/oauthgoogle.service';
 import { UserService } from 'src/app/service/user.service';
 import Swal from 'sweetalert2';
 @Component({
@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit {
     private modalService: NgbModal,
     private userService: UserService,
     private toastService: ToastrService,
-    private googleService: OauthgoogleService
+    private googleService: OAuthGoogleService
   ) {}
   ngOnInit(): void {
     // No API call
