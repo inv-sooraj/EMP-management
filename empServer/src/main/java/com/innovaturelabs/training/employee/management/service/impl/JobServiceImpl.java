@@ -309,7 +309,7 @@ public class JobServiceImpl implements JobService {
                     datawithdate.putIfAbsent(today.toString("yyyy-MM-dd"), 0);
                 }
             }
-            today = today.minusDays(1);`
+            today = today.minusDays(1);
         }
         Map<String, Integer> treeMap = new TreeMap<String, Integer>(datawithdate);
 
