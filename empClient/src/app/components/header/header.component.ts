@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { OauthgoogleService } from 'src/app/core/service/oauthgoogle.service';
 import { UserService } from 'src/app/service/user.service';
 import Swal from 'sweetalert2';
 @Component({
@@ -17,7 +18,8 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private modalService: NgbModal,
     private userService: UserService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private googleService: OauthgoogleService
   ) {}
   ngOnInit(): void {
     // No API call
@@ -28,13 +30,15 @@ export class HeaderComponent implements OnInit {
       title: 'Are you sure you want to logout?',
       icon: 'warning',
       showCancelButton: true,
-      width:'400px',
+      width: '400px',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes',
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
+        this.googleService.googleLogout();
+        sessionStorage.clear();
         this.router.navigate(['login']);
       }
     });

@@ -21,7 +21,7 @@ public interface UserRepository extends Repository<User, Integer> {
             Boolean passwordResetRequest);
 
     @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND (user.name LIKE %?3% OR user.email LIKE %?3% OR user.address LIKE %?3% )")
-    Page<User> findAllByStatus(Collection<Byte> status,Collection<Byte> roles, String search, Pageable page);
+    Page<User> findAllByStatus(Collection<Byte> status, Collection<Byte> roles, String search, Pageable page);
 
     // Page<User> findByNameContaining(String name, Pageable page);
 
@@ -32,6 +32,8 @@ public interface UserRepository extends Repository<User, Integer> {
     Optional<User> findByUserIdAndPassword(Integer userId, String password);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByEmailAndUserType(String email, Byte userType);
 
     Optional<User> findByEmailAndStatus(String email, Byte status);
 

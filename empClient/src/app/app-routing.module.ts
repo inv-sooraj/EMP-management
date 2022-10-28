@@ -17,6 +17,7 @@ import { UserchartComponent } from './components/user-management/userchart/userc
 import { AuthGuard } from './core/auth/auth.guard';
 import { LoginGuard } from './core/auth/login.guard';
 import { ForgotPasswordComponent } from './core/components/forgot-password/forgot-password.component';
+import { LoginGoogleComponent } from './core/components/login-google/login-google.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { RegisterComponent } from './core/components/register/register.component';
 import { UserVerifyComponent } from './core/components/user-verify/user-verify.component';
@@ -85,7 +86,8 @@ const routes: Routes = [
   },
   { path: 'userchart', component: UserchartComponent },
   { path: 'landingpage', component: LandingPageComponent },
-  {path:'404-page',component:PageErrorComponent},
+  { path: '404-page', component: PageErrorComponent },
+  { path: 'glogin', component: LoginGoogleComponent },
   {
     path: '**',
     redirectTo: 'login',

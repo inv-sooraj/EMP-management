@@ -57,6 +57,17 @@ public class User {
         }
     }
 
+    public enum UserType {
+        NATIVE((byte) 0),
+        GOOGLE((byte) 1);
+
+        public final byte value;
+
+        private UserType(byte value) {
+            this.value = value;
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
@@ -76,6 +87,7 @@ public class User {
     private byte status;
     private byte role;
     private byte qualification;
+    private byte userType;
 
     private boolean passwordResetRequest;
 
@@ -86,13 +98,13 @@ public class User {
     private Date dob;
 
     @Column(length = 255)
-    private String city="city";
+    private String city = "city";
 
     @Column(length = 255)
-    private String zipCode="";
+    private String zipCode = "";
 
     @Column(length = 255)
-    private String address="address";
+    private String address = "address";
 
     @Column(length = 10)
     private String phone;
@@ -120,6 +132,24 @@ public class User {
 
         this.qualification = Qualification.NIL.value;
 
+        this.userType = UserType.NATIVE.value;
+
+        Date date = new Date();
+        this.createDate = date;
+        this.updateDate = date;
+    }
+
+    public User(String name, String email, byte role, byte userType) {
+        this.name = name;
+        this.email = email;
+        this.status = Status.ACTIVE.value;
+
+        this.role = role;
+
+        this.qualification = Qualification.NIL.value;
+
+        this.userType = userType;
+
         Date date = new Date();
         this.createDate = date;
         this.updateDate = date;
@@ -130,7 +160,7 @@ public class User {
         this.name = form.getName();
 
         setQualification(form.getQualification());
-        
+
         this.dob = form.getDob();
 
         this.address = form.getAddress();
@@ -327,6 +357,14 @@ public class User {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public byte getUserType() {
+        return userType;
+    }
+
+    public void setUserType(byte userType) {
+        this.userType = userType;
     }
 
 }

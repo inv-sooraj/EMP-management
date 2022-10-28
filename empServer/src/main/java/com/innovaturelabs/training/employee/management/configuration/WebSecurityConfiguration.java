@@ -9,6 +9,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -25,6 +26,7 @@ import com.innovaturelabs.training.employee.management.security.config.SecurityC
 import com.innovaturelabs.training.employee.management.security.util.TokenGenerator;
 
 @Configuration
+@Order(2)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String ADMIN = "ADMIN";
@@ -50,6 +52,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(OPTIONS, "/users").anonymous()
                 .antMatchers(POST, "/users").anonymous()
                 .antMatchers("/login").anonymous()
+                // .antMatchers("/login/oauth2/code/**").anonymous()
+                .antMatchers("/oauth2/user").anonymous()
                 .antMatchers(PUT, "/login/forgot-password").anonymous()
                 .antMatchers("/users/verify-user").anonymous()
                 .antMatchers(PUT, "/login/reset-password/**").anonymous()
@@ -113,5 +117,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new TokenGenerator(securityConfig.getTokenGeneratorPassword(), securityConfig.getTokenGeneratorSalt());
     }
 
-    
 }
