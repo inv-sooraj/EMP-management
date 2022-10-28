@@ -98,4 +98,7 @@ export class UserService {
   getUserCount(quearyParam:HttpParams): Observable<any> {
     return this.http.get(this.apiUrl + '/users/chart',{ params: quearyParam });
   }
+  getUserPieDatas(){
+    return this.http.get(this.apiUrl + '/users/pie');
+  }
 }

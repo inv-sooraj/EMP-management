@@ -150,6 +150,11 @@ public class UsersController {
             @RequestParam(name = "days") Integer days) {
         return userService.getUserCount(days);
     }
+    @GetMapping("/pie")
+    public Map<String, Integer> pie(){
+        return userService.getUserRoles();
+    }
+    
 
     @PutMapping("/profile/deleted/{userId}")
     public UserDetailView deleteProfilePic(@PathVariable Integer userId) {

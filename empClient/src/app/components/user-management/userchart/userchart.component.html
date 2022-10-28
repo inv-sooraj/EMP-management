@@ -1,24 +1,62 @@
 
+<div class="divChart" >
+
+<div class="sidebar">
+  <a class="active" href="#home">Dashboard</a>
+  <a routerLink="/user-list">Users</a>
+  <a routerLink="/job-list">Job-list</a>
+  <a routerLink="/job-request-list">job-request</a>
+</div>
+
+<!-- <div class="content">
+  <h2>Responsive Sidebar Example</h2>
+  <p>This example use media queries to transform the sidebar to a top navigation bar when the screen size is 700px or less.</p>
+  <p>We have also added a media query for screens that are 400px or less, which will vertically stack and center the navigation links.</p>
+  <h3>Resize the browser window to see the effect.</h3>
+</div> -->
+<div class="content">
 <div class="col-3">
+
   Show
   <select class="form-select w-auto d-inline" [(ngModel)]="days" (change)="changeDays()">
-      <option selected="selected" [ngValue]="7">Last 7 Days</option>
-      <option [ngValue]="10">Last 10 Days</option>
-      <option [ngValue]="30">Last 30 Days</option>
-      <option [ngValue]="365">Last 365 Days</option>
+    <option selected="selected" [ngValue]="7">Last 7 Days</option>
+    <option [ngValue]="10">Last 10 Days</option>
+    <option [ngValue]="30">Last 30 Days</option>
+    <option [ngValue]="365">Last 365 Days</option>
   </select>
   entries
 </div>
+
+
 <div class="divChart">
-    <canvas id="myChart" width="500" height="150"></canvas>
   
+
+  <canvas id="myChart" width="500" height="150"></canvas>
+
+  </div>
+<hr>
+
+
+</div>
+
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
+
+<div class="row">
+  <div class="divPie">
+    <canvas id="myPieChart1" width="500" height="150"></canvas>
+  </div>
+  <div class="divPie" >
+    <canvas id="myPieChart2" width="500" height="150"></canvas>
   </div>
 
+</div>
 
-  <div style="width:50% ;">
-    <canvas id="myPieChart" width="500" height="150"></canvas>
+
+</div>
   
-  </div>
 
-
-  

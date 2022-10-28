@@ -4,6 +4,7 @@ import { JobApplyComponent } from './components/job-management/job-apply/job-app
 import { JobListComponent } from './components/job-management/job-list/job-list.component';
 import { JobRequestListComponent } from './components/job-request-management/job-request-list/job-request-list.component';
 import { PageErrorComponent } from './components/page-error/page-error.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TestComponentComponent } from './components/test-component/test-component.component';
 import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
 
@@ -96,6 +97,7 @@ const routes: Routes = [
   { path: 'homejob', component: HomepagejobviewComponent },
 
   { path: 'glogin', component: LoginGoogleComponent },
+  {path:'sidebar',component:SidebarComponent},
 
   {
     path: '**',
