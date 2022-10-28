@@ -20,6 +20,10 @@ export class AuthService {
     return this.http.post(this.apiUrl + '/login', body);
   }
 
+  loginWithGoogle(): Observable<any> {
+    return this.http.get(this.apiUrl + '/');
+  }
+
   register(body: any): Observable<any> {
     return this.http.post(environment.apiUrl + '/users', body);
   }
