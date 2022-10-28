@@ -74,14 +74,12 @@ import { HomepagejobviewComponent } from './components/user-management/homepagej
     NgIdleModule.forRoot(),
 
     ToastrModule.forRoot({
-
       closeButton: true,
       positionClass: 'toast-top-center',
       preventDuplicates: true,
       progressBar: true,
       progressAnimation: 'decreasing',
       enableHtml: true,
-
     }),
     BrowserAnimationsModule,
     InfiniteScrollModule,
