@@ -594,32 +594,19 @@ public class UserServiceImpl implements UserService {
                     u.setUpdateDate(new Date());
                     return new UserDetailView(userRepository.save(u));
                 }).orElseThrow(NotFoundException::new);
-
-        // user.setProfilePic("");
-        // user.setUpdateDate(new Date());
-        // userRepository.save(user);
-        // return new UserDetailView(user);
-
-        // return new UserDetailView(userRepository.findByUserId(userId).map(
-        // user -> {
-        // user.setProfilePic("null");
-        // user.setUpdateDate(new Date());
-        // return user;
-        // }).orElseThrow(() -> new BadRequestException("Invalid User")));
     }
 
     @Override
     public Map<String, Integer> getUserCount(Integer days) {
 
         Collection<ChartView> chartViewvalues = userRepository.getJoinDates();
+        System.out.println(chartViewvalues+"dddddddddddddddddddd");
         DateTime today = new DateTime();
-        int n = days;
-        int i;
         HashMap<String, Integer> datawithdate = new HashMap<>();
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 
-        for (i = 0; i < n; i++) {
+        for (int i = 0; i < days; i++) {
 
             for (ChartView chart : chartViewvalues) {
                 if (formatter.parseLocalDate(today.toString("yyyy-MM-dd"))
@@ -638,13 +625,6 @@ public class UserServiceImpl implements UserService {
 
         return treeMap;
 
-    }
-
-    public static String addOneDayJodaTime(String date) {
-        DateTime dateTime = new DateTime(date);
-        return dateTime
-                .minusDays(1)
-                .toString("yyyy-MM-dd");
     }
 
 }
