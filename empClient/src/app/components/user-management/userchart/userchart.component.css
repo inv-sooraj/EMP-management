@@ -1,4 +1,8 @@
-#divChart canvas{
-    width: 400px;
-  
-  }
+.divChart  {
+  width: 90%;
+margin: auto;}
+
+.divPie {
+  width: 30%;
+  margin: auto;
+}
