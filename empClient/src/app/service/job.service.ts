@@ -76,4 +76,7 @@ export class JobService {
   getJobCount(quearyParam:HttpParams): Observable<any> {
     return this.http.get(this.apiUrl + '/job/chart',{ params: quearyParam });
   }
+  getPieDatas(){
+    return this.http.get(this.apiUrl + '/job/pie');
+  }
 }

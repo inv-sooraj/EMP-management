@@ -90,4 +90,8 @@ public class JobController {
             @RequestParam(name = "days") Integer days) {
         return jobService.getJobCount(days);
     }
+    @GetMapping("/pie")
+    public Map<String, Integer> pie(){
+        return jobService.getJobStatuses();
+    }
 }

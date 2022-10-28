@@ -14,16 +14,28 @@ export class UserchartComponent implements OnInit {
     private jobService: JobService
   ) {}
   myChart: any;
+  
   userDay: Array<string> = new Array<string>();
   userCount: Array<number> = new Array<number>();
+  
   jobDay: Array<string> = new Array<string>();
   jobCount: Array<number> = new Array<number>();
+
+  pieLabels: Array<string> = new Array<string>();
+  pieData: Array<number> = new Array<number>();
+
+  userRoles: Array<string> = new Array<string>();
+  users: Array<number> = new Array<number>();
 
   days: number = 7;
 
   ngOnInit(): void {
     this.userCounts();
-    this.getPieChart();
+
+    this.getPieData();
+    this.getUserPieData();
+    
+
   }
 
   changeDays() {
@@ -176,25 +188,126 @@ export class UserchartComponent implements OnInit {
     return this.userDay;
   }
 
-  getPieChart() {
+
+  getPieData(){
+    
+    this.jobService.getPieDatas().subscribe({
+      next: (res: any) => {
+console.log(res);
+
+        const map3 = new Map(Object.entries(res));
+
+        for (let key of map3.keys()) {
+          this.pieLabels.push(key)
+        }
+
+        for (let key of map3.values()) {
+          this.pieData.push(parseInt(key as string))
+        }
+        this.getJobPieChart();
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    })
+  }
+
+  getUserPieData(){
+    console.log("hhhh");
+    
+    this.userService.getUserPieDatas().subscribe({
+      next: (res: any) => {
+console.log(res);
+
+        const map4 = new Map(Object.entries(res));
+
+        for (let key of map4.keys()) {
+          this.userRoles.push(key)
+        }
+
+        for (let key of map4.values()) {
+          this.users.push(parseInt(key as string))
+        }
+        this.getUserPieChart();
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    })
+  }
+
+
+  getJobPieChart() {
+
     Chart.register(...registerables);
-    const myPieChart = new Chart('myPieChart', {
+    const myPieChart1 = new Chart('myPieChart1', {
       type: 'pie',
       data: {
-        labels: ['Users', 'Jobs', 'Requests'],
-        datasets: [
-          {
-            label: 'My First Dataset',
-            data: [5, 20, 10],
-            backgroundColor: [
-              'rgb(255, 99, 132)',
-              'rgb(54, 162, 235)',
-              'rgb(255, 205, 86)',
-            ],
-            hoverOffset: 4,
-          },
-        ],
+
+        labels: this.pieLabels,
+        datasets: [{
+          label: 'My First Dataset',
+          data:this.pieData,
+          backgroundColor: [
+            'lightgreen',
+            'cyan',
+            'red',
+            'yellow'
+          ],
+          hoverOffset: 50
+        }]
       },
+      options: {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Job Status',
+                padding: {
+                  top: 10,
+                  bottom: 30
+              },
+              font:{weight:'bold',size:20}
+            }
+        }
+    }
+
     });
+
+
+   
+}
+
+getUserPieChart(){
+  Chart.register(...registerables);
+  const myPieChart2 = new Chart('myPieChart2', {
+    type: 'pie',
+    data: {
+      labels: this.userRoles,
+      datasets: [{
+        label: 'My First Dataset',
+        data:this.users,
+        backgroundColor: [
+          'lightgreen',
+          'cyan',
+          'red',
+          'yellow'
+        ],
+        hoverOffset: 50
+      }]
+    },
+    options: {
+      plugins: {
+          title: {
+              display: true,
+              text: 'User Types',
+              padding: {
+                top: 10,
+                bottom: 30
+            },
+            font:{weight:'bold',size:20}
+          }
+      }
   }
+  });
+}
 }
