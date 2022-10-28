@@ -609,11 +609,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Integer> getUserCount() {
+    public Map<String, Integer> getUserCount(Integer days) {
 
         Collection<ChartView> chartViewvalues = userRepository.getJoinDates();
         DateTime today = new DateTime();
-        int n = 7;
+        int n = days;
         int i;
         HashMap<String, Integer> datawithdate = new HashMap<>();
 
