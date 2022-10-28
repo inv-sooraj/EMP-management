@@ -40,7 +40,7 @@ import { HomepagejobviewComponent } from './components/user-management/homepagej
 
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { LoginGoogleComponent } from './core/components/login-google/login-google.component';
-
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -69,8 +69,8 @@ import { LoginGoogleComponent } from './core/components/login-google/login-googl
 
     HomepagejobviewComponent,
 
-     LoginGoogleComponent,
-
+    LoginGoogleComponent,
+     SidebarComponent,
   ],
 
   imports: [
@@ -94,7 +94,6 @@ import { LoginGoogleComponent } from './core/components/login-google/login-googl
     InfiniteScrollModule,
 
     OAuthModule.forRoot(),
-
   ],
   providers: [
     {

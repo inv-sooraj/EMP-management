@@ -1,33 +1,53 @@
-<div class="divChart" >
-  Show
-  <select class="form-select w-auto d-inline" [(ngModel)]="days" (change)="changeDays()">
-    <option selected="selected" [ngValue]="7">Last 7 Days</option>
-    <option [ngValue]="10">Last 10 Days</option>
-    <option [ngValue]="30">Last 30 Days</option>
-    <option [ngValue]="365">Last 365 Days</option>
-  </select>
-  entries
-</div>
 
-
-<div class="divChart">
+  <div class="sidebar">
+    <a class="active" href="#home">Dashboard</a>
+    <a routerLink="/user-list">Users</a>
+    <a routerLink="/job-list">Job-list</a>
+    <a routerLink="/job-request-list">job-request</a>
+  </div>
   
-  <canvas id="myChart" width="500" height="150"></canvas>
+  <div class="content">
+    <div class="divChart">
+    <div class="col-3">
 
-</div>
+      Show
+      <select class="form-select w-auto d-inline" [(ngModel)]="days" (change)="changeDays()">
+        <option selected="selected" [ngValue]="7">Last 7 Days</option>
+        <option [ngValue]="10">Last 10 Days</option>
+        <option [ngValue]="30">Last 30 Days</option>
+        <option [ngValue]="365">Last 365 Days</option>
+      </select>
+      entries
+    </div>
 
-<div>
-  <br>
-  <br>
-  <br>
-  <br>
-</div>
 
-<div class="row">
-  <div class="divPie">
-    <canvas id="myPieChart1" width="500" height="150"></canvas>
+    <div class="divChart">
+
+
+      <canvas id="myChart" width="500" height="150"></canvas>
+
+    </div>
+    <hr>
+
+
   </div>
-  <div class="divPie" >
-    <canvas id="myPieChart2" width="500" height="150"></canvas>
+
+  <div>
+    <br>
+    <br>
+    <br>
+    <br>
   </div>
+
+  <div class="row">
+    <div class="divPie">
+      <canvas id="myPieChart1" width="500" height="150"></canvas>
+    </div>
+    <div class="divPie">
+      <canvas id="myPieChart2" width="500" height="150"></canvas>
+    </div>
+
+  </div>
+
+
 </div>
