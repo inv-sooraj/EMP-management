@@ -600,7 +600,6 @@ public class UserServiceImpl implements UserService {
     public Map<String, Integer> getUserCount(Integer days) {
 
         Collection<ChartView> chartViewvalues = userRepository.getJoinDates();
-        System.out.println(chartViewvalues+"dddddddddddddddddddd");
         DateTime today = new DateTime();
         HashMap<String, Integer> datawithdate = new HashMap<>();
 

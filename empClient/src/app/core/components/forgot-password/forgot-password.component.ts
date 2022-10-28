@@ -12,6 +12,7 @@ import { AuthService } from '../../service/auth.service';
 export class ForgotPasswordComponent implements OnInit {
   token: string;
   expiry: number;
+  showSpinner: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -62,15 +63,19 @@ export class ForgotPasswordComponent implements OnInit {
 
       return;
     }
+    this.showSpinner = true;
+
     let email: string = this.userEmailForm.controls['email'].value;
 
     this.service.forgotPassword(email).subscribe({
       next: (response: any) => {
         console.log(response);
+        this.showSpinner = false;
         this.toastService.success("Email has been sent");
 
       },
-      error(err) {
+      error: (err) => {
+        this.showSpinner = false;
         console.log(err);
       },
     });
