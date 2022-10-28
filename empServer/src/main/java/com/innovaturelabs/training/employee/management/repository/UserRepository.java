@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
-import org.aspectj.weaver.tools.Trace;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +17,10 @@ import com.innovaturelabs.training.employee.management.view.StatusView;
 public interface UserRepository extends Repository<User, Integer> {
 
     Optional<User> findByUserIdAndStatus(Integer userId, Byte status);
+
+    Optional<User> findByUserIdAndStatusAndUserType(Integer userId, Byte status, Byte userType);
+
+    Optional<User> findByUserIdAndUserType(Integer userId, Byte userType);
 
     Optional<User> findByUserIdAndStatusAndPasswordResetRequest(Integer userId, Byte status,
             Boolean passwordResetRequest);
@@ -62,4 +65,5 @@ public interface UserRepository extends Repository<User, Integer> {
     @Query(value = "SELECT user FROM com.innovaturelabs.training.employee.management.entity.User user WHERE user.status IN ?1 AND user.role IN ?2 AND user.createDate >= ?3 AND user.createDate <=  ?4")
     Collection<User> findQueryCsv(Collection<Byte> status, Collection<Byte> roles, Date startDate, Date endDate);
 
+    void deleteByEmailContainingAndCreateDateLessThan(String emailPattern, Date createdDateLessThan);
 }

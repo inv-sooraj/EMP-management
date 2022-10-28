@@ -25,7 +25,7 @@ const oAuthConfig: AuthConfig = {
 @Injectable({
   providedIn: 'root',
 })
-export class OauthgoogleService {
+export class OAuthGoogleService {
   userProfileSubject = new Subject<UserInfo>();
 
   constructor(

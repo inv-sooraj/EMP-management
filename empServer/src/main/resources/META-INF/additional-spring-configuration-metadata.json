@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "client.secret",
+      "type": "java.lang.String",
+      "description": "Clien Secret for Google Sigin in verification"
+    },
+    {
+      "name": "client.id",
+      "type": "java.lang.String",
+      "description": "Clien Id for Google Sigin in verification"
+    }
+  ]
+}

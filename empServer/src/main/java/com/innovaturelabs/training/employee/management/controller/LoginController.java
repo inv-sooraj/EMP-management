@@ -4,10 +4,7 @@ package com.innovaturelabs.training.employee.management.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,10 +45,10 @@ public class LoginController {
         userService.resetPassword(token, password);
     }
 
-    @GetMapping
-    public String hi(@AuthenticationPrincipal OAuth2User principal) {
-        return "hi" + principal;
-    }
+    // @GetMapping
+    // public String hi(@AuthenticationPrincipal OAuth2User principal) {
+    //     return "hi" + principal;
+    // }
 
     // /oauth2/code/google
 
