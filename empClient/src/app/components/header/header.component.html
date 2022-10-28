@@ -8,6 +8,9 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav" *ngIf="getName()">
                 <li class="nav-item" *ngIf="getRole()==2">
+                    <a class="nav-link active" aria-current="page" routerLink="/userchart">Dashboard</a>
+                </li>
+                <li class="nav-item" *ngIf="getRole()==2">
                     <a class="nav-link active" aria-current="page" routerLink="/user-list">Users</a>
                 </li>
 
