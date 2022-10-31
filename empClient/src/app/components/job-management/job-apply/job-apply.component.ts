@@ -30,7 +30,6 @@ export class JobApplyComponent implements OnInit {
 
   sortDesc: boolean = false;
 
-
   qualifications = this.jobService.qualifications;
 
   ngOnInit(): void {
@@ -113,7 +112,7 @@ export class JobApplyComponent implements OnInit {
     this.jobRequestService.addJobRequests(jobId).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.toastService.success('Job applied!')
+        this.toastService.success('Job applied!');
         this.getAppliedJobs();
       },
       error(err) {

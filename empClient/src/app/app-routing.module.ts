@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CardsComponent } from './components/cards/cards.component';
 import { JobApplyComponent } from './components/job-management/job-apply/job-apply.component';
 import { JobListComponent } from './components/job-management/job-list/job-list.component';
 import { JobRequestListComponent } from './components/job-request-management/job-request-list/job-request-list.component';
 import { PageErrorComponent } from './components/page-error/page-error.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TestComponentComponent } from './components/test-component/test-component.component';
 import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
 
@@ -97,8 +97,7 @@ const routes: Routes = [
   { path: 'homejob', component: HomepagejobviewComponent },
 
   { path: 'glogin', component: LoginGoogleComponent },
-  {path:'sidebar',component:SidebarComponent},
-
+  { path: 'cards', component: CardsComponent },
   {
     path: '**',
     redirectTo: '404-page',

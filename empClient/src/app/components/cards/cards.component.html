@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Responsive Cards UI Design</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="header">Apply For jobs</div>
+
+        <div class="cards_wrap" *ngIf="jobList">
+            <div class="card_item" *ngFor="let job of jobList.result">
+                <div class="card_inner">
+                    <!-- <img src="../../../assets/User-Profile.png" alt=""> -->
+
+                    <div class="role_name">{{job.title}}</div>
+                    <div class="film"><strong>Openings:{{job.openings}}</strong></div>
+                    <div class="film"><strong>Qualification:{{qualifications.get(job.qualification)}}</strong>
+                    </div>
+                    <div class="film"><strong>{{job.description}}</strong></div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

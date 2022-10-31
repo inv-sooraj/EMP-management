@@ -35,7 +35,7 @@ public class UserDetailView {
     public UserDetailView(User user) {
         this.userId = user.getUserId();
         this.name = user.getName();
-        this.userName = user.getUserName();
+        this.userName = user.getName();
         this.email = user.getEmail();
         this.status = user.getStatus();
         this.role = user.getRole();
