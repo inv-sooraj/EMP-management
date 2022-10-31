@@ -1,5 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { JobRequestService } from 'src/app/service/job-request.service';
 import { JobService } from 'src/app/service/job.service';
 
 @Component({
@@ -8,14 +10,18 @@ import { JobService } from 'src/app/service/job.service';
   styleUrls: ['./cards.component.css'],
 })
 export class CardsComponent implements OnInit {
-  constructor(private jobService: JobService) {}
+  constructor(
+    private jobService: JobService,
+    private jobRequestService: JobRequestService,
+    private toastService: ToastrService
+  ) {}
   jobList: any;
 
   page: number = 1;
 
   sortBy: string = 'job_id';
 
-  limit: number = 5;
+  limit: number = 10;
 
   search: string = '';
 
@@ -24,6 +30,7 @@ export class CardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobs();
+    this.getAppliedJobs()
   }
 
   listJobs(): void {
@@ -43,6 +50,35 @@ export class CardsComponent implements OnInit {
       },
       error: (err: any) => {
         console.error(err);
+      },
+    });
+  }
+
+  appliedJobs: Array<number> = [];
+  getAppliedJobs() {
+    this.jobRequestService.getAppliedJob().subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.appliedJobs = response;
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
+  }
+
+  applyJob(jobId: number): void {
+    console.log(jobId);
+
+    this.jobRequestService.addJobRequests(jobId).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.toastService.success('Job applied!');
+        this.getAppliedJobs();
+      },
+      error(err) {
+        console.log(err);
+        alert(err.error.message);
       },
     });
   }
