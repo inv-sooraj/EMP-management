@@ -92,11 +92,11 @@ public class UserServiceImpl implements UserService {
     public UserView add(UserForm form) {
 
         if (userRepository.findByUserNameLike(form.getUserName()).isPresent()) {
-            throw userAlreadyNameExists();
+            throw userNameAlreadyExists();
         }
 
         if (userRepository.findByEmail(form.getEmail()).isPresent()) {
-            throw new BadRequestException("Email Already Exists");
+            throw emailAlreadyExists();
         }
 
         Byte role = User.Role.EMPLOYEE.value;
@@ -127,11 +127,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.findByUserName(form.getUserName()).isPresent()) {
-            throw userAlreadyNameExists();
+            throw userNameAlreadyExists();
         }
 
         if (userRepository.findByEmail(form.getEmail()).isPresent()) {
-            throw new BadRequestException("Email Already Exists");
+            throw emailAlreadyExists();
         }
 
         Byte role = User.Role.EMPLOYEE.value;
@@ -343,7 +343,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.findByUserName(name).isPresent()) {
-            throw userAlreadyNameExists();
+            throw userNameAlreadyExists();
         }
 
         user.setUserName(name);
@@ -410,10 +410,11 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("No Records Found");
         }
 
-        if (exportList.size() > CsvUtil.MAX_LENGTH) {
-            throw new BadRequestException(
-                    "Max Record Length : " + CsvUtil.MAX_LENGTH + " , Current : " + exportList.size());
-        }
+        // if (exportList.size() > CsvUtil.MAX_LENGTH) {
+        // throw new BadRequestException(
+        // "Max Record Length : " + CsvUtil.MAX_LENGTH + " , Current : " +
+        // exportList.size());
+        // }
 
         String[] exclude = { "password", "passwordResetRequest", "profilePic" };
 
@@ -434,9 +435,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserView updateUser(UserEditForm form, Integer userId) {
 
-        return userRepository.findByUserId(userId)
-                .map(user -> new UserView(userRepository.save(user.updateDetails(form))))
-                .orElseThrow(NotFoundException::new);
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundException::new);
+
+        if (!user.getUserName().equals(form.getUserName())
+                && userRepository.findByUserName(form.getUserName()).isPresent()) {
+            throw userNameAlreadyExists();
+        }
+
+        if (!user.getEmail().equals(form.getEmail()) && userRepository.findByEmail(form.getEmail()).isPresent()) {
+            throw emailAlreadyExists();
+        }
+
+        return new UserView(userRepository.save(user.updateDetails(form)));
 
     }
 
@@ -515,22 +525,20 @@ public class UserServiceImpl implements UserService {
 
         throw new BadRequestException("Illegal");
     }
-    
+
     @Override
     public Map<String, Integer> getUserRoles() {
         Collection<StatusView> statusViews = userRepository.countUserRoles();
-        Map<String, Integer> statusMap = new TreeMap<String, Integer>();
-            for (StatusView status : statusViews) {
-                if (status.getStatus().equals(0)) {
-                    statusMap.put("Employee", status.getCount());
-                } else if (status.getStatus().equals(1)) {
-                    statusMap.put("Employer", status.getCount());
-                }else if (status.getStatus().equals(2)) {
-                    statusMap.put("Admin", status.getCount());
-                }
+        Map<String, Integer> statusMap = new TreeMap<>();
+        for (StatusView status : statusViews) {
+            if (status.getStatus().equals(0)) {
+                statusMap.put("Employee", status.getCount());
+            } else if (status.getStatus().equals(1)) {
+                statusMap.put("Employer", status.getCount());
+            } else if (status.getStatus().equals(2)) {
+                statusMap.put("Admin", status.getCount());
             }
-
-
+        }
         return statusMap;
 
     }
@@ -598,8 +606,12 @@ public class UserServiceImpl implements UserService {
         return new BadRequestException("Invalid credentials");
     }
 
-    private static BadRequestException userAlreadyNameExists() {
+    private static BadRequestException userNameAlreadyExists() {
         return new BadRequestException("Username Already Exists");
+    }
+
+    private static BadRequestException emailAlreadyExists() {
+        return new BadRequestException("Email Already Exists");
     }
 
     private static BadRequestException invalidToken(Exception e) {
@@ -651,11 +663,8 @@ public class UserServiceImpl implements UserService {
             }
             today = today.minusDays(1);
         }
-        Map<String, Integer> treeMap = new TreeMap<>(datawithdate);
 
-        System.out.println(treeMap);
-
-        return treeMap;
+        return new TreeMap<>(datawithdate);
 
     }
 }

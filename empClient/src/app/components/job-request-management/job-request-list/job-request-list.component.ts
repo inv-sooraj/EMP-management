@@ -6,7 +6,6 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { JobRequestService } from 'src/app/service/job-request.service';
 
-
 @Component({
   selector: 'app-job-request-list',
   templateUrl: './job-request-list.component.html',
@@ -16,28 +15,25 @@ export class JobRequestListComponent implements OnInit {
   constructor(
     private jobRequestService: JobRequestService,
     private modalService: NgbModal,
-    private service:AuthService,
+    private service: AuthService,
     private toastService: ToastrService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
 
-  jobList: any;
+  // jobList: any;
 
   page: number = 1;
 
   sortBy: string = 'jobRequestId';
 
-  limit: number = 5;
+  limit: number = 0;
 
   search: string = '';
 
   sortDesc: boolean = false;
 
-  showSpinner: boolean = false
-
-
-  // tableHeight: number = 73 * (this.limit + 1);
+  showSpinner: boolean = false;
 
   status = this.jobRequestService.status;
 
@@ -67,9 +63,7 @@ export class JobRequestListComponent implements OnInit {
   }
 
   setSort(sortBy: string) {
-    if (this.jobList.result.length <= 1) {
-      return;
-    }
+    this.jobRequestDataList = [];
 
     if (this.sortBy == sortBy) {
       this.sortDesc = this.sortDesc ? false : true;
@@ -84,21 +78,30 @@ export class JobRequestListComponent implements OnInit {
     this.listJobRequests();
   }
 
-  setLimit() {
+  resetList() {
+    this.jobRequestDataList = [];
+
     console.log(this.limit);
     this.page = 1;
     this.listJobRequests();
   }
 
   setSearch() {
+    this.jobRequestDataList = [];
     console.log(this.search);
     this.listJobRequests();
   }
+  pagerInfo: any;
+
+  jobRequestDataList: Array<any> = [];
 
   listJobRequests(): void {
     let queryParams = new HttpParams()
       .append('page', this.page)
-      .append('limit', this.limit)
+      .append(
+        'limit',
+        this.limit ? this.limit : (window.innerHeight / 100).toFixed(0)
+      )
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)
       .append('search', this.search);
@@ -106,7 +109,16 @@ export class JobRequestListComponent implements OnInit {
     this.jobRequestService.getJobRequests(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.jobList = response;
+        this.pagerInfo = response.pagerInfo;
+
+        this.pagerInfo['numPages'] = response.numPages;
+        this.pagerInfo['currentPage'] = response.currentPage;
+
+        if (this.limit == 0) {
+          this.jobRequestDataList.push(...response.result);
+        } else {
+          this.jobRequestDataList = response.result;
+        }
       },
       error: (err: any) => {
         console.error(err);
@@ -116,8 +128,7 @@ export class JobRequestListComponent implements OnInit {
 
   updateStatus(jobRequestId: number, status: number): void {
     console.log(this.remark);
-    this.showSpinner = true
-
+    this.showSpinner = true;
 
     let body = {
       status: status,
@@ -127,16 +138,21 @@ export class JobRequestListComponent implements OnInit {
     this.jobRequestService.updateStatus(jobRequestId, body).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.listJobRequests();
-        this.showSpinner = false
-
+        this.jobRequestDataList.splice(
+          this.jobRequestDataList.findIndex(
+            (x) => x.jobRequestId == response.jobRequestId
+          ),
+          1,
+          response
+        );
+        this.showSpinner = false;
       },
       error: (err: any) => {
-        this.showSpinner = false
+        this.showSpinner = false;
         console.error(err);
         if (err.error.status == 400) {
           if (err.error.message == 'Invalid Operation') {
-            this.toastService.error('Job is Completed!')
+            this.toastService.error('Job is Completed!');
           } else alert(err.error.message);
         }
       },
@@ -151,5 +167,18 @@ export class JobRequestListComponent implements OnInit {
 
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
+
+  selectedStatus: number = 4;
+
+  throttle = 300;
+  scrollDistance = 1;
+  scrollUpDistance = 2;
+  onScrollDown() {
+    if (this.limit) {
+      return;
+    }
+    this.page += 1;
+    this.listJobRequests();
   }
 }
