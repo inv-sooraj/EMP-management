@@ -1,5 +1,10 @@
 /* *{overflow: hidden;} */
 
+element.style {
+  width: 95%;
+  margin: auto;
+}
+
 .nI-gNb-log-reg .nI-gNb-lg-rg__register {
   background-color: #ff7555;
   border-color: #ff7555;

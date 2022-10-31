@@ -1,4 +1,9 @@
+<div>
+  <br>
+  <br>
+  <br>
 
+</div>
   <div class="sidebar">
     <a class="active" href="#home">Dashboard</a>
     <a routerLink="/user-list">Users</a>
@@ -11,7 +16,7 @@
     <div class="col-3">
 
       Show
-      <select class="form-select w-auto d-inline" [(ngModel)]="days" (change)="changeDays()">
+      <select class="form-select w-auto d-inline" style="background-color: rgba(127, 255, 212, 0); border: 0ch; font-size: 12px;" [(ngModel)]="days" (change)="changeDays()">
         <option selected="selected" [ngValue]="7">Last 7 Days</option>
         <option [ngValue]="10">Last 10 Days</option>
         <option [ngValue]="30">Last 30 Days</option>
@@ -41,13 +46,18 @@
 
   <div class="row">
     <div class="divPie">
-      <canvas id="myPieChart1" width="500" height="150"></canvas>
+      <canvas id="myPieChart1" width="500" height="160"></canvas>
+      <br>
+
     </div>
     <div class="divPie">
       <canvas id="myPieChart2" width="500" height="150"></canvas>
+      <br>
+
     </div>
 
   </div>
 
 
 </div>
+
