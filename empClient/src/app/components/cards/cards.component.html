@@ -12,7 +12,7 @@
     <div class="wrapper">
         <div class="header">Apply For jobs</div>
 
-        <div class="cards_wrap" *ngIf="jobList">
+        <div class="cards_wrap text-center" *ngIf="jobList">
             <div class="card_item" *ngFor="let job of jobList.result">
                 <div class="card_inner">
                     <!-- <img src="../../../assets/User-Profile.png" alt=""> -->
@@ -22,7 +22,16 @@
                     <div class="film"><strong>Qualification:{{qualifications.get(job.qualification)}}</strong>
                     </div>
                     <div class="film"><strong>{{job.description}}</strong></div>
+                    <br><br>
+                    <button *ngIf="!job.eligible" disabled class="btn btn-outline-dark w-50">Not Eligible</button>
 
+                    <button *ngIf="!appliedJobs.includes(job.jobId) && job.eligible" (click)="applyJob(job.jobId)"
+                        class="btn btn-outline-dark w-50" placement="top"
+                        ngbTooltip='Apply for job "{{job.title}}"'>Apply</button>
+
+                    <button *ngIf="appliedJobs.includes(job.jobId)" disabled
+                        class="btn btn-outline-dark w-50">Applied</button>
+                    &nbsp;
 
                 </div>
             </div>
