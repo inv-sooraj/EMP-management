@@ -40,7 +40,7 @@ import { HomepagejobviewComponent } from './components/user-management/homepagej
 
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { LoginGoogleComponent } from './core/components/login-google/login-google.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { CardsComponent } from './components/cards/cards.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +70,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     HomepagejobviewComponent,
 
     LoginGoogleComponent,
-     SidebarComponent,
+     CardsComponent,
   ],
 
   imports: [
