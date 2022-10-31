@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { JobService } from 'src/app/service/job.service';
 import { UserService } from 'src/app/service/user.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-userchart',
   templateUrl: './userchart.component.html',
@@ -32,8 +33,6 @@ export class UserchartComponent implements OnInit {
   ngOnInit(): void {
     this.userCounts();
 
-    this.getPieData();
-    this.getUserPieData();
   }
 
   changeDays() {
@@ -78,6 +77,7 @@ export class UserchartComponent implements OnInit {
     this.jobService.getJobCount(queryParams).subscribe({
       next: (res: any) => {
         const map2 = new Map(Object.entries(res));
+        this.getPieData();
 
         for (let key of map2.keys()) {
           this.jobDay.push(key);
@@ -87,6 +87,7 @@ export class UserchartComponent implements OnInit {
           this.jobCount.push(parseInt(key as string));
         }
         this.getChart();
+        
       },
       error: (err: any) => {
         console.log(err);
@@ -190,7 +191,7 @@ export class UserchartComponent implements OnInit {
     this.jobService.getPieDatas().subscribe({
       next: (res: any) => {
         console.log(res);
-
+        this.getUserPieData();
         const map3 = new Map(Object.entries(res));
 
         for (let key of map3.keys()) {
@@ -293,4 +294,6 @@ export class UserchartComponent implements OnInit {
       },
     });
   }
+  
+  
 }
