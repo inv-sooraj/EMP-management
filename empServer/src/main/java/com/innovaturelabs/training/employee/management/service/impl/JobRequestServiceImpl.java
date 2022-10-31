@@ -171,7 +171,6 @@ public class JobRequestServiceImpl implements JobRequestService {
             }
 
             emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequest.getUser().getName(),
-                    jobRequestId,
                     jobRequest.getJob().getTitle(), form.getRemark(), true);
 
             jobRepository.save(job);
@@ -184,12 +183,16 @@ public class JobRequestServiceImpl implements JobRequestService {
             }
 
             emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequest.getUser().getName(),
-                    jobRequestId,
                     jobRequest.getJob().getTitle(), form.getRemark(), false);
 
             job.setOpenings(job.getOpenings() + 1);
 
             jobRepository.save(job);
+        } else if (jobRequest.getStatus().equals(JobRequest.Status.PENDING.value)
+                && !form.getStatus().equals(JobRequest.Status.APPROVED.value)) {
+            emailUtil.sendJobRequestStatus(jobRequest.getUser().getEmail(), jobRequest.getUser().getName(),
+                    jobRequest.getJob().getTitle(), form.getRemark(), false);
+
         }
 
         jobRequest.setStatus(form.getStatus());

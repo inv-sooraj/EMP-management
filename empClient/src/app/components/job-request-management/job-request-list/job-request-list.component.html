@@ -82,7 +82,7 @@
                     </tr>
                     <tr *ngFor="let job of jobList.result">
                         <td>
-                        
+
                         </td>
                         <td>{{ job.jobRequestId }}</td>
                         <td>{{ job.jobId }}</td>
@@ -91,25 +91,28 @@
                         <td>{{ job.userName }}</td>
                         <td>{{ job.remark }}</td>
 
-                      <td >
-                            <p *ngIf="job.status == 0" ><span class="badge bg-warning clr">{{ status[job.status] }}</span></p>
-                            <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status[job.status] }}</span></p>
+                        <td>
+                            <p *ngIf="job.status == 0"><span class="badge bg-warning clr">{{ status[job.status]
+                                    }}</span></p>
+                            <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status[job.status] }}</span>
+                            </p>
                             <p *ngIf="job.status == 2"><span class="badge bg-danger">{{ status[job.status] }}</span></p>
                         </td>
 
                         <td *ngIf="role">
 
+                            <div class="flex">
+                                <button class="btn btn-sort btn-outline-success" ngbTooltip="Approve"
+                                    [disabled]="job.status == 1"
+                                    (click)=" remark.patchValue(job.remark); jobRequestId = job.jobRequestId; action = 1;open(remarkModal);"><span
+                                        class="bi bi-check-circle"></span></button>
+                                &nbsp;
 
-                            <button class="btn btn-sort btn-outline-success" ngbTooltip="Approve"
-                                [disabled]="job.status == 1"
-                                (click)=" remark.patchValue(job.remark); jobRequestId = job.jobRequestId; action = 1;open(remarkModal);"><span
-                                    class="bi bi-check-circle"></span></button>
-                            &nbsp;
-
-                            <button class="btn btn-sort btn-outline-danger" ngbTooltip="Reject"
-                                [disabled]="job.status == 2"
-                                (click)=" remark.patchValue(job.remark); jobRequestId = job.jobRequestId; action = 2;open(remarkModal);"><span
-                                    class="bi bi-x-circle-fill"></span></button>
+                                <button class="btn btn-sort btn-outline-danger" ngbTooltip="Reject"
+                                    [disabled]="job.status == 2"
+                                    (click)=" remark.patchValue(job.remark); jobRequestId = job.jobRequestId; action = 2;open(remarkModal);"><span
+                                        class="bi bi-x-circle-fill"></span></button>
+                            </div>
                         </td>
 
 
