@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.logout();
-    this.googleAuthSDK();
+    // this.googleAuthSDK();
   }
 
   loginForm: FormGroup = new FormGroup({
@@ -71,73 +72,133 @@ export class LoginComponent implements OnInit {
   }
   // ------------------------------------------------------------------------------------------------------//
 
-  auth2: any;
-  @ViewChild('googleLogin', { static: true }) loginElement!: ElementRef;
+  // auth2: any;
+  // @ViewChild('googleLogin', { static: true }) loginElement!: ElementRef;
 
-  callLogin() {
-    this.auth2.attachClickHandler(
-      this.loginElement.nativeElement,
-      {},
-      (googleAuthUser: any) => {
-        console.log('Token => ' + googleAuthUser.getAuthResponse().id_token);
+  // callLogin() {
+  //   this.auth2.attachClickHandler(
+  //     this.loginElement.nativeElement,
+  //     {},
+  //     (googleAuthUser: any) => {
+  //       console.log('Token => ' + googleAuthUser.getAuthResponse().id_token);
 
-        console.log(JSON.stringify(googleAuthUser, undefined, 4));
+  //       console.log(JSON.stringify(googleAuthUser, undefined, 4));
+  //       console.log(googleAuthUser.getBasicProfile().getEmail());
 
-        let idToken = googleAuthUser.getAuthResponse().id_token;
+  //       let queryParam = new HttpParams().append(
+  //         'email',
+  //         googleAuthUser.getBasicProfile().getEmail()
+  //       );
 
-        this.googleService.login(idToken).subscribe({
-          next: (response: any) => {
-            console.log(JSON.stringify(response, undefined, 4));
+  //       this.googleService.verifyEmail(queryParam).subscribe({
+  //         next: (response: any) => {
+  //           console.log(response);
 
-            localStorage.setItem(
-              'accessTokenExpiry',
-              response.accessToken.expiry
-            );
-            localStorage.setItem('accessToken', response.accessToken.value);
-            localStorage.setItem('refreshToken', response.refreshToken.value);
-            localStorage.setItem('name', response.name);
-            localStorage.setItem('role', response.role);
+  //           if (response == 'NATIVE_USER') {
+  //             alert('Native User');
+  //             this.router.navigateByUrl('login');
+  //           } else if (response == 'GOOGLE_USER') {
+  //             let idToken = googleAuthUser.getAuthResponse().id_token;
 
-            if (response.role == 1) this.router.navigate(['job-list']);
-            else this.router.navigate(['job-apply']);
+  //             this.googleService.login(idToken).subscribe({
+  //               next: (response: any) => {
+  //                 console.log(JSON.stringify(response, undefined, 4));
 
-            window.location.reload();
-          },
-          error(err) {
-            console.log(err);
-          },
-        });
-      },
-      (error: any) => {
-        alert(JSON.stringify(error, undefined, 2));
-      }
-    );
-  }
+  //                 localStorage.setItem(
+  //                   'accessTokenExpiry',
+  //                   response.accessToken.expiry
+  //                 );
+  //                 localStorage.setItem(
+  //                   'accessToken',
+  //                   response.accessToken.value
+  //                 );
+  //                 localStorage.setItem(
+  //                   'refreshToken',
+  //                   response.refreshToken.value
+  //                 );
+  //                 localStorage.setItem('name', response.name);
+  //                 localStorage.setItem('role', response.role);
 
-  googleAuthSDK() {
-    (<any>window)['googleSDKLoaded'] = () => {
-      (<any>window)['gapi'].load('auth2', () => {
-        this.auth2 = (<any>window)['gapi'].auth2.init({
-          client_id:
-            '97587627218-qgaitnpfp5q9nu8br0k4li9762b57scc.apps.googleusercontent.com',
-          plugin_name: 'login',
-          cookiepolicy: 'single_host_origin',
-          scope: 'profile email',
-        });
-        this.callLogin();
-      });
-    };
+  //                 if (response.role == 1) this.router.navigate(['job-list']);
+  //                 else this.router.navigate(['job-apply']);
 
-    (function (d, s, id) {
-      let js,
-        fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {
-        return;
-      }
-      js = d.createElement('script');
-      js.id = id;
-      js.src = 'https://apis.google.com/js/platform.js?onload=googleSDKLoaded';
-      fjs?.parentNode?.insertBefore(js, fjs);
-    })(document, 'script', 'google-jssdk');
-  }
+  //                 window.location.reload();
+  //               },
+  //               error(err) {
+  //                 console.log(err);
+  //               },
+  //             });
+  //           } else if (response == 'NOT_PRESENT') {
+  //             let idToken = googleAuthUser.getAuthResponse().id_token;
+
+  //             let role = 1;
+
+  //             this.googleService.register(idToken, role).subscribe({
+  //               next: (response: any) => {
+  //                 console.log(JSON.stringify(response, undefined, 4));
+
+  //                 localStorage.setItem(
+  //                   'accessTokenExpiry',
+  //                   response.accessToken.expiry
+  //                 );
+  //                 localStorage.setItem(
+  //                   'accessToken',
+  //                   response.accessToken.value
+  //                 );
+  //                 localStorage.setItem(
+  //                   'refreshToken',
+  //                   response.refreshToken.value
+  //                 );
+  //                 localStorage.setItem('name', response.name);
+  //                 localStorage.setItem('role', response.role);
+
+  //                 if (response.role == 1) this.router.navigate(['job-list']);
+  //                 else this.router.navigate(['job-apply']);
+
+  //                 window.location.reload();
+  //               },
+  //               error(err) {
+  //                 console.log(err);
+  //               },
+  //             });
+  //           }
+  //         },
+  //         error(err) {
+  //           console.log(err);
+  //         },
+  //       });
+  //     },
+  //     (error: any) => {
+  //       alert(JSON.stringify(error, undefined, 2));
+  //     }
+  //   );
+  // }
+
+  // googleAuthSDK() {
+  //   (<any>window)['googleSDKLoaded'] = () => {
+  //     (<any>window)['gapi'].load('auth2', () => {
+  //       this.auth2 = (<any>window)['gapi'].auth2.init({
+  //         client_id:
+  //           '97587627218-qgaitnpfp5q9nu8br0k4li9762b57scc.apps.googleusercontent.com',
+  //         plugin_name: 'login',
+  //         cookiepolicy: 'single_host_origin',
+  //         scope: 'profile email',
+  //       });
+  //       this.callLogin();
+  //     });
+  //   };
+
+  //   (function (d, s, id) {
+  //     let js,
+  //       fjs = d.getElementsByTagName(s)[0];
+  //     if (d.getElementById(id)) {
+  //       return;
+  //     }
+  //     js = d.createElement('script');
+  //     js.id = id;
+  //     js.src = 'https://apis.google.com/js/platform.js?onload=googleSDKLoaded';
+  //     fjs?.parentNode?.insertBefore(js, fjs);
+  //   })(document, 'script', 'google-jssdk');
+  // }
+  
 }
