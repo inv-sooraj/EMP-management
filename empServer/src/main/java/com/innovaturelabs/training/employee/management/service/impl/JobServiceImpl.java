@@ -223,12 +223,15 @@ public class JobServiceImpl implements JobService {
             /**
              * Send Mail only if User is admin and job is not created by current user
              */
+
             if (SecurityUtil.isAdmin() && !SecurityUtil.getCurrentUserId().equals(job.getUser().getUserId())) {
                 if (status == Job.Status.APPROVED.value) {
-                    emailUtil.sendJobStatus(job.getUser().getEmail(), job.getUser().getName(), jobId, job.getTitle(),
+                    emailUtil.sendJobStatus(job.getUser().getEmail(), job.getUser().getName(), job.getOpenings(),
+                            job.getTitle(),
                             true);
                 } else if (status == Job.Status.DELETED.value) {
-                    emailUtil.sendJobStatus(job.getUser().getEmail(), job.getUser().getName(), jobId, job.getTitle(),
+                    emailUtil.sendJobStatus(job.getUser().getEmail(), job.getUser().getName(), job.getOpenings(),
+                            job.getTitle(),
                             false);
                 }
             }
@@ -287,30 +290,27 @@ public class JobServiceImpl implements JobService {
     private static BadRequestException illegalAccess() {
         return new BadRequestException("Illegal Access");
     }
-    
-    
+
     @Override
     public Map<String, Integer> getJobStatuses() {
         String datePattern = "yyyy-MM-dd";
         Collection<StatusView> statusViews = jobRepository.countStatus();
         Map<String, Integer> statusMap = new TreeMap<String, Integer>();
-            for (StatusView status : statusViews) {
-                if (status.getStatus().equals(0)) {
-                    statusMap.put("Pending", status.getCount());
-                } else if (status.getStatus().equals(1)) {
-                    statusMap.put("Approved", status.getCount());
-                }else if (status.getStatus().equals(2)) {
-                    statusMap.put("Completed", status.getCount());
-                }else if (status.getStatus().equals(3)) {
-                    statusMap.put("Deleted", status.getCount());
-                }
+        for (StatusView status : statusViews) {
+            if (status.getStatus().equals(0)) {
+                statusMap.put("Pending", status.getCount());
+            } else if (status.getStatus().equals(1)) {
+                statusMap.put("Approved", status.getCount());
+            } else if (status.getStatus().equals(2)) {
+                statusMap.put("Completed", status.getCount());
+            } else if (status.getStatus().equals(3)) {
+                statusMap.put("Deleted", status.getCount());
             }
-
+        }
 
         return statusMap;
 
     }
-    
 
     @Override
     public Map<String, Integer> getJobCount(Integer days) {

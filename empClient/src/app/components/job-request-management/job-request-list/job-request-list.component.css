@@ -290,3 +290,9 @@ table.table .avatar {
       transform: rotate(360deg);
     }
   }
+
+
+
+  .flex{
+    display: flex;
+  }
