@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Observable, Subject } from 'rxjs';
@@ -61,11 +61,24 @@ export class OAuthGoogleService {
   }
 
   googleLogout() {
-    this.oAuthService.revokeTokenAndLogout()
-    
+    this.oAuthService.revokeTokenAndLogout();
+  }
+
+  verifyEmail(param: HttpParams): Observable<any> {
+    return this.http.get(environment.apiUrl + '/oauth2/verify-email', {
+      params: param,
+      responseType: 'text',
+    });
+  }
+
+  register(body: any, role: number): Observable<any> {
+    return this.http.post(
+      environment.apiUrl + '/oauth2/register/' + role,
+      body
+    );
   }
 
   login(body: any): Observable<any> {
-    return this.http.post(environment.apiUrl + '/oauth2/user', body);
+    return this.http.post(environment.apiUrl + '/oauth2/login', body);
   }
 }

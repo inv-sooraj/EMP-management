@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
-@ConditionalOnProperty(name = "sheduling.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "scheduling.enabled", matchIfMissing = true)
 public class SchedulingConfiguration {
 
 }
