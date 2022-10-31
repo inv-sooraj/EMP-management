@@ -35,33 +35,9 @@ export class LoginGoogleComponent {
             alert('Native User');
             this.router.navigateByUrl('login');
           } else if (response == 'GOOGLE_USER') {
-            let idToken = sessionStorage.getItem('id_token');
-
-            this.service.login(idToken).subscribe({
-              next: (response: any) => {
-                console.log(JSON.stringify(response, undefined, 4));
-
-                localStorage.setItem(
-                  'accessTokenExpiry',
-                  response.accessToken.expiry
-                );
-                localStorage.setItem('accessToken', response.accessToken.value);
-                localStorage.setItem(
-                  'refreshToken',
-                  response.refreshToken.value
-                );
-                localStorage.setItem('name', response.name);
-                localStorage.setItem('role', response.role);
-
-                if (response.role == 1) this.router.navigate(['job-list']);
-                else this.router.navigate(['job-apply']);
-              },
-              error(err) {
-                console.log(err);
-              },
-            });
+            this.loginWithIdToken(sessionStorage.getItem('id_token') as string);
           } else if (response == 'NOT_PRESENT') {
-            let idToken = sessionStorage.getItem('id_token');
+            let idToken = sessionStorage.getItem('id_token') as string;
 
             let role: number = 0;
 
@@ -89,40 +65,7 @@ export class LoginGoogleComponent {
                 } else if (result.isDenied) {
                   role = 2;
                 }
-
-                this.service.register(idToken, role).subscribe({
-                  next: (response: any) => {
-                    console.log(JSON.stringify(response, undefined, 4));
-
-                    if (role == 1) {
-                      Swal.fire('Registered as Employer', '', 'success');
-                    } else if (role == 2) {
-                      Swal.fire('Registered as Employee', '', 'success');
-                    }
-
-                    localStorage.setItem(
-                      'accessTokenExpiry',
-                      response.accessToken.expiry
-                    );
-                    localStorage.setItem(
-                      'accessToken',
-                      response.accessToken.value
-                    );
-                    localStorage.setItem(
-                      'refreshToken',
-                      response.refreshToken.value
-                    );
-                    localStorage.setItem('name', response.name);
-                    localStorage.setItem('role', response.role);
-
-                    if (response.role == 1) this.router.navigate(['job-list']);
-                    else this.router.navigate(['job-apply']);
-                  },
-                  error(err) {
-                    console.log(err);
-                    Swal.fire('Something went Wrong', '', 'error');
-                  },
-                });
+                this.registerWithIdTokenAndRole(idToken, role);
               });
           }
         },
@@ -130,6 +73,53 @@ export class LoginGoogleComponent {
           console.log(err);
         },
       });
+    });
+  }
+
+  registerWithIdTokenAndRole(idToken: string, role: number) {
+    this.service.register(idToken, role).subscribe({
+      next: (response: any) => {
+        console.log(JSON.stringify(response, undefined, 4));
+
+        if (role == 1) {
+          Swal.fire('Registered as Employer', '', 'success');
+        } else if (role == 2) {
+          Swal.fire('Registered as Employee', '', 'success');
+        }
+
+        localStorage.setItem('accessTokenExpiry', response.accessToken.expiry);
+        localStorage.setItem('accessToken', response.accessToken.value);
+        localStorage.setItem('refreshToken', response.refreshToken.value);
+        localStorage.setItem('name', response.name);
+        localStorage.setItem('role', response.role);
+
+        if (response.role == 1) this.router.navigate(['job-list']);
+        else this.router.navigate(['job-apply']);
+      },
+      error(err) {
+        console.log(err);
+        Swal.fire('Something went Wrong', '', 'error');
+      },
+    });
+  }
+
+  loginWithIdToken(idToken: string) {
+    this.service.login(idToken).subscribe({
+      next: (response: any) => {
+        console.log(JSON.stringify(response, undefined, 4));
+
+        localStorage.setItem('accessTokenExpiry', response.accessToken.expiry);
+        localStorage.setItem('accessToken', response.accessToken.value);
+        localStorage.setItem('refreshToken', response.refreshToken.value);
+        localStorage.setItem('name', response.name);
+        localStorage.setItem('role', response.role);
+
+        if (response.role == 1) this.router.navigate(['job-list']);
+        else this.router.navigate(['job-apply']);
+      },
+      error(err) {
+        console.log(err);
+      },
     });
   }
 
