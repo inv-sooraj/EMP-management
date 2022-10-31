@@ -18,7 +18,7 @@ import com.innovaturelabs.training.employee.management.exception.BadRequestExcep
 
 public class CsvUtil {
 
-    public static final Integer MAX_LENGTH = 10;
+    // public static final Integer MAX_LENGTH = 10;
 
     private CsvUtil() {
     }

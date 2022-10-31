@@ -19,8 +19,11 @@ export class AdminUserEditComponent implements OnInit {
   }
 
   userEditForm: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required,Validators.maxLength(50)]),
-    userName: new FormControl('', [Validators.required,Validators.minLength(5),Validators.maxLength(50)]),
+    name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+    userName: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(50),
+    ]),
     email: new FormControl('', [
       Validators.required,
       Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}'),
@@ -32,7 +35,11 @@ export class AdminUserEditComponent implements OnInit {
       next: (response: any) => {
         console.log(response);
 
-        this.userEditForm.patchValue(response);
+        this.userEditForm.patchValue({
+          name:response.name,
+          userName:response.userName,
+          email:response.email
+        });
       },
       error(err) {
         console.log(err);
@@ -58,7 +65,19 @@ export class AdminUserEditComponent implements OnInit {
         console.log(response);
         this.completedEvent.emit(response);
       },
-      error(err) {
+      error: (err: any) => {
+        if (err.error.status == 400) {
+          if (err.error.message == 'Username Already Exists') {
+            alert('UserName Already Exists');
+
+            this.userEditForm.controls['userName'].setErrors(
+              Validators.required
+            );
+          } else if (err.error.message == 'Email Already Exists') {
+            alert('Email Already Exists');
+            this.userEditForm.controls['email'].setErrors(Validators.required);
+          }
+        }
         console.log(err);
       },
     });
