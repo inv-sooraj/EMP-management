@@ -189,10 +189,11 @@ public class JobServiceImpl implements JobService {
             throw new NotFoundException("No Records Found");
         }
 
-        if (exportList.size() > CsvUtil.MAX_LENGTH) {
-            throw new BadRequestException(
-                    "Max Record Length : " + CsvUtil.MAX_LENGTH + " , Current : " + exportList.size());
-        }
+        // if (exportList.size() > CsvUtil.MAX_LENGTH) {
+        // throw new BadRequestException(
+        // "Max Record Length : " + CsvUtil.MAX_LENGTH + " , Current : " +
+        // exportList.size());
+        // }
 
         String[] exclude = { "eligible" };
 
@@ -293,9 +294,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Map<String, Integer> getJobStatuses() {
-        String datePattern = "yyyy-MM-dd";
         Collection<StatusView> statusViews = jobRepository.countStatus();
-        Map<String, Integer> statusMap = new TreeMap<String, Integer>();
+        Map<String, Integer> statusMap = new TreeMap<>();
         for (StatusView status : statusViews) {
             if (status.getStatus().equals(0)) {
                 statusMap.put("Pending", status.getCount());
@@ -336,9 +336,7 @@ public class JobServiceImpl implements JobService {
             }
             today = today.minusDays(1);
         }
-        Map<String, Integer> treeMap = new TreeMap<String, Integer>(datawithdate);
-
-        System.out.println(treeMap);
+        Map<String, Integer> treeMap = new TreeMap<>(datawithdate);
 
         return treeMap;
 

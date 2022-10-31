@@ -16,13 +16,15 @@ export class JobApplyComponent implements OnInit {
     private toastService: ToastrService
   ) {}
 
-  jobList: any;
+  pagerInfo: any;
+
+  jobDataList: Array<any> = [];
 
   page: number = 1;
 
   sortBy: string = 'job_id';
 
-  limit: number = 5;
+  limit: number = 0;
 
   search: string = '';
 
@@ -57,9 +59,7 @@ export class JobApplyComponent implements OnInit {
   }
 
   setSort(sortBy: string) {
-    if (this.jobList.result.length <= 1) {
-      return;
-    }
+    this.jobDataList = [];
 
     if (this.sortBy == sortBy) {
       this.sortDesc = this.sortDesc ? false : true;
@@ -74,13 +74,16 @@ export class JobApplyComponent implements OnInit {
     this.listJobs();
   }
 
-  setLimit() {
+  resetList() {
+    this.jobDataList = [];
+
     console.log(this.limit);
     this.page = 1;
     this.listJobs();
   }
 
   setSearch() {
+    this.jobDataList = [];
     console.log(this.search);
     this.listJobs();
   }
@@ -88,7 +91,10 @@ export class JobApplyComponent implements OnInit {
   listJobs(): void {
     let queryParams = new HttpParams()
       .append('page', this.page)
-      .append('limit', this.limit)
+      .append(
+        'limit',
+        this.limit ? this.limit : (window.innerHeight / 100).toFixed(0)
+      )
       .append('sortBy', this.sortBy)
       .append('view', '5')
       .append('desc', this.sortDesc)
@@ -98,7 +104,16 @@ export class JobApplyComponent implements OnInit {
     this.jobService.getJobs(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.jobList = response;
+        this.pagerInfo = response.pagerInfo;
+
+        this.pagerInfo['numPages'] = response.numPages;
+        this.pagerInfo['currentPage'] = response.currentPage;
+
+        if (this.limit == 0) {
+          this.jobDataList.push(...response.result);
+        } else {
+          this.jobDataList = response.result;
+        }
       },
       error: (err: any) => {
         console.error(err);
@@ -133,5 +148,18 @@ export class JobApplyComponent implements OnInit {
         console.log(err);
       },
     });
+  }
+
+  selectedStatus: number = 4;
+
+  throttle = 300;
+  scrollDistance = 1;
+  scrollUpDistance = 2;
+  onScrollDown() {
+    if (this.limit) {
+      return;
+    }
+    this.page += 1;
+    this.listJobs();
   }
 }
