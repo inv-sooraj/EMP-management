@@ -1,3 +1,6 @@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
 <div class="banner">
     <div class="wrapper fadeInDown zero-raduis">
         <div id="formContent">
@@ -15,13 +18,19 @@
 
                 <input type="submit" class="fadeIn fourth zero-raduis" value="login" />
 
-                <button routerLink="/glogin" class="btn btn-outline-secondary fadeIn fourth zero-raduis mb-3"><span
-                        class="bi bi-google"></span> Sign in With Google</button>
+                
 
-                <!-- <button type="button" #googleLogin class="btn btn-outline-secondary fadeIn fourth zero-raduis mb-3"><span
-                        class="bi bi-google"></span>
-                    Sign in with Google
-                </button> -->
+                        <div class="col s12 m6 offset-m3 center-align">
+                            <a class="oauth-container btn darken-4 white black-text" routerLink="/glogin" style="text-transform:none">
+                                <div class="left">
+                                    <img width="20px" style="margin-top:0px; margin-right:8px" alt="Google sign-in" 
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                                </div>
+                                Login with Google
+                            </a>
+                        </div>
+
+                
 
 
                 <div class="mb-2">
