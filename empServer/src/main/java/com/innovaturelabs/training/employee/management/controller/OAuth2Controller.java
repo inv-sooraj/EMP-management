@@ -1,6 +1,8 @@
 
 package com.innovaturelabs.training.employee.management.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.innovaturelabs.training.employee.management.form.OAuth2RegisterForm;
 import com.innovaturelabs.training.employee.management.service.OAuth2Service;
 import com.innovaturelabs.training.employee.management.view.LoginView;
 
@@ -25,9 +28,9 @@ public class OAuth2Controller {
         return oAuth2Service.login(idToken);
     }
 
-    @PostMapping("/register/{role}")
-    public LoginView register(@RequestBody String idToken, @PathVariable("role") Byte role) {
-        return oAuth2Service.addUser(idToken, role);
+    @PostMapping("/register")
+    public LoginView register(@Valid @RequestBody OAuth2RegisterForm form ) {
+        return oAuth2Service.addUser(form);
     }
 
     @GetMapping(value = "/verify-email")

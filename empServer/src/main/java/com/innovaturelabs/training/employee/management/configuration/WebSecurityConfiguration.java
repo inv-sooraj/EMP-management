@@ -54,7 +54,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").anonymous()
                 // .antMatchers("/login/oauth2/code/**").anonymous()
                 .antMatchers("/oauth2/login").anonymous()
-                .antMatchers("/oauth2/register/*").anonymous()
+                .antMatchers("/oauth2/register").anonymous()
                 .antMatchers("/oauth2/verify-email").anonymous()
                 .antMatchers("/oauth2/user-test").anonymous()
                 .antMatchers(PUT, "/login/forgot-password").anonymous()
