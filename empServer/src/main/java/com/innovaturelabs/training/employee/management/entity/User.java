@@ -132,7 +132,6 @@ public class User {
 
         this.qualification = Qualification.NIL.value;
 
-
         this.userType = UserType.NATIVE.value;
 
         Date date = new Date();
@@ -140,12 +139,14 @@ public class User {
         this.updateDate = date;
     }
 
-    public User(String name, String email, byte role, byte userType) {
+    public User(String name, String email, byte role, byte userType, String userName) {
         this.name = name;
         this.email = email;
         this.status = Status.ACTIVE.value;
 
         this.role = role;
+
+        this.userName = userName;
 
         this.qualification = Qualification.NIL.value;
 

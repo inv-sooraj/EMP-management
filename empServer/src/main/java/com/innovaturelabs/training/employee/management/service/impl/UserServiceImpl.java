@@ -610,7 +610,7 @@ public class UserServiceImpl implements UserService {
         return new BadRequestException("Username Already Exists");
     }
 
-    private static BadRequestException emailAlreadyExists() {
+    private static BadRequestException emailAlreadyExists       () {
         return new BadRequestException("Email Already Exists");
     }
 
