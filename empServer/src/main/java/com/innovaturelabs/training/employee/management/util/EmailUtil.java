@@ -95,16 +95,17 @@ public class EmailUtil {
     }
 
     // Email service for approving new jobs
-    public void sendJobStatus(String email, String name, Integer jobId, String jobTitle, Boolean approved) {
+    public void sendJobStatus(String email, String name, Integer openings, String jobTitle, Boolean approved) {
 
         String status = (approved.booleanValue() ? "Approved" : "Rejected");
 
         String subject = "Job request " + status;
 
         String body = String.format(start, name)
-                + "We have " + status + " your request for adding new job title "
-                + jobTitle + " with job id " + jobId
-                + ".<br><br>" + end
+                + "We have " + status + " your request for adding new job vacancy for "
+                + "<b>" + jobTitle + "</b>" + " with openings <b>" + openings + "</b>."
+                // + " with job id " + jobId
+                + "<br><br>" + end
                 + "<br><br><b>Remarks:If you have any queries please fell free to contact us at empmanagemenet@gmail.com. </b>";
 
         sendEmail(email, subject, body);
@@ -112,17 +113,18 @@ public class EmailUtil {
     }
 
     // Email service for job request
-    public void sendJobRequestStatus(String email, String name, Integer jobRequestId, String jobTitle, String message,
+    public void sendJobRequestStatus(String email, String name, String jobTitle, String message,
             Boolean approved) {
 
         String status = (approved.booleanValue() ? "Approved" : "Rejected");
 
         String subject = " Job Request " + status;
         String body = String.format(start, name)
-                + "We have " + status + " your request for the profile "
-                + jobTitle + " having <b>job request id "
-                + jobRequestId + "</b>.<br><br>"
-                + end + "<br>Remark : " + message + "<br>";
+                + "We have " + status + " your request for the profile <b>"
+                + jobTitle + "</b> . "
+                + "<br>Remark : " + message + "<br>"
+                + "<br><br>"
+                + end;
 
         sendEmail(email, subject, body);
 
