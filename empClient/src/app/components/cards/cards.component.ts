@@ -21,7 +21,7 @@ export class CardsComponent implements OnInit {
 
   sortBy: string = 'job_id';
 
-  limit: number = 10;
+  limit: number = 100;
 
   search: string = '';
 
