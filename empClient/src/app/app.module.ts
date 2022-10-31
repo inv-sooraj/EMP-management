@@ -41,6 +41,8 @@ import { HomepagejobviewComponent } from './components/user-management/homepagej
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { LoginGoogleComponent } from './core/components/login-google/login-google.component';
 import { CardsComponent } from './components/cards/cards.component';
+import { ContactComponent } from './components/user-management/contact/contact.component';
+import { AboutComponent } from './components/user-management/about/about.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +73,8 @@ import { CardsComponent } from './components/cards/cards.component';
 
     LoginGoogleComponent,
      CardsComponent,
+     ContactComponent,
+     AboutComponent,
   ],
 
   imports: [
