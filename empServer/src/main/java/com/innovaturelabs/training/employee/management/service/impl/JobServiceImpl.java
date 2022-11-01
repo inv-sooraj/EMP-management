@@ -336,9 +336,7 @@ public class JobServiceImpl implements JobService {
             }
             today = today.minusDays(1);
         }
-        Map<String, Integer> treeMap = new TreeMap<>(datawithdate);
-
-        return treeMap;
+        return new TreeMap<>(datawithdate);
 
     }
 }

@@ -40,7 +40,6 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     @Override
     public LoginView addUser(OAuth2RegisterForm form) {
 
-
         if (userRepository.findByUserName(form.getUserName()).isPresent()) {
             throw new BadRequestException("UserName Already Exists");
         }
@@ -55,13 +54,13 @@ public class OAuth2ServiceImpl implements OAuth2Service {
 
         String name = "";
         String email = "";
-        // String picture = "";
+        String picture = "";
         if (idTokenData.has("email"))
             email = idTokenData.get("email").toString();
         if (idTokenData.has("name"))
             name = idTokenData.get("name").toString();
-        // if (idTokenData.has("picture"))
-        // picture = idTokenData.get("picture").toString();
+        if (idTokenData.has("picture"))
+            picture = idTokenData.get("picture").toString();
 
         userRepository.findByEmail(email).ifPresent(user -> {
             throw new BadRequestException(user.getEmail() + " : Already Registered");
@@ -70,7 +69,8 @@ public class OAuth2ServiceImpl implements OAuth2Service {
         User user = new User(name, email,
                 form.getRole().byteValue() == User.Role.EMPLOYER.value ? User.Role.EMPLOYER.value
                         : User.Role.EMPLOYEE.value,
-                User.UserType.GOOGLE.value, form.getUserName());
+                User.UserType.GOOGLE.value, form.getUserName(),
+                picture);
 
         String id = String.format("%010d", userRepository.save(user).getUserId());
 
@@ -94,19 +94,9 @@ public class OAuth2ServiceImpl implements OAuth2Service {
             throw new BadRequestException("Invalid Request");
         }
 
-        // String name = "";
         String email = "";
-        // String picture = "";
         if (idTokenData.has("email"))
             email = idTokenData.get("email").toString();
-        // if (idTokenData.has("name"))
-        // name = idTokenData.get("name").toString();
-        // if (idTokenData.has("picture"))
-        // picture = idTokenData.get("picture").toString();
-
-        userRepository.findByEmailAndUserType(email, User.UserType.NATIVE.value).ifPresent(user -> {
-            throw new BadRequestException(user.getEmail() + " : Already Registered");
-        });
 
         User user = userRepository.findByEmailAndUserType(email, User.UserType.GOOGLE.value)
                 .orElseThrow(NotFoundException::new);
