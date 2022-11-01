@@ -41,7 +41,7 @@ export class CardsComponent implements OnInit {
       .append('page', this.page)
       .append(
         'limit',
-        this.limit ? this.limit : (window.innerHeight / 100).toFixed(0)
+        this.limit ? this.limit : (window.innerHeight / 90).toFixed(0)
       )
       .append('sortBy', this.sortBy)
       .append('view', '5')

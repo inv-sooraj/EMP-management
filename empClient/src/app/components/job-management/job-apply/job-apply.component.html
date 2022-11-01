@@ -92,7 +92,7 @@
 
                         </td>
                     </tr>
-                    <tr *ngIf="!pagerInfo.hasNext && jobDataList.length != 0">
+                    <tr *ngIf="pagerInfo && !pagerInfo.hasNext && jobDataList.length != 0">
                         <th class="text-center" id="NoRecordsFound" colspan="10">
                             End of Records
                         </th>
