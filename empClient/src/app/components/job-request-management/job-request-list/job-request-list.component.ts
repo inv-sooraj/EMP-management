@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -27,7 +27,7 @@ export class JobRequestListComponent implements OnInit {
 
   sortBy: string = 'jobRequestId';
 
-  limit: number = 0;
+  @Input() limit: number = 0;
 
   search: string = '';
 
@@ -38,6 +38,10 @@ export class JobRequestListComponent implements OnInit {
   status = this.jobRequestService.status;
 
   role: number;
+
+  @Input() jobId: number = 0;
+  @Input() scrollingDisabled: boolean = false;
+
 
   ngOnInit(): void {
     this.listJobRequests();
@@ -105,6 +109,7 @@ export class JobRequestListComponent implements OnInit {
       )
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)
+      .append('jobId', this.jobId)
       .append('search', this.search);
 
     this.jobRequestService.getJobRequests(queryParams).subscribe({

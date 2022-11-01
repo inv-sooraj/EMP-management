@@ -18,7 +18,7 @@
                 <div class="col-2">
                     Show
                     <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="resetList()">
-                        <option selected="selected" [ngValue]="0">All</option>
+                        <option selected="selected" [ngValue]="0" *ngIf="!scrollingDisabled">All</option>
                         <option [ngValue]="4">4</option>
                         <option [ngValue]="5">5</option>
                     </select>

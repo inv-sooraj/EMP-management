@@ -76,7 +76,8 @@ public class JobRequestServiceImpl implements JobRequestService {
     }
 
     @Override
-    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc) {
+    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc,
+            Integer jobId) {
 
         // if (!jobRequestRepository.findColumns().contains(sortBy)) {
         // sortBy = "job_request_id";
@@ -91,12 +92,24 @@ public class JobRequestServiceImpl implements JobRequestService {
 
         if (SecurityUtil.isEmployer() || SecurityUtil.isAdmin()) {
 
-            jobRequests = jobRequestRepository.findByJobUserUserIdAndStatusInAndRemarkContaining(
-                    SecurityUtil.getCurrentUserId(),
-                    status, search,
-                    PageRequest.of(page - 1, limit, Sort.by(
-                            desc.booleanValue() ? Direction.DESC : Direction.ASC,
-                            sortBy)));
+            if (jobId.intValue() != 0) {
+                jobRequests = jobRequestRepository.findByJobUserUserIdAndStatusInAndJobJobIdAndRemarkContaining(
+                        SecurityUtil.getCurrentUserId(),
+                        status, search,
+                        PageRequest.of(page - 1, limit, Sort.by(
+                                desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                                sortBy)),
+                        jobId);
+
+            } else {
+
+                jobRequests = jobRequestRepository.findByJobUserUserIdAndStatusInAndRemarkContaining(
+                        SecurityUtil.getCurrentUserId(),
+                        status, search,
+                        PageRequest.of(page - 1, limit, Sort.by(
+                                desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                                sortBy)));
+            }
 
         } else {
 

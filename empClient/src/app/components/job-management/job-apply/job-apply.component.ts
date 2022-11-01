@@ -83,7 +83,7 @@ export class JobApplyComponent implements OnInit {
   }
 
   setSearch() {
-    this.page=1
+    this.page = 1;
 
     this.jobDataList = [];
     console.log(this.search);
@@ -98,7 +98,6 @@ export class JobApplyComponent implements OnInit {
         this.limit ? this.limit : (window.innerHeight / 100).toFixed(0)
       )
       .append('sortBy', this.sortBy)
-      .append('view', '5')
       .append('desc', this.sortDesc)
       .append('apply', true)
       .append('search', this.search);
@@ -132,7 +131,7 @@ export class JobApplyComponent implements OnInit {
         this.toastService.success('Job applied!');
         this.getAppliedJobs();
       },
-      error:(err) =>{
+      error: (err) => {
         console.log(err);
         this.toastService.error(err.error.message);
       },
