@@ -487,6 +487,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.getUserType() == User.UserType.GOOGLE.value && user.getProfilePic().contains("googleusercontent")) {
             try {
+                System.err.println("pic : " + user.getProfilePic());
                 URL u = new URL(user.getProfilePic());
                 int contentLength = u.openConnection().getContentLength();
                 InputStream openStream = u.openStream();

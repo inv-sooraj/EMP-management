@@ -41,7 +41,7 @@ export class LoginGoogleComponent {
 
             let userName: string;
 
-            let role: number = 0;
+            let role: number = 2;
 
             const swalWithBootstrapButtons = Swal.mixin({
               customClass: {
@@ -63,6 +63,8 @@ export class LoginGoogleComponent {
                 input: 'text',
                 preConfirm(inputValue) {
                   userName = inputValue;
+                },preDeny(inputValue) {
+                  userName = inputValue;  
                 },
               })
               .then((result) => {
