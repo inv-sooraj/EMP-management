@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./admin-user-edit.component.css'],
 })
 export class AdminUserEditComponent implements OnInit {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,private toastService:ToastrService) {}
 
   @Input() userId: number = 0;
 
@@ -68,13 +69,13 @@ export class AdminUserEditComponent implements OnInit {
       error: (err: any) => {
         if (err.error.status == 400) {
           if (err.error.message == 'Username Already Exists') {
-            alert('UserName Already Exists');
+            this.toastService.warning('UserName Already Exists');
 
             this.userEditForm.controls['userName'].setErrors(
               Validators.required
             );
           } else if (err.error.message == 'Email Already Exists') {
-            alert('Email Already Exists');
+            this.toastService.warning('Email Already Exists');
             this.userEditForm.controls['email'].setErrors(Validators.required);
           }
         }
