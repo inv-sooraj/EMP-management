@@ -68,7 +68,7 @@ public interface UserService {
 
     void setProfilePic(MultipartFile profilePic) throws IOException;
 
-    HttpEntity<byte[]> getProfilePic(Integer userId);
+    String getProfilePic(Integer userId);
 
     Collection<StatusView> getRoleStat();
 

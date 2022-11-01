@@ -78,13 +78,14 @@ export class UserService {
   }
 
   getProfile(quearyParam: HttpParams): Observable<any> {
-    return this.http.get(this.apiUrl + '/users/profile',{params: quearyParam,
-      responseType: 'blob',
+    return this.http.get(this.apiUrl + '/users/profile', {
+      params: quearyParam,
+      responseType: 'text',
     });
   }
 
-  deleteProfilePic(userId:number): Observable<any> {
-    return this.http.put(this.apiUrl +'/users/profile/deleted/' + userId,'');
+  deleteProfilePic(userId: number): Observable<any> {
+    return this.http.put(this.apiUrl + '/users/profile/deleted/' + userId, '');
   }
 
   getRoleStat(): Observable<any> {
@@ -95,10 +96,10 @@ export class UserService {
     return this.http.put(this.apiUrl + '/users/delete', '');
   }
 
-  getUserCount(quearyParam:HttpParams): Observable<any> {
-    return this.http.get(this.apiUrl + '/users/chart',{ params: quearyParam });
+  getUserCount(quearyParam: HttpParams): Observable<any> {
+    return this.http.get(this.apiUrl + '/users/chart', { params: quearyParam });
   }
-  getUserPieDatas(){
+  getUserPieDatas() {
     return this.http.get(this.apiUrl + '/users/pie');
   }
 }
