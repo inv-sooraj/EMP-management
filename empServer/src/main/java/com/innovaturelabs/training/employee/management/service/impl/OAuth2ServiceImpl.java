@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.innovaturelabs.training.employee.management.entity.User;
 import com.innovaturelabs.training.employee.management.exception.BadRequestException;
 import com.innovaturelabs.training.employee.management.exception.NotFoundException;
+import com.innovaturelabs.training.employee.management.form.OAuth2RegisterForm;
 import com.innovaturelabs.training.employee.management.repository.UserRepository;
 import com.innovaturelabs.training.employee.management.security.config.SecurityConfig;
 import com.innovaturelabs.training.employee.management.security.util.GoogleAuthenticator;
@@ -37,11 +38,15 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     private GoogleAuthenticator googleAuthenticator;
 
     @Override
-    public LoginView addUser(String idToken, Byte role) {
+    public LoginView addUser(OAuth2RegisterForm form) {
+
+        if (userRepository.findByUserName(form.getUserName()).isPresent()) {
+            throw new BadRequestException("UserName Already Exists");
+        }
 
         JSONObject idTokenData;
         try {
-            idTokenData = googleAuthenticator.googleFilter(idToken);
+            idTokenData = googleAuthenticator.googleFilter(form.getIdToken());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BadRequestException("Invalid Request");
@@ -49,21 +54,23 @@ public class OAuth2ServiceImpl implements OAuth2Service {
 
         String name = "";
         String email = "";
-        // String picture = "";
+        String picture = "";
         if (idTokenData.has("email"))
             email = idTokenData.get("email").toString();
         if (idTokenData.has("name"))
             name = idTokenData.get("name").toString();
-        // if (idTokenData.has("picture"))
-        // picture = idTokenData.get("picture").toString();
+        if (idTokenData.has("picture"))
+            picture = idTokenData.get("picture").toString();
 
         userRepository.findByEmail(email).ifPresent(user -> {
             throw new BadRequestException(user.getEmail() + " : Already Registered");
         });
 
         User user = new User(name, email,
-                role.byteValue() == User.Role.EMPLOYER.value ? User.Role.EMPLOYER.value : User.Role.EMPLOYEE.value,
-                User.UserType.GOOGLE.value);
+                form.getRole().byteValue() == User.Role.EMPLOYER.value ? User.Role.EMPLOYER.value
+                        : User.Role.EMPLOYEE.value,
+                User.UserType.GOOGLE.value, form.getUserName(),
+                picture);
 
         String id = String.format("%010d", userRepository.save(user).getUserId());
 
@@ -87,19 +94,9 @@ public class OAuth2ServiceImpl implements OAuth2Service {
             throw new BadRequestException("Invalid Request");
         }
 
-        // String name = "";
         String email = "";
-        // String picture = "";
         if (idTokenData.has("email"))
             email = idTokenData.get("email").toString();
-        // if (idTokenData.has("name"))
-        // name = idTokenData.get("name").toString();
-        // if (idTokenData.has("picture"))
-        // picture = idTokenData.get("picture").toString();
-
-        userRepository.findByEmailAndUserType(email, User.UserType.NATIVE.value).ifPresent(user -> {
-            throw new BadRequestException(user.getEmail() + " : Already Registered");
-        });
 
         User user = userRepository.findByEmailAndUserType(email, User.UserType.GOOGLE.value)
                 .orElseThrow(NotFoundException::new);

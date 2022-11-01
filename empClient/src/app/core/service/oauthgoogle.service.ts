@@ -71,11 +71,8 @@ export class OAuthGoogleService {
     });
   }
 
-  register(body: any, role: number): Observable<any> {
-    return this.http.post(
-      environment.apiUrl + '/oauth2/register/' + role,
-      body
-    );
+  register(body: any): Observable<any> {
+    return this.http.post(environment.apiUrl + '/oauth2/register', body);
   }
 
   login(body: any): Observable<any> {
