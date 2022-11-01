@@ -14,11 +14,11 @@ public class UserView {
     private final String email;
     private final short status;
     private final short role;
+    private final short userType;
     @Json.DateTimeFormat
     private final Date createDate;
     @Json.DateTimeFormat
     private final Date updateDate;
-
 
     public UserView(User user) {
         this.userId = user.getUserId();
@@ -27,6 +27,8 @@ public class UserView {
         this.email = user.getEmail();
         this.status = user.getStatus();
         this.role = user.getRole();
+
+        userType = user.getUserType();
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();
 
@@ -64,9 +66,8 @@ public class UserView {
         return role;
     }
 
-
-  
-
-    
+    public short getUserType() {
+        return userType;
+    }   
 
 }

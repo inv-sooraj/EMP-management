@@ -87,6 +87,7 @@ export class JobRequestListComponent implements OnInit {
   }
 
   setSearch() {
+    this.page = 1;
     this.jobRequestDataList = [];
     console.log(this.search);
     this.listJobRequests();
@@ -153,7 +154,7 @@ export class JobRequestListComponent implements OnInit {
         if (err.error.status == 400) {
           if (err.error.message == 'Invalid Operation') {
             this.toastService.error('Job is Completed!');
-          } else alert(err.error.message);
+          } else this.toastService.error(err.error.message);
         }
       },
     });
