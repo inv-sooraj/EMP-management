@@ -29,16 +29,17 @@ public interface JobRepository extends Repository<Job, Integer> {
     Collection<Job> findAll();
 
     Collection<Job> findAllByUserUserId(Integer userId);
-    
+
     @Query(value = "select date(create_date) as date ,count(*) as count  from job_tbl group by date(create_date)", nativeQuery = true)
     Collection<ChartView> getJobPostDates();
 
-
-    // @Query(value = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`  WHERE `TABLE_NAME`='job_tbl'", nativeQuery = true)
+    // @Query(value = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`
+    // WHERE `TABLE_NAME`='job_tbl'", nativeQuery = true)
     // ArrayList<String> findColumns();
 
     @Query(value = "SELECT job FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE status IN ?1 AND (title LIKE %?2% OR description LIKE %?2% )")
-    Page<Job> findByStatusInAndTitleContainingOrDescriptionContaining(Collection<Byte> status, String search ,Pageable page);
+    Page<Job> findByStatusInAndTitleContainingOrDescriptionContaining(Collection<Byte> status, String search,
+            Pageable page);
 
     @Query(value = "SELECT job FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE openings > 0 AND status IN ?1 AND (title LIKE %?2% OR description LIKE %?2% )")
     Page<Job> findAllByStatusAndOpenings(byte[] status, String search, Pageable page);
@@ -46,17 +47,22 @@ public interface JobRepository extends Repository<Job, Integer> {
     @Query(value = "SELECT job FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE user_id=?1 AND status IN ?2 AND (title LIKE %?3% OR description LIKE %?3% )")
     Page<Job> findAllByUserIdStatus(Integer userId, byte[] status, String search, Pageable page);
 
-    // @Query(value = "SELECT status, COUNT(*) AS count FROM job_tbl GROUP BY status;", nativeQuery = true)
+    // @Query(value = "SELECT status, COUNT(*) AS count FROM job_tbl GROUP BY
+    // status;", nativeQuery = true)
     @Query(value = "SELECT job.status AS status, COUNT(*) AS count FROM com.innovaturelabs.training.employee.management.entity.Job job GROUP BY status")
     Collection<StatusView> countStatus();
 
-    // @Query(value = "SELECT status, COUNT(*) AS count FROM job_tbl WHERE user_id=?1 GROUP BY status;", nativeQuery = true)
+    // @Query(value = "SELECT status, COUNT(*) AS count FROM job_tbl WHERE
+    // user_id=?1 GROUP BY status;", nativeQuery = true)
     @Query(value = "SELECT job.status AS status, COUNT(*) AS count FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE job.user.userId=?1 GROUP BY job.status")
     Collection<StatusView> countStatusByUserId(Integer userId);
 
     @Query(value = "SELECT job FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE job.status IN ?1  AND job.createDate >= ?2 AND job.createDate < ?3")
-    Collection<Job> findQueryCsv(Collection<Byte> status,Date startDate,Date endDate); 
+    Collection<Job> findQueryCsv(Collection<Byte> status, Date startDate, Date endDate);
 
     @Query(value = "SELECT job FROM com.innovaturelabs.training.employee.management.entity.Job job WHERE job.user.userId = ?1 AND job.status IN ?2  AND job.createDate >= ?3 AND job.createDate < ?4")
-    Collection<Job> findQueryCsvEmployer(Integer userId,Collection<Byte> status,Date startDate,Date endDate);
+    Collection<Job> findQueryCsvEmployer(Integer userId, Collection<Byte> status, Date startDate, Date endDate);
+
+    @Query(value = "select * from(select * from job_tbl order by job_id desc limit 4)var1 order by job_id asc", nativeQuery = true)
+    Collection<Job> findLastJobs();
 }

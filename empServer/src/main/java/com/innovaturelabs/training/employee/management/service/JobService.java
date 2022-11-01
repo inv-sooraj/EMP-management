@@ -36,4 +36,6 @@ public interface JobService {
 
     Collection<StatusView> getStat();
 
+    Collection<JobView> getLastJobs();
+
 }

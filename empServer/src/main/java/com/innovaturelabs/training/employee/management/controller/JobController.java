@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.innovaturelabs.training.employee.management.form.JobForm;
 import com.innovaturelabs.training.employee.management.service.JobService;
 import com.innovaturelabs.training.employee.management.util.Pager;
@@ -69,7 +68,7 @@ public class JobController {
     @PutMapping("/status/selected/{status}")
     public Collection<JobView> changeSelectedStatus(@RequestBody Collection<Integer> jobIds,
             @PathVariable(name = "status") Byte status) {
-       return jobService.changeSelectedStatus(jobIds, status);
+        return jobService.changeSelectedStatus(jobIds, status);
     }
 
     @GetMapping("/download")
@@ -84,14 +83,20 @@ public class JobController {
     public Collection<StatusView> count() {
         return jobService.getStat();
     }
-    
+
     @GetMapping("/chart")
     public Map<String, Integer> chart(
             @RequestParam(name = "days") Integer days) {
         return jobService.getJobCount(days);
     }
+
     @GetMapping("/pie")
-    public Map<String, Integer> pie(){
+    public Map<String, Integer> pie() {
         return jobService.getJobStatuses();
+    }
+
+    @GetMapping("/lastJobs")
+    public Collection<JobView> getLastJobs() {
+        return jobService.getLastJobs();
     }
 }
