@@ -12,9 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -338,5 +336,10 @@ public class JobServiceImpl implements JobService {
         }
         return new TreeMap<>(datawithdate);
 
+    }
+
+    @Override
+    public Collection<JobView> getLastJobs() {
+        return jobRepository.findLastJobs().stream().map(JobView::new).collect(Collectors.toList());
     }
 }

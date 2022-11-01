@@ -96,12 +96,14 @@ const routes: Routes = [
   { path: 'landingpage', component: LandingPageComponent },
   { path: '404-page', component: PageErrorComponent },
 
-  { path: 'homejob', component: HomepagejobviewComponent },
-
-  { path: 'glogin', component: LoginGoogleComponent },
+  {
+    path: 'glogin',
+    component: LoginGoogleComponent,
+    canActivate: [LoginGuard],
+  },
   { path: 'cards', component: CardsComponent },
-  {path:'about',component:AboutComponent},
-  {path:'contacts',component:ContactComponent},
+  { path: 'about', component: AboutComponent },
+  { path: 'contacts', component: ContactComponent },
   {
     path: '**',
     redirectTo: '404-page',

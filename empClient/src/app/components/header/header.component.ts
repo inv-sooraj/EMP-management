@@ -51,6 +51,10 @@ export class HeaderComponent implements OnInit {
     return parseInt(localStorage.getItem('role') as string);
   }
 
+  getUserType(): number {
+    return parseInt(localStorage.getItem('userType') as string);
+  }
+
   getStat(): string {
     if (localStorage.getItem('accessToken')) return 'Logout';
     else return 'Login';

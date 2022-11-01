@@ -26,8 +26,8 @@ export class UserDetailComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.userDetail = response
-        if(response.hasProfilePic){
+        this.userDetail = response;
+        if (response.hasProfilePic) {
           this.getProfilePic(this.userId);
         }
       },
@@ -37,15 +37,14 @@ export class UserDetailComponent implements OnInit {
     });
   }
 
-  getProfilePic(id:number): void {
-    let queryParams = new HttpParams()
-    .append('userId',id)
+  getProfilePic(id: number): void {
+    let queryParams = new HttpParams().append('userId', id);
     this.userService.getProfile(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
 
         (document.getElementById('profilePicture') as HTMLImageElement).src =
-          URL.createObjectURL(new Blob([response], { type: response.type }));
+          response;
       },
       error(err) {
         console.log(err);

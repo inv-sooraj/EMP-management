@@ -12,9 +12,11 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private modalService: NgbModal
-  ) { }
+  ) {}
 
   userDetails: any = {};
+
+  userProfilePic: string = '../../../../assets/User-Profile.png';
 
   role = this.userService.roles;
 
@@ -53,8 +55,9 @@ export class UserProfileComponent implements OnInit {
 
         if (this.userDetails.hasProfilePic) {
           this.getProfilePic();
-        }else{
-          (document.getElementById('profilePicture') as HTMLImageElement).src = '../../../../assets/User-Profile.png'
+        } else {
+          (document.getElementById('profilePicture') as HTMLImageElement).src =
+            '../../../../assets/User-Profile.png';
         }
       },
       error(err) {
@@ -76,15 +79,13 @@ export class UserProfileComponent implements OnInit {
   }
 
   uploadProfilePic(): void {
-
-
     let formData = new FormData();
 
     formData.append('profilePic', this.file);
 
     this.userService.uploadProfile(formData).subscribe({
       next: (response: any) => {
-        console.log(response,"dd");
+        console.log(response, 'dd');
         this.getProfile();
       },
       error(err) {
@@ -94,20 +95,19 @@ export class UserProfileComponent implements OnInit {
   }
 
   getProfilePic(): void {
-
     if (!this.userDetails.hasProfilePic) {
-      (document.getElementById('profilePicture') as HTMLImageElement).src = '../../../../assets/User-Profile.png'
-      return
+      (document.getElementById('profilePicture') as HTMLImageElement).src =
+        '../../../../assets/User-Profile.png';
+      return;
     }
 
-    let queryParams = new HttpParams()
-      .append('userId', 0)
+    let queryParams = new HttpParams().append('userId', 0);
     this.userService.getProfile(queryParams).subscribe({
       next: (response: any) => {
         console.log(response);
 
         (document.getElementById('profilePicture') as HTMLImageElement).src =
-          URL.createObjectURL(new Blob([response], { type: response.type }));
+          response;
       },
       error(err) {
         console.log(err);
@@ -117,16 +117,16 @@ export class UserProfileComponent implements OnInit {
 
   // waiting code..................
   deletePicture(userId: number) {
-    console.log("hhh");
+    console.log('hhh');
 
     this.userService.deleteProfilePic(userId).subscribe({
       next: (reponse: any) => {
         console.log(reponse);
-        this.getProfile()
+        this.getProfile();
       },
       error: (error: any) => {
         console.log(error);
-      }
+      },
     });
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { JobService } from 'src/app/service/job.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -8,9 +9,11 @@ import Swal from 'sweetalert2';
   styleUrls: ['./homepagejobview.component.css'],
 })
 export class HomepagejobviewComponent implements OnInit {
-  constructor(private route: Router) {}
-
-  ngOnInit(): void {}
+  constructor(private route: Router, private jobService: JobService) {}
+  details: any;
+  ngOnInit(): void {
+    this.getLastFourJobs();
+  }
 
   alert() {
     if (localStorage.getItem('accessToken')) {
@@ -31,5 +34,17 @@ export class HomepagejobviewComponent implements OnInit {
         }
       });
     }
+  }
+
+  getLastFourJobs() {
+    this.jobService.getLastJobs().subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.details = response;
+      },
+      error: (error: any) => {
+        console.log(error);
+      },
+    });
   }
 }

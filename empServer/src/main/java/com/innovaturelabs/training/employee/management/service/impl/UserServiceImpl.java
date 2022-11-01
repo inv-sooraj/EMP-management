@@ -4,12 +4,11 @@ package com.innovaturelabs.training.employee.management.service.impl;
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,9 +28,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -476,8 +472,51 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // @Override
+    // public HttpEntity<byte[]> getProfilePic(Integer userId) {
+
+    // if (!SecurityUtil.isAdmin() || userId.equals(0)) {
+    // userId = SecurityUtil.getCurrentUserId();
+    // }
+
+    // User user =
+    // userRepository.findByUserId(userId).orElseThrow(NotFoundException::new);
+
+    // if (user.getUserType() == User.UserType.GOOGLE.value &&
+    // user.getProfilePic().contains("googleusercontent")) {
+    // try {
+    // System.err.println("pic : " + user.getProfilePic());
+    // URL u = new URL(user.getProfilePic());
+    // int contentLength = u.openConnection().getContentLength();
+    // InputStream openStream = u.openStream();
+    // byte[] binaryData = new byte[contentLength];
+    // openStream.read(binaryData);
+    // openStream.close();
+
+    // HttpHeaders headers = new HttpHeaders();
+    // headers.setContentType(MediaType.IMAGE_PNG);
+    // headers.setContentLength(binaryData.length);
+
+    // return new HttpEntity<>(binaryData, headers);
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
+
+    // String profilePic = user.getProfilePic();
+
+    // byte[] file = FileUtil.getProfilePic(profilePic);
+
+    // HttpHeaders headers = new HttpHeaders();
+    // headers.setContentType(MediaType.IMAGE_PNG);
+    // headers.setContentLength(file.length);
+
+    // return new HttpEntity<>(file, headers);
+
+    // }
+
     @Override
-    public HttpEntity<byte[]> getProfilePic(Integer userId) {
+    public String getProfilePic(Integer userId) {
 
         if (!SecurityUtil.isAdmin() || userId.equals(0)) {
             userId = SecurityUtil.getCurrentUserId();
@@ -486,35 +525,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserId(userId).orElseThrow(NotFoundException::new);
 
         if (user.getUserType() == User.UserType.GOOGLE.value && user.getProfilePic().contains("googleusercontent")) {
-            try {
-                System.err.println("pic : " + user.getProfilePic());
-                URL u = new URL(user.getProfilePic());
-                int contentLength = u.openConnection().getContentLength();
-                InputStream openStream = u.openStream();
-                byte[] binaryData = new byte[contentLength];
-                openStream.read(binaryData);
-                openStream.close();
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_PNG);
-                headers.setContentLength(binaryData.length);
-
-                return new HttpEntity<>(binaryData, headers);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            return user.getProfilePic();
         }
 
         String profilePic = user.getProfilePic();
 
         byte[] file = FileUtil.getProfilePic(profilePic);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_PNG);
-        headers.setContentLength(file.length);
-
-        return new HttpEntity<>(file, headers);
-
+        return "data:image/jpg" + ";base64," + Base64.getEncoder().encodeToString(file);
     }
 
     @Override
