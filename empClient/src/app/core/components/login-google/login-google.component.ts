@@ -124,6 +124,9 @@ export class LoginGoogleComponent {
             window.location.reload();
           });
         }
+
+        window.location.reload();
+
       },
     });
   }

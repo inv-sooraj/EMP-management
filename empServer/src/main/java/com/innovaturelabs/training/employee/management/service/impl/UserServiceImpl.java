@@ -4,7 +4,9 @@ package com.innovaturelabs.training.employee.management.service.impl;
 import static com.innovaturelabs.training.employee.management.security.AccessTokenUserDetailsService.PURPOSE_ACCESS_TOKEN;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -481,8 +483,28 @@ public class UserServiceImpl implements UserService {
             userId = SecurityUtil.getCurrentUserId();
         }
 
-        String profilePic = userRepository.findByUserIdAndStatus(userId, User.Status.ACTIVE.value)
-                .orElseThrow(NotFoundException::new).getProfilePic();
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundException::new);
+
+        if (user.getUserType() == User.UserType.GOOGLE.value && user.getProfilePic().contains("googleusercontent")) {
+            try {
+                URL u = new URL(user.getProfilePic());
+                int contentLength = u.openConnection().getContentLength();
+                InputStream openStream = u.openStream();
+                byte[] binaryData = new byte[contentLength];
+                openStream.read(binaryData);
+                openStream.close();
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_PNG);
+                headers.setContentLength(binaryData.length);
+
+                return new HttpEntity<>(binaryData, headers);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        String profilePic = user.getProfilePic();
 
         byte[] file = FileUtil.getProfilePic(profilePic);
 
@@ -610,7 +632,7 @@ public class UserServiceImpl implements UserService {
         return new BadRequestException("Username Already Exists");
     }
 
-    private static BadRequestException emailAlreadyExists       () {
+    private static BadRequestException emailAlreadyExists() {
         return new BadRequestException("Email Already Exists");
     }
 
