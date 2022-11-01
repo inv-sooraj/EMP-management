@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import {
   OAuthGoogleService,
@@ -15,7 +16,7 @@ import {
 export class LoginGoogleComponent {
   userInfo?: UserInfo;
 
-  constructor(private service: OAuthGoogleService, private router: Router) {
+  constructor(private service: OAuthGoogleService, private router: Router,private toastService:ToastrService) {
     this.googleSignIn();
   }
 
@@ -32,7 +33,7 @@ export class LoginGoogleComponent {
       this.service.verifyEmail(queryParam).subscribe({
         next: (response: any) => {
           if (response == 'NATIVE_USER') {
-            alert('Native User');
+            this.toastService.error('Native User');
             this.router.navigateByUrl('login');
           } else if (response == 'GOOGLE_USER') {
             this.loginWithIdToken(sessionStorage.getItem('id_token') as string);

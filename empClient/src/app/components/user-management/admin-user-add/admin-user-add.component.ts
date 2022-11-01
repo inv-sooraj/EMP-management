@@ -75,7 +75,7 @@ export class AdminUserAddComponent implements OnInit {
 
           }
         }
-        alert("Error")
+        this.toastService.error("Error")
       },
     });
   }

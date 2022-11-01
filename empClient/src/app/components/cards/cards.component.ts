@@ -14,7 +14,7 @@ export class CardsComponent implements OnInit {
     private jobService: JobService,
     private jobRequestService: JobRequestService,
     private toastService: ToastrService
-  ) {}
+  ) { }
   jobList: any;
 
   page: number = 1;
@@ -76,9 +76,9 @@ export class CardsComponent implements OnInit {
         this.toastService.success('Job applied!');
         this.getAppliedJobs();
       },
-      error(err) {
+      error: (err) => {
         console.log(err);
-        alert(err.error.message);
+        this.toastService.error(err.error.message);
       },
     });
   }
