@@ -23,7 +23,7 @@ export class InterceptorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     let accessToken = this.getAccessToken();
 
-    if (accessToken && !request.url.endsWith('login')) {
+    if (accessToken && !request.url.endsWith('login') && !request.url.endsWith('lastJobs')) {
       request = request.clone({
         setHeaders: {
           Authorization: 'Emp ' + accessToken,

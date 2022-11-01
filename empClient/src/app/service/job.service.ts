@@ -9,8 +9,6 @@ import { environment } from '../../environments/environment';
 export class JobService {
   private apiUrl: string = environment.apiUrl;
 
-  
-
   public qualifications = new Map<number, string>([
     [0, 'NIL'],
     [1, 'SSLC'],
@@ -73,10 +71,13 @@ export class JobService {
     return this.http.get(this.apiUrl + '/job/stat');
   }
 
-  getJobCount(quearyParam:HttpParams): Observable<any> {
-    return this.http.get(this.apiUrl + '/job/chart',{ params: quearyParam });
+  getJobCount(quearyParam: HttpParams): Observable<any> {
+    return this.http.get(this.apiUrl + '/job/chart', { params: quearyParam });
   }
-  getPieDatas(){
+  getPieDatas() {
     return this.http.get(this.apiUrl + '/job/pie');
+  }
+  getLastJobs(): Observable<any> {
+    return this.http.get(this.apiUrl + '/job/lastJobs');
   }
 }

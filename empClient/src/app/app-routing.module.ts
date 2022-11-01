@@ -102,7 +102,8 @@ const routes: Routes = [
     canActivate: [LoginGuard],
   },
   { path: 'cards', component: CardsComponent },
-
+  { path: 'about', component: AboutComponent },
+  { path: 'contacts', component: ContactComponent },
   {
     path: '**',
     redirectTo: '404-page',
