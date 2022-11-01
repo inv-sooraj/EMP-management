@@ -13,6 +13,8 @@ import { OAuthGoogleService } from '../../service/oauthgoogle.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
+  // flag: boolean = false;
+
   constructor(
     private router: Router,
     private service: AuthService,
@@ -50,6 +52,12 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('refreshToken', response.refreshToken.value);
         localStorage.setItem('name', response.name);
         localStorage.setItem('role', response.role);
+        // if (this.flag == true) {
+        //   // sessionStorage.setItem('accessToken', response.accessToken.value);
+        //   // sessionStorage.setItem('refreshToken', response.refreshToken.value);
+        //   sessionStorage.setItem('userName', this.loginForm.controls['username'].value);
+        //   sessionStorage.setItem('password', this.loginForm.get('password')?.value);
+        // }
         this.service.startTimer();
 
         if (response.role == 2) this.router.navigate(['userchart']);
@@ -200,5 +208,7 @@ export class LoginComponent implements OnInit {
   //     fjs?.parentNode?.insertBefore(js, fjs);
   //   })(document, 'script', 'google-jssdk');
   // }
-  
+  // rememberMe() {
+  //   this.flag = true;
+  // }
 }

@@ -13,8 +13,6 @@
                 <li class="nav-item" *ngIf="getRole()==2">
                     <a class="nav-link active" aria-current="page" routerLink="/user-list">Users</a>
                 </li>
-
-
                 <li class="nav-item " *ngIf="[1, 2].includes(getRole())">
 
                     <a class="nav-link active" aria-current="page" routerLink="/job-list">Job Manageent</a>
@@ -22,7 +20,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" routerLink="/job-request-list">Job Requests</a>
                 </li>
-                <li class="nav-item " *ngIf="getRole()!=2">
+                <li class="nav-item " *ngIf="getRole()==0">
                     <a class="nav-link active" aria-current="page" routerLink="/job-apply">Job Apply</a>
                 </li>
             </ul>

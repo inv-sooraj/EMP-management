@@ -6,6 +6,8 @@ import { JobListComponent } from './components/job-management/job-list/job-list.
 import { JobRequestListComponent } from './components/job-request-management/job-request-list/job-request-list.component';
 import { PageErrorComponent } from './components/page-error/page-error.component';
 import { TestComponentComponent } from './components/test-component/test-component.component';
+import { AboutComponent } from './components/user-management/about/about.component';
+import { ContactComponent } from './components/user-management/contact/contact.component';
 import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
 
 import { LandingPageComponent } from './components/user-management/landing-page/landing-page.component';
@@ -98,6 +100,8 @@ const routes: Routes = [
 
   { path: 'glogin', component: LoginGoogleComponent },
   { path: 'cards', component: CardsComponent },
+  {path:'about',component:AboutComponent},
+  {path:'contacts',component:ContactComponent},
   {
     path: '**',
     redirectTo: '404-page',
