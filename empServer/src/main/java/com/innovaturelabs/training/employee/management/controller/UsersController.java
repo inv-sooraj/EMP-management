@@ -130,7 +130,7 @@ public class UsersController {
     }
 
     @GetMapping("/profile")
-    public HttpEntity<byte[]> getProfilePic(@RequestParam(name = "userId", defaultValue = "0") Integer userId) {
+    public String getProfilePic(@RequestParam(name = "userId", defaultValue = "0") Integer userId) {
         return userService.getProfilePic(userId);
 
     }

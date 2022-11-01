@@ -1,44 +1,35 @@
-<!doctype html>
-<html lang="en">
+<div class="wrapper">
+    <div class="header">Apply For jobs</div>
 
-<head>
-    <meta charset="utf-8">
-    <title>Responsive Cards UI Design</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+    <div class="cards_wrap text-center" *ngIf="jobDataList">
+        <div class="card_item" *ngFor="let job of jobDataList">
+            <div class="card_inner">
+                <!-- <img src="../../../assets/User-Profile.png" alt=""> -->
 
-<body>
-
-    <div class="wrapper">
-        <div class="header">Apply For jobs</div>
-
-        <div class="cards_wrap text-center" *ngIf="jobList">
-            <div class="card_item" *ngFor="let job of jobList.result">
-                <div class="card_inner">
-                    <!-- <img src="../../../assets/User-Profile.png" alt=""> -->
-
-                    <div class="role_name">{{job.title}}</div>
-                    <div class="film"><strong>Openings:{{job.openings}}</strong></div>
-                    <div class="film"><strong>Qualification:{{qualifications.get(job.qualification)}}</strong>
-                    </div>
-                    <div class="film"><strong>{{job.description}}</strong></div>
-                    <br><br>
-                    <button *ngIf="!job.eligible" disabled class="btn btn-outline-dark w-50">Not Eligible</button>
-
-                    <button *ngIf="!appliedJobs.includes(job.jobId) && job.eligible" (click)="applyJob(job.jobId)"
-                        class="btn btn-outline-dark w-50" placement="top"
-                        ngbTooltip='Apply for job "{{job.title}}"'>Apply</button>
-
-                    <button *ngIf="appliedJobs.includes(job.jobId)" disabled
-                        class="btn btn-outline-dark w-50">Applied</button>
-                    &nbsp;
-
+                <div class="role_name">{{job.title}}</div>
+                <div class="film"><strong>Openings:{{job.openings}}</strong></div>
+                <div class="film"><strong>Qualification:{{qualifications.get(job.qualification)}}</strong>
                 </div>
+                <div class="film"><strong>{{job.description}}</strong></div>
+                <br><br>
+                <button *ngIf="!job.eligible" disabled class="btn btn-outline-dark w-50">Not Eligible</button>
+
+                <button *ngIf="!appliedJobs.includes(job.jobId) && job.eligible" (click)="applyJob(job.jobId)"
+                    class="btn btn-outline-dark w-50" placement="top"
+                    ngbTooltip='Apply for job "{{job.title}}"'>Apply</button>
+
+                <button *ngIf="appliedJobs.includes(job.jobId)" disabled
+                    class="btn btn-outline-dark w-50">Applied</button>
+                &nbsp;
+
             </div>
-
         </div>
+
     </div>
+</div>
 
-</body>
 
-</html>
+<div class="search-results" infinite-scroll [infiniteScrollDistance]="scrollDistance"
+    [infiniteScrollUpDistance]="scrollUpDistance" [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()">
+
+</div>
