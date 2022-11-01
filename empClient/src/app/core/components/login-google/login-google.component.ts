@@ -117,6 +117,8 @@ export class LoginGoogleComponent {
         localStorage.setItem('refreshToken', response.refreshToken.value);
         localStorage.setItem('name', response.name);
         localStorage.setItem('role', response.role);
+        localStorage.setItem('userType', response.userType);
+        
 
         if (response.role == 1) this.router.navigate(['job-list']);
         else this.router.navigate(['job-apply']);

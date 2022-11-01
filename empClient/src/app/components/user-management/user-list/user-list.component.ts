@@ -104,6 +104,7 @@ export class UserListComponent implements OnInit {
   }
 
   setSearch() {
+    this.page = 1;
     this.userDataList = [];
     console.log(this.search);
     this.listUsers();

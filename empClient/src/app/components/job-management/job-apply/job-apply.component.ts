@@ -83,6 +83,8 @@ export class JobApplyComponent implements OnInit {
   }
 
   setSearch() {
+    this.page=1
+
     this.jobDataList = [];
     console.log(this.search);
     this.listJobs();
