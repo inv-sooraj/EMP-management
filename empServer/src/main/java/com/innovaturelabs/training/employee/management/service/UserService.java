@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,16 +49,16 @@ public interface UserService {
 
     LoginView refresh(String refreshToken) throws BadRequestException;
 
-    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc,Byte role);
+    Pager<UserView> list(Integer page, Integer limit, String sortBy, String search, Byte status, Boolean desc,
+            Byte role);
 
     UserDetailView updateUserDetails(UserDetailForm form);
 
     UserView updateUser(UserEditForm form, Integer userId);
-    
-    Map<String, Integer> getUserCount(Integer days);
-    
-    Map<String, Integer> getUserRoles();
 
+    Map<String, Integer> getUserCount(Integer days);
+
+    Map<String, Integer> getUserRoles();
 
     UserView changePassword(ChangePasswordForm form);
 
