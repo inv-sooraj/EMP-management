@@ -90,9 +90,9 @@ export class CardsComponent implements OnInit {
         this.toastService.success('Job applied!');
         this.getAppliedJobs();
       },
-      error(err) {
+      error: (err) => {
         console.log(err);
-        alert(err.error.message);
+        this.toastService.error(err.error.message);
       },
     });
   }

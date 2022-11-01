@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/service/auth.service';
 import { JobService } from 'src/app/service/job.service';
 
@@ -17,7 +18,8 @@ export class JobListComponent implements OnInit {
   constructor(
     private jobService: JobService,
     private modalService: NgbModal,
-    private service: AuthService
+    private service: AuthService,
+    private toastService:ToastrService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
@@ -217,14 +219,15 @@ export class JobListComponent implements OnInit {
 
         this.modalService.dismissAll();
       },
-      error(err) {
+      error:(err)=> {
         console.log(err);
 
         if (err.status == 404) {
-          alert('No Record Found');
+    
+          this.toastService.error('No Record Found');
         } else if (err.status == 400) {
           err.error.text().then((text: any) => {
-            alert(JSON.parse(text).message);
+            this.toastService.error(JSON.parse(text).message);
           });
         }
       },

@@ -275,7 +275,7 @@ export class UserListComponent implements OnInit {
           this.toastService.warning('No Records Found!');
         } else if (err.status == 400) {
           err.error.text().then((text: any) => {
-            alert(JSON.parse(text).message);
+            this.toastService.error(JSON.parse(text).message);
           });
         }
       },
