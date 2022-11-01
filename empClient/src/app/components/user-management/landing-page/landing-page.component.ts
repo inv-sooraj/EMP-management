@@ -17,4 +17,11 @@ export class LandingPageComponent implements OnInit {
     // this.flag = true;
     this.viewportScroller.scrollToAnchor(elementId);
   }
+  onClickScrollAbout(elementId: string): void {
+    // this.flag = true;
+    this.viewportScroller.scrollToAnchor(elementId);
+  }
+  onClickScrollContact(elementId: string): void {
+    this.viewportScroller.scrollToAnchor(elementId);
+  }
 }

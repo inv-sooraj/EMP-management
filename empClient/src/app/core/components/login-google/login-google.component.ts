@@ -39,6 +39,8 @@ export class LoginGoogleComponent {
           } else if (response == 'NOT_PRESENT') {
             let idToken = sessionStorage.getItem('id_token') as string;
 
+            let userName: string;
+
             let role: number = 0;
 
             const swalWithBootstrapButtons = Swal.mixin({
@@ -50,7 +52,7 @@ export class LoginGoogleComponent {
             });
             swalWithBootstrapButtons
               .fire({
-                title: 'Sign Up as :',
+                title: 'Enter UserName and Select Role :',
                 icon: 'warning',
                 showDenyButton: true,
                 showCancelButton: false,
@@ -58,6 +60,10 @@ export class LoginGoogleComponent {
                 allowEscapeKey: false,
                 allowOutsideClick: false,
                 denyButtonText: `Employee`,
+                input: 'text',
+                preConfirm(inputValue) {
+                  userName = inputValue;
+                },
               })
               .then((result) => {
                 if (result.isConfirmed) {
@@ -65,7 +71,7 @@ export class LoginGoogleComponent {
                 } else if (result.isDenied) {
                   role = 2;
                 }
-                this.registerWithIdTokenAndRole(idToken, role);
+                this.registerWithIdTokenAndRole(idToken, role, userName);
               });
           }
         },
@@ -76,8 +82,16 @@ export class LoginGoogleComponent {
     });
   }
 
-  registerWithIdTokenAndRole(idToken: string, role: number) {
-    this.service.register(idToken, role).subscribe({
+  registerWithIdTokenAndRole(idToken: string, role: number, userName: string) {
+    let body = {
+      userName: userName,
+      role: role,
+      idToken: idToken,
+    };
+
+    console.log(body);
+
+    this.service.register(body).subscribe({
       next: (response: any) => {
         console.log(JSON.stringify(response, undefined, 4));
 
@@ -98,7 +112,18 @@ export class LoginGoogleComponent {
       },
       error(err) {
         console.log(err);
-        Swal.fire('Something went Wrong', '', 'error');
+
+        if (err.error.status == 400) {
+          if (err.error.message == 'UserName Already Exists') {
+            Swal.fire('UserName Already Exists', '', 'error').then((result) => {
+              window.location.reload();
+            });
+          }
+        } else {
+          Swal.fire(err.error.message, '', 'error').then((result) => {
+            window.location.reload();
+          });
+        }
       },
     });
   }
