@@ -1,0 +1,70 @@
+<div class="banner" >
+    <div class="wrapper fadeInDown zero-raduis" *ngIf="formVisible">
+        <div id="formContent">
+
+            <div class="fadeIn frst">
+                <h2 class="mt-5">Hi {{userInfo?.info?.name}} ,</h2>
+
+                <h6>&nbsp; Enter the following Details to Continue</h6>
+            </div>
+
+            <form [formGroup]="registrationForm" autocomplete="off">
+
+
+                <!-- <input type="submit" class="fadeIn fourth zero-raduis" value="login" /> -->
+
+
+                <div class="d-flex flex-row align-items-center mb-4">
+
+                    <div class="form-outline flex-fill mb-0">
+                        <input type="text" placement="right" ngbTooltip="User Name" formControlName="userName"
+                            class="form-control" placeholder="Username"
+                            [ngClass]="{'is-invalid':(registrationForm.controls['userName'].touched||registrationForm.controls['userName'].dirty) && registrationForm.controls['userName'].errors}">
+
+                        <div *ngIf="registrationForm.controls['userName'].touched">
+                            <div *ngIf="registrationForm.controls['userName']?.errors?.['required']" class="error">
+                                Username Required
+                            </div>
+
+                            <div class="text-danger"
+                                *ngIf="registrationForm.controls['userName'].errors?.['maxlength']">
+                                User Name Should be less than 50 characters.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <label class="mb-3">
+                    Register As
+                </label>
+
+                <div class=" text-center">
+                    <input class="form-check-input mx-3" type="radio" id="employer" value=1 formControlName="role">
+                    <label class="form-check-label" for="employer">
+                        Employer
+                    </label>
+
+                    <input class="form-check-input mx-3" type="radio" id="employee" value="2" formControlName="role">
+                    <label class="form-check-label" for="employee">
+                        Employee
+                    </label>
+                </div>
+
+                <hr>
+
+
+                <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4 mt-2">
+                    <button (click)="submit()" type="button" class="btn btn-primary btn-lg">
+                        Register
+                    </button>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+</div>

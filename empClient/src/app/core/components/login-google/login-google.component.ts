@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import {
@@ -17,6 +18,64 @@ export class LoginGoogleComponent {
 
   constructor(private service: OAuthGoogleService, private router: Router) {
     this.googleSignIn();
+  }
+
+  formVisible: boolean = false;
+
+  registrationForm: FormGroup = new FormGroup({
+    role: new FormControl('2', Validators.required),
+    userName: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(50),
+    ]),
+  });
+
+  submit() {
+    if (this.registrationForm.invalid) {
+      this.registrationForm.markAllAsTouched();
+      return;
+    }
+
+    let body = {
+      userName: this.registrationForm.controls['userName'].value,
+      role: this.registrationForm.controls['role'].value,
+      idToken: sessionStorage.getItem('id_token') as string,
+    };
+
+    console.log(body);
+
+    this.service.register(body).subscribe({
+      next: (response: any) => {
+        console.log(JSON.stringify(response, undefined, 4));
+
+        Swal.fire('Registration Completed', '', 'success');
+
+        localStorage.setItem('accessTokenExpiry', response.accessToken.expiry);
+        localStorage.setItem('accessToken', response.accessToken.value);
+        localStorage.setItem('refreshToken', response.refreshToken.value);
+        localStorage.setItem('name', response.name);
+        localStorage.setItem('role', response.role);
+
+        if (response.role == 1) this.router.navigate(['job-list']);
+        else this.router.navigate(['job-apply']);
+      },
+      error: (err: any) => {
+        console.log(err);
+
+        if (err.error.status == 400) {
+          if (err.error.message == 'UserName Already Exists') {
+            Swal.fire('UserName Already Exists', '', 'error').then(
+              (result) => {}
+            );
+            this.registrationForm.controls['userName'].setErrors(
+              Validators.required
+            );
+          }
+        } else {
+          Swal.fire(err.error.message, '', 'error').then((result) => {});
+        }
+      },
+    });
   }
 
   googleSignIn() {
@@ -37,94 +96,13 @@ export class LoginGoogleComponent {
           } else if (response == 'GOOGLE_USER') {
             this.loginWithIdToken(sessionStorage.getItem('id_token') as string);
           } else if (response == 'NOT_PRESENT') {
-            let idToken = sessionStorage.getItem('id_token') as string;
-
-            let userName: string;
-
-            let role: number = 0;
-
-            const swalWithBootstrapButtons = Swal.mixin({
-              customClass: {
-                confirmButton: 'btn btn-success mx-2',
-                denyButton: 'btn btn-primary',
-              },
-              buttonsStyling: false,
-            });
-            swalWithBootstrapButtons
-              .fire({
-                title: 'Enter UserName and Select Role :',
-                icon: 'warning',
-                showDenyButton: true,
-                showCancelButton: false,
-                confirmButtonText: `Employer`,
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                denyButtonText: `Employee`,
-                input: 'text',
-                preConfirm(inputValue) {
-                  userName = inputValue;
-                },
-              })
-              .then((result) => {
-                if (result.isConfirmed) {
-                  role = 1;
-                } else if (result.isDenied) {
-                  role = 2;
-                }
-                this.registerWithIdTokenAndRole(idToken, role, userName);
-              });
+            this.formVisible = true;
           }
         },
         error(err) {
           console.log(err);
         },
       });
-    });
-  }
-
-  registerWithIdTokenAndRole(idToken: string, role: number, userName: string) {
-    let body = {
-      userName: userName,
-      role: role,
-      idToken: idToken,
-    };
-
-    console.log(body);
-
-    this.service.register(body).subscribe({
-      next: (response: any) => {
-        console.log(JSON.stringify(response, undefined, 4));
-
-        if (role == 1) {
-          Swal.fire('Registered as Employer', '', 'success');
-        } else if (role == 2) {
-          Swal.fire('Registered as Employee', '', 'success');
-        }
-
-        localStorage.setItem('accessTokenExpiry', response.accessToken.expiry);
-        localStorage.setItem('accessToken', response.accessToken.value);
-        localStorage.setItem('refreshToken', response.refreshToken.value);
-        localStorage.setItem('name', response.name);
-        localStorage.setItem('role', response.role);
-
-        if (response.role == 1) this.router.navigate(['job-list']);
-        else this.router.navigate(['job-apply']);
-      },
-      error(err) {
-        console.log(err);
-
-        if (err.error.status == 400) {
-          if (err.error.message == 'UserName Already Exists') {
-            Swal.fire('UserName Already Exists', '', 'error').then((result) => {
-              window.location.reload();
-            });
-          }
-        } else {
-          Swal.fire(err.error.message, '', 'error').then((result) => {
-            window.location.reload();
-          });
-        }
-      },
     });
   }
 
