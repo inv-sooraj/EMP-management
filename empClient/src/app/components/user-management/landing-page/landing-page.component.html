@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>landing page</title>
 </head>
+
 <body>
     <div class="banner">
         <div class="navbar">
             <img src="" alt="" class="logo">
             <ul>
                 <li><a routerLink="/landingpage">Home</a></li>
-                <li><a (click)="onClickScrollAbout('home')">About</a></li>
+                <!-- <li><a (click)="onClickScrollAbout('home')">About</a></li> -->
                 <li><a (click)="onClickScrollContact('contact')">Contact</a></li>
                 <li><a routerLink="/register">Sign Up</a></li>
             </ul>
@@ -21,7 +23,6 @@
                 <button type="button" (click)="onClickScroll('home')"><span></span> VIEW JOBS</button>
                 <button type="button" routerLink="/login"><span></span> GET STARTED</button>
             </div>
-
         </div>
 
     </div>
@@ -40,11 +41,12 @@
     <p></p>
 </div>
 
-<div id="about">
+<!-- <div id="about">
     <app-about></app-about>
-</div>
+</div> -->
 
 <div id="contact">
     <app-contact></app-contact>
 </div>
+
 </html>
