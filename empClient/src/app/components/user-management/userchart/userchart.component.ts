@@ -13,7 +13,7 @@ export class UserchartComponent implements OnInit {
   constructor(
     private userService: UserService,
     private jobService: JobService
-  ) {}
+  ) { }
   myChart: any;
 
   userDay: Array<string> = new Array<string>();
@@ -32,8 +32,10 @@ export class UserchartComponent implements OnInit {
 
   ngOnInit(): void {
     this.userCounts();
-
+    
   }
+
+
 
   changeDays() {
     console.log(this.days);
@@ -41,9 +43,20 @@ export class UserchartComponent implements OnInit {
     if (chartStatus != undefined) {
       chartStatus.destroy();
     }
+    let jobPieStatus = Chart.getChart('myPieChart1'); // <canvas> id
+    if (jobPieStatus != undefined) {
+      jobPieStatus.destroy();
+    }
+    let userPieStatus = Chart.getChart('myPieChart2'); // <canvas> id
+    if (userPieStatus != undefined) {
+      userPieStatus.destroy();
+    }
     this.userCounts();
   }
 
+
+
+    // Line Chart Data 1
   userCounts() {
     while (this.userDay.length) {
       this.userDay.splice(0, 1);
@@ -51,7 +64,6 @@ export class UserchartComponent implements OnInit {
       this.jobCount.splice(0, 1);
       this.userCount.splice(0, 1);
     }
-
     let queryParams = new HttpParams().append('days', this.days);
     this.userService.getUserCount(queryParams).subscribe({
       next: (res: any) => {
@@ -72,13 +84,12 @@ export class UserchartComponent implements OnInit {
     });
   }
 
+  // Line Chart  Data 2
   jobCounts() {
     let queryParams = new HttpParams().append('days', this.days);
     this.jobService.getJobCount(queryParams).subscribe({
       next: (res: any) => {
         const map2 = new Map(Object.entries(res));
-        this.getPieData();
-
         for (let key of map2.keys()) {
           this.jobDay.push(key);
         }
@@ -87,24 +98,27 @@ export class UserchartComponent implements OnInit {
           this.jobCount.push(parseInt(key as string));
         }
         this.getChart();
-        
+
       },
       error: (err: any) => {
         console.log(err);
       },
     });
+    this.getPieData();
+    this.getUserPieData();
   }
 
+  // Line Chart
   getChart() {
     Chart.register(...registerables);
     const myChart = new Chart('myChart', {
       type: 'line',
       data: {
-        labels: this.getUserDates,
+        labels: this.userDay,
         datasets: [
           {
             label: 'Users Registered',
-            data: this.getUserCounts,
+            data: this.userCount,
             fill: true,
             // borderColor: '#c9ac7d',
             tension: 0.3,
@@ -129,7 +143,7 @@ export class UserchartComponent implements OnInit {
 
           {
             label: 'Job Posted',
-            data: this.getJobCounts,
+            data: this.jobCount,
             fill: true,
             // borderColor: '#c9ac7d',
             tension: 0.1,
@@ -163,35 +177,21 @@ export class UserchartComponent implements OnInit {
     });
   }
 
-  get getUserCounts() {
-    console.log('list', this.userCount);
+  
 
-    return this.userCount;
-  }
 
-  get getUserDates() {
-    console.log('list', this.userDay);
 
-    return this.userDay;
-  }
 
-  get getJobCounts() {
-    console.log('list', this.userCount);
 
-    return this.jobCount;
-  }
-
-  get getJobDates() {
-    console.log('list', this.jobDay);
-
-    return this.userDay;
-  }
-
+  // Job Status Pie Chart Data
   getPieData() {
+    while (this.pieLabels.length) {
+      this.pieLabels.splice(0, 1);
+      this.pieData.splice(0, 1);
+    }
     this.jobService.getPieDatas().subscribe({
       next: (res: any) => {
         console.log(res);
-        this.getUserPieData();
         const map3 = new Map(Object.entries(res));
 
         for (let key of map3.keys()) {
@@ -209,30 +209,7 @@ export class UserchartComponent implements OnInit {
     });
   }
 
-  getUserPieData() {
-    console.log('hhhh');
-
-    this.userService.getUserPieDatas().subscribe({
-      next: (res: any) => {
-        console.log(res);
-
-        const map4 = new Map(Object.entries(res));
-
-        for (let key of map4.keys()) {
-          this.userRoles.push(key);
-        }
-
-        for (let key of map4.values()) {
-          this.users.push(parseInt(key as string));
-        }
-        this.getUserPieChart();
-      },
-      error: (err: any) => {
-        console.log(err);
-      },
-    });
-  }
-
+  // Job Status Pie Chart 
   getJobPieChart() {
     Chart.register(...registerables);
     const myPieChart1 = new Chart('myPieChart1', {
@@ -264,6 +241,39 @@ export class UserchartComponent implements OnInit {
     });
   }
 
+
+
+
+
+  // User Status  Pie Chart Data
+  getUserPieData() {
+    while (this.userRoles.length) {
+      this.userRoles.splice(0, 1);
+      this.users.splice(0, 1);
+    }
+
+    this.userService.getUserPieDatas().subscribe({
+      next: (res: any) => {
+        console.log(res);
+
+        const map4 = new Map(Object.entries(res));
+
+        for (let key of map4.keys()) {
+          this.userRoles.push(key);
+        }
+
+        for (let key of map4.values()) {
+          this.users.push(parseInt(key as string));
+        }
+        this.getUserPieChart();
+      },
+      error: (err: any) => {
+        console.log(err);
+      },
+    });
+  }
+
+  // User Status  Pie Chart Data
   getUserPieChart() {
     Chart.register(...registerables);
     const myPieChart2 = new Chart('myPieChart2', {
@@ -294,6 +304,6 @@ export class UserchartComponent implements OnInit {
       },
     });
   }
-  
-  
+
+
 }

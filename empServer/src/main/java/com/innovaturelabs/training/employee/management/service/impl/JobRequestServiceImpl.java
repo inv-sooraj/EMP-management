@@ -5,7 +5,10 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +34,9 @@ import com.innovaturelabs.training.employee.management.service.JobRequestService
 import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
+import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.JobRequestView;
+import com.innovaturelabs.training.employee.management.view.RequestChartView;
 
 @Service
 public class JobRequestServiceImpl implements JobRequestService {
@@ -202,6 +207,21 @@ public class JobRequestServiceImpl implements JobRequestService {
         jobRequest.setUpdateDate(new Date());
 
         return new JobRequestView(jobRequestRepository.save(jobRequest));
+    }
+
+    @Override
+    public Map<String, Integer> getRequests() {
+        Collection<RequestChartView> chartViews = jobRequestRepository.getRequestsChartValues();
+        System.out.println(chartViews);
+        Map<String, Integer> statusMap = new TreeMap<>();
+        for (RequestChartView status : chartViews) {
+            System.out.println(status.getTitle()+status.getCount()+"loopppppp");
+                statusMap.put(status.getTitle(),status.getCount());
+            }
+        System.out.println(statusMap);
+        return statusMap;
+
+    
     }
 
 }
