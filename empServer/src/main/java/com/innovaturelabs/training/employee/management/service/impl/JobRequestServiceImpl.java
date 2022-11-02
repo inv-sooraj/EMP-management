@@ -34,7 +34,6 @@ import com.innovaturelabs.training.employee.management.service.JobRequestService
 import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
-import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.JobRequestView;
 import com.innovaturelabs.training.employee.management.view.RequestChartView;
 
@@ -224,7 +223,7 @@ public class JobRequestServiceImpl implements JobRequestService {
 
     @Override
     public Map<String, Integer> getRequests() {
-        Collection<RequestChartView> chartViews = jobRequestRepository.getRequestsChartValues();
+        Collection<RequestChartView> chartViews = jobRequestRepository.getRequestsChartValues(SecurityUtil.getCurrentUserId());
         System.out.println(chartViews);
         Map<String, Integer> statusMap = new TreeMap<>();
         for (RequestChartView status : chartViews) {

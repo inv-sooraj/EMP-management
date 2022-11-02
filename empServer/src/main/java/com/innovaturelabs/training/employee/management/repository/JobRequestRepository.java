@@ -56,6 +56,6 @@ public interface JobRequestRepository extends Repository<JobRequest, Integer> {
         Collection<Integer> getAppliedJobs(Integer userId);
 
     
-    @Query(value ="SELECT j.title , count(*) as count FROM job_tbl as j JOIN job_request_tbl as jr WHERE j.job_id=jr.job_id  group by j.title",nativeQuery = true)
-    Collection<RequestChartView> getRequestsChartValues();
+    @Query(value ="SELECT j.title , count(*) as count FROM job_tbl as j JOIN job_request_tbl as jr WHERE j.job_id=jr.job_id AND j.user_id=?1 group by j.title",nativeQuery = true)
+    Collection<RequestChartView> getRequestsChartValues(Integer userId);
 }
