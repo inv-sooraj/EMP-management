@@ -73,10 +73,10 @@ import { EmployerChartComponent } from './components/user-management/employer-ch
     HomepagejobviewComponent,
 
     LoginGoogleComponent,
-     CardsComponent,
-     ContactComponent,
-     AboutComponent,
-     EmployerChartComponent,
+    CardsComponent,
+    ContactComponent,
+    AboutComponent,
+    EmployerChartComponent,
   ],
 
   imports: [

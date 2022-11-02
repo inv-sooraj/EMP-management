@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -223,17 +222,14 @@ public class JobRequestServiceImpl implements JobRequestService {
 
     @Override
     public Map<String, Integer> getRequests() {
-        Collection<RequestChartView> chartViews = jobRequestRepository.getRequestsChartValues(SecurityUtil.getCurrentUserId());
-        System.out.println(chartViews);
+        Collection<RequestChartView> chartViews = jobRequestRepository
+                .getRequestsChartValues(SecurityUtil.getCurrentUserId());
         Map<String, Integer> statusMap = new TreeMap<>();
         for (RequestChartView status : chartViews) {
-            System.out.println(status.getTitle()+status.getCount()+"loopppppp");
-                statusMap.put(status.getTitle(),status.getCount());
-            }
-        System.out.println(statusMap);
+            statusMap.put(status.getTitle(), status.getCount());
+        }
         return statusMap;
 
-    
     }
 
 }

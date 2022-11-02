@@ -98,11 +98,6 @@ const routes: Routes = [
     component: UserchartComponent,
     canActivate: [AuthGuard],
   },
-  {
-    path: 'rqstchart',
-    component: EmployerChartComponent,
-    canActivate: [AuthGuard],
-  },
   { path: 'landingpage', component: LandingPageComponent },
   { path: '404-page', component: PageErrorComponent },
 
