@@ -34,7 +34,6 @@ import com.innovaturelabs.training.employee.management.service.JobRequestService
 import com.innovaturelabs.training.employee.management.util.CsvUtil;
 import com.innovaturelabs.training.employee.management.util.EmailUtil;
 import com.innovaturelabs.training.employee.management.util.Pager;
-import com.innovaturelabs.training.employee.management.view.ChartView;
 import com.innovaturelabs.training.employee.management.view.JobRequestView;
 import com.innovaturelabs.training.employee.management.view.RequestChartView;
 
@@ -81,7 +80,8 @@ public class JobRequestServiceImpl implements JobRequestService {
     }
 
     @Override
-    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc) {
+    public Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc,
+            Integer jobId) {
 
         // if (!jobRequestRepository.findColumns().contains(sortBy)) {
         // sortBy = "job_request_id";
@@ -96,12 +96,24 @@ public class JobRequestServiceImpl implements JobRequestService {
 
         if (SecurityUtil.isEmployer() || SecurityUtil.isAdmin()) {
 
-            jobRequests = jobRequestRepository.findByJobUserUserIdAndStatusInAndRemarkContaining(
-                    SecurityUtil.getCurrentUserId(),
-                    status, search,
-                    PageRequest.of(page - 1, limit, Sort.by(
-                            desc.booleanValue() ? Direction.DESC : Direction.ASC,
-                            sortBy)));
+            if (jobId.intValue() != 0) {
+                jobRequests = jobRequestRepository.findByJobUserUserIdAndStatusInAndJobJobIdAndRemarkContaining(
+                        SecurityUtil.getCurrentUserId(),
+                        status, search,
+                        PageRequest.of(page - 1, limit, Sort.by(
+                                desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                                sortBy)),
+                        jobId);
+
+            } else {
+
+                jobRequests = jobRequestRepository.findByJobUserUserIdAndStatusInAndRemarkContaining(
+                        SecurityUtil.getCurrentUserId(),
+                        status, search,
+                        PageRequest.of(page - 1, limit, Sort.by(
+                                desc.booleanValue() ? Direction.DESC : Direction.ASC,
+                                sortBy)));
+            }
 
         } else {
 
@@ -211,7 +223,7 @@ public class JobRequestServiceImpl implements JobRequestService {
 
     @Override
     public Map<String, Integer> getRequests() {
-        Collection<RequestChartView> chartViews = jobRequestRepository.getRequestsChartValues();
+        Collection<RequestChartView> chartViews = jobRequestRepository.getRequestsChartValues(SecurityUtil.getCurrentUserId());
         System.out.println(chartViews);
         Map<String, Integer> statusMap = new TreeMap<>();
         for (RequestChartView status : chartViews) {

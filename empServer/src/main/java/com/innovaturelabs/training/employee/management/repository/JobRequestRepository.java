@@ -14,43 +14,48 @@ import com.innovaturelabs.training.employee.management.view.RequestChartView;
 
 public interface JobRequestRepository extends Repository<JobRequest, Integer> {
 
-    JobRequest save(JobRequest jobRequest);
+        JobRequest save(JobRequest jobRequest);
 
-    Collection<JobRequest> findAll();
+        Collection<JobRequest> findAll();
 
-    Optional<JobRequest> findByUserUserIdAndJobJobId(Integer userId, Integer jobId);
+        Optional<JobRequest> findByUserUserIdAndJobJobId(Integer userId, Integer jobId);
 
-    Optional<JobRequest> findByJobRequestId(Integer jobRequestId);
+        Optional<JobRequest> findByJobRequestId(Integer jobRequestId);
 
-    // @Query(value = "SELECT * FROM job_request_tbl WHERE status IN ?1 AND remark
-    // LIKE %?2%", nativeQuery = true)
-    // Page<JobRequest> findAllByStatus(byte[] status, String search, Pageable
-    // page);
+        // @Query(value = "SELECT * FROM job_request_tbl WHERE status IN ?1 AND remark
+        // LIKE %?2%", nativeQuery = true)
+        // Page<JobRequest> findAllByStatus(byte[] status, String search, Pageable
+        // page);
 
-    // @Query(value = "SELECT * FROM job_request_tbl WHERE job_id IN (select job_id
-    // from job_tbl where user_id=?1) AND status IN ?2 AND remark LIKE %?3%",
-    // nativeQuery = true)
-    @Query(value = "SELECT jobRequest FROM com.innovaturelabs.training.employee.management.entity.JobRequest jobRequest WHERE jobRequest.job.user.userId = ?1 AND jobRequest.status IN ?2 AND (jobRequest.remark LIKE %?3% OR jobRequest.job.title LIKE %?3%)")
-    Page<JobRequest> findByJobUserUserIdAndStatusInAndRemarkContaining(Integer userId, byte[] status, String search,
-            Pageable page);
+        // @Query(value = "SELECT * FROM job_request_tbl WHERE job_id IN (select job_id
+        // from job_tbl where user_id=?1) AND status IN ?2 AND remark LIKE %?3%",
+        // nativeQuery = true)
+        @Query(value = "SELECT jobRequest FROM com.innovaturelabs.training.employee.management.entity.JobRequest jobRequest WHERE jobRequest.job.user.userId = ?1 AND jobRequest.status IN ?2 AND (jobRequest.remark LIKE %?3% OR jobRequest.job.title LIKE %?3%)")
+        Page<JobRequest> findByJobUserUserIdAndStatusInAndRemarkContaining(Integer userId, byte[] status, String search,
+                        Pageable page);
 
-    // @Query(value = "SELECT * FROM job_request_tbl WHERE user_id=?1 AND status IN
-    // ?2 AND remark LIKE %?3%", nativeQuery = true)
-    Page<JobRequest> findAllByUserUserIdAndStatusInAndRemarkContaining(Integer userId, byte[] status, String search,
-            Pageable page);
+        @Query(value = "SELECT jobRequest FROM com.innovaturelabs.training.employee.management.entity.JobRequest jobRequest WHERE jobRequest.job.user.userId = ?1 AND jobRequest.status IN ?2 AND (jobRequest.remark LIKE %?3% OR jobRequest.job.title LIKE %?3%) AND jobRequest.job.jobId=?4")
+        Page<JobRequest> findByJobUserUserIdAndStatusInAndJobJobIdAndRemarkContaining(Integer userId, byte[] status,
+                        String search,
+                        Pageable page,Integer jobId);
 
-    // @Query(value = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`
-    // WHERE `TABLE_NAME`='job_request_tbl'", nativeQuery = true)
-    // ArrayList<String> findColumns();
+        // @Query(value = "SELECT * FROM job_request_tbl WHERE user_id=?1 AND status IN
+        // ?2 AND remark LIKE %?3%", nativeQuery = true)
+        Page<JobRequest> findAllByUserUserIdAndStatusInAndRemarkContaining(Integer userId, byte[] status, String search,
+                        Pageable page);
 
-    Collection<JobRequest> findAllByUserUserId(Integer userId);
+        // @Query(value = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`
+        // WHERE `TABLE_NAME`='job_request_tbl'", nativeQuery = true)
+        // ArrayList<String> findColumns();
 
-    // @Query(value = "SELECT job_id FROM job_request_tbl WHERE user_id=?1",
-    // nativeQuery = true)
-    @Query(value = "SELECT jobRequest.job.jobId FROM com.innovaturelabs.training.employee.management.entity.JobRequest jobRequest  WHERE jobRequest.user.userId=?1")
-    Collection<Integer> getAppliedJobs(Integer userId);
+        Collection<JobRequest> findAllByUserUserId(Integer userId);
+
+        // @Query(value = "SELECT job_id FROM job_request_tbl WHERE user_id=?1",
+        // nativeQuery = true)
+        @Query(value = "SELECT jobRequest.job.jobId FROM com.innovaturelabs.training.employee.management.entity.JobRequest jobRequest  WHERE jobRequest.user.userId=?1")
+        Collection<Integer> getAppliedJobs(Integer userId);
 
     
-    @Query(value ="SELECT j.title , count(*) as count FROM job_tbl as j JOIN job_request_tbl as jr WHERE j.job_id=jr.job_id  group by j.title",nativeQuery = true)
-    Collection<RequestChartView> getRequestsChartValues();
+    @Query(value ="SELECT j.title , count(*) as count FROM job_tbl as j JOIN job_request_tbl as jr WHERE j.job_id=jr.job_id AND j.user_id=?1 group by j.title",nativeQuery = true)
+    Collection<RequestChartView> getRequestsChartValues(Integer userId);
 }

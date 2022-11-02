@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -27,7 +27,7 @@ export class JobRequestListComponent implements OnInit {
 
   sortBy: string = 'jobRequestId';
 
-  limit: number = 0;
+  @Input() limit: number = 0;
 
   search: string = '';
 
@@ -39,12 +39,37 @@ export class JobRequestListComponent implements OnInit {
 
   role: number;
 
+  @Input() jobId: number = 0;
+  @Input() scrollingDisabled: boolean = false;
+
+
   ngOnInit(): void {
     this.listJobRequests();
   }
 
   numSeq(n: number): Array<number> {
-    return Array(n);
+    let arr = new Array<number>();
+
+    if (this.pagerInfo.numPages <= 5) {
+      for (let index = 1; index <= this.pagerInfo.numPages; index++) {
+        arr.push(index);
+      }
+      return arr;
+    }
+
+    let start;
+    if (this.pagerInfo.currentPage > this.pagerInfo.numPages - 2) {
+      start = this.pagerInfo.numPages - 2;
+    } else {
+      start = this.pagerInfo.currentPage < 4 ? 3 : this.pagerInfo.currentPage;
+    }
+
+    for (let index = start - 2; index < start + 3; index++) {
+      arr.push(index);
+    }
+
+    // return Array(n);
+    return arr;
   }
 
   prevPage() {
@@ -105,6 +130,7 @@ export class JobRequestListComponent implements OnInit {
       )
       .append('sortBy', this.sortBy)
       .append('desc', this.sortDesc)
+      .append('jobId', this.jobId)
       .append('search', this.search);
 
     this.jobRequestService.getJobRequests(queryParams).subscribe({

@@ -40,7 +40,28 @@ export class JobApplyComponent implements OnInit {
   }
 
   numSeq(n: number): Array<number> {
-    return Array(n);
+    let arr = new Array<number>();
+
+    if (this.pagerInfo.numPages <= 5) {
+      for (let index = 1; index <= this.pagerInfo.numPages; index++) {
+        arr.push(index);
+      }
+      return arr;
+    }
+
+    let start;
+    if (this.pagerInfo.currentPage > this.pagerInfo.numPages - 2) {
+      start = this.pagerInfo.numPages - 2;
+    } else {
+      start = this.pagerInfo.currentPage < 4 ? 3 : this.pagerInfo.currentPage;
+    }
+
+    for (let index = start - 2; index < start + 3; index++) {
+      arr.push(index);
+    }
+
+    // return Array(n);
+    return arr;
   }
 
   prevPage() {
@@ -83,7 +104,7 @@ export class JobApplyComponent implements OnInit {
   }
 
   setSearch() {
-    this.page=1
+    this.page = 1;
 
     this.jobDataList = [];
     console.log(this.search);
@@ -98,7 +119,6 @@ export class JobApplyComponent implements OnInit {
         this.limit ? this.limit : (window.innerHeight / 100).toFixed(0)
       )
       .append('sortBy', this.sortBy)
-      .append('view', '5')
       .append('desc', this.sortDesc)
       .append('apply', true)
       .append('search', this.search);
@@ -132,7 +152,7 @@ export class JobApplyComponent implements OnInit {
         this.toastService.success('Job applied!');
         this.getAppliedJobs();
       },
-      error:(err) =>{
+      error: (err) => {
         console.log(err);
         this.toastService.error(err.error.message);
       },

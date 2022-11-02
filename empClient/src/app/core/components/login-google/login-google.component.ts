@@ -104,8 +104,9 @@ export class LoginGoogleComponent {
             this.formVisible = true;
           }
         },
-        error(err) {
+        error:(err:any)=> {
           console.log(err);
+          Swal.fire(err.error.message, '', 'error').then((result) => {this.router.navigateByUrl('login')});
         },
       });
     });
@@ -127,8 +128,10 @@ export class LoginGoogleComponent {
         if (response.role == 1) this.router.navigate(['job-list']);
         else this.router.navigate(['job-apply']);
       },
-      error(err) {
+      error:(err:any)=> {
         console.log(err);
+        Swal.fire(err.error.message, '', 'error').then((result) => {this.router.navigateByUrl('login')});
+
       },
     });
   }
