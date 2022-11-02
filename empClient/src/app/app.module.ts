@@ -44,6 +44,7 @@ import { CardsComponent } from './components/cards/cards.component';
 import { ContactComponent } from './components/user-management/contact/contact.component';
 import { AboutComponent } from './components/user-management/about/about.component';
 import { EmployerChartComponent } from './components/user-management/employer-chart/employer-chart.component';
+import { NgxUiLoaderHttpModule, NgxUiLoaderModule } from 'ngx-ui-loader';
 
 @NgModule({
   declarations: [
@@ -64,14 +65,10 @@ import { EmployerChartComponent } from './components/user-management/employer-ch
     TestComponentComponent,
     UserchartComponent,
     UserVerifyComponent,
-
     LandingPageComponent,
     PageErrorComponent,
-
     UserDetailComponent,
-
     HomepagejobviewComponent,
-
     LoginGoogleComponent,
      CardsComponent,
      ContactComponent,
@@ -87,7 +84,6 @@ import { EmployerChartComponent } from './components/user-management/employer-ch
     ReactiveFormsModule,
     HttpClientModule,
     NgIdleModule.forRoot(),
-
     ToastrModule.forRoot({
       closeButton: true,
       positionClass: 'toast-top-center',
@@ -98,8 +94,11 @@ import { EmployerChartComponent } from './components/user-management/employer-ch
     }),
     BrowserAnimationsModule,
     InfiniteScrollModule,
-
     OAuthModule.forRoot(),
+    NgxUiLoaderModule,
+    NgxUiLoaderHttpModule.forRoot({
+      showForeground:true,
+    })
   ],
   providers: [
     {
