@@ -472,49 +472,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    // @Override
-    // public HttpEntity<byte[]> getProfilePic(Integer userId) {
-
-    // if (!SecurityUtil.isAdmin() || userId.equals(0)) {
-    // userId = SecurityUtil.getCurrentUserId();
-    // }
-
-    // User user =
-    // userRepository.findByUserId(userId).orElseThrow(NotFoundException::new);
-
-    // if (user.getUserType() == User.UserType.GOOGLE.value &&
-    // user.getProfilePic().contains("googleusercontent")) {
-    // try {
-    // System.err.println("pic : " + user.getProfilePic());
-    // URL u = new URL(user.getProfilePic());
-    // int contentLength = u.openConnection().getContentLength();
-    // InputStream openStream = u.openStream();
-    // byte[] binaryData = new byte[contentLength];
-    // openStream.read(binaryData);
-    // openStream.close();
-
-    // HttpHeaders headers = new HttpHeaders();
-    // headers.setContentType(MediaType.IMAGE_PNG);
-    // headers.setContentLength(binaryData.length);
-
-    // return new HttpEntity<>(binaryData, headers);
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // }
-
-    // String profilePic = user.getProfilePic();
-
-    // byte[] file = FileUtil.getProfilePic(profilePic);
-
-    // HttpHeaders headers = new HttpHeaders();
-    // headers.setContentType(MediaType.IMAGE_PNG);
-    // headers.setContentLength(file.length);
-
-    // return new HttpEntity<>(file, headers);
-
-    // }
-
     @Override
     public String getProfilePic(Integer userId) {
 
@@ -622,13 +579,6 @@ public class UserServiceImpl implements UserService {
         } catch (TokenExpiredException e) {
             throw new BadRequestException("Token expired", e);
         }
-
-        // Integer userId;
-        // try {
-        // userId = Integer.parseInt(status.data.substring(0, 10));
-        // } catch (NumberFormatException e) {
-        // throw invalidToken(e);
-        // }
 
         String email = status.data;
 
