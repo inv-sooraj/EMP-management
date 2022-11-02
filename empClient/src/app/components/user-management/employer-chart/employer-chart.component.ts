@@ -92,7 +92,7 @@ export class EmployerChartComponent implements OnInit {
         plugins: {
           title: {
             display: true,
-            text: 'User Types',
+            text: 'Job Requests',
             padding: {
               top: 10,
               bottom: 30,
