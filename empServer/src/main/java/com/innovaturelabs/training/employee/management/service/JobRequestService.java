@@ -2,6 +2,7 @@
 package com.innovaturelabs.training.employee.management.service;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,8 +17,11 @@ public interface JobRequestService {
     JobRequestView update(Integer jobRequestId, JobRequestForm status);
 
     Collection<Integer> appliedJobs();
+    
+    Map<String, Integer> getRequests();
 
-    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc);
+
+    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc,Integer jobId);
 
     void jobRequestCsv(HttpServletResponse httpServletResponse);
 

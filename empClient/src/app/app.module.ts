@@ -43,6 +43,7 @@ import { LoginGoogleComponent } from './core/components/login-google/login-googl
 import { CardsComponent } from './components/cards/cards.component';
 import { ContactComponent } from './components/user-management/contact/contact.component';
 import { AboutComponent } from './components/user-management/about/about.component';
+import { EmployerChartComponent } from './components/user-management/employer-chart/employer-chart.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { AboutComponent } from './components/user-management/about/about.compone
      CardsComponent,
      ContactComponent,
      AboutComponent,
+     EmployerChartComponent,
   ],
 
   imports: [

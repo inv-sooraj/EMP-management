@@ -44,7 +44,6 @@ export class CardsComponent implements OnInit {
         this.limit ? this.limit : (window.innerHeight / 90).toFixed(0)
       )
       .append('sortBy', this.sortBy)
-      .append('view', '5')
       .append('desc', this.sortDesc)
       .append('apply', true)
       .append('search', this.search);

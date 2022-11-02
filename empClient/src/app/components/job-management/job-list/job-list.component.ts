@@ -19,7 +19,7 @@ export class JobListComponent implements OnInit {
     private jobService: JobService,
     private modalService: NgbModal,
     private service: AuthService,
-    private toastService:ToastrService
+    private toastService: ToastrService
   ) {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
@@ -99,7 +99,7 @@ export class JobListComponent implements OnInit {
   }
 
   setSearch() {
-    this.page=1
+    this.page = 1;
     this.jobDataList = [];
     console.log(this.search);
     this.listJobs();
@@ -220,11 +220,10 @@ export class JobListComponent implements OnInit {
 
         this.modalService.dismissAll();
       },
-      error:(err)=> {
+      error: (err) => {
         console.log(err);
 
         if (err.status == 404) {
-    
           this.toastService.error('No Record Found');
         } else if (err.status == 400) {
           err.error.text().then((text: any) => {
@@ -240,6 +239,11 @@ export class JobListComponent implements OnInit {
   open(content: any, jobId?: number) {
     this.jobId = jobId ? jobId : 0;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
+  openXl(content: any, jobId?: number) {
+    this.jobId = jobId ? jobId : 0;
+    // this.modalService.open(content, { size: 'xl' });
+    this.modalService.open(content, { scrollable: true, size: 'xl' });
   }
 
   changeJobStatus(jobId: number, status: number): void {
@@ -328,7 +332,7 @@ export class JobListComponent implements OnInit {
     console.log(index);
 
     if (index < 0) {
-      this.resetList()
+      this.resetList();
       return;
     }
 
