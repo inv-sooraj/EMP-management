@@ -1,7 +1,8 @@
 <div *ngIf="role==1">
-<app-employer-chart></app-employer-chart>
+    <app-employer-chart></app-employer-chart>
 
-</div><div class="container mt-4">
+</div>
+<div class="container mt-4">
     <div class="col">
         <div class="row">
             <div class="col-xl-3 col-lg-6" *ngFor=" let sta of statusCount|keyvalue">
@@ -186,7 +187,8 @@
                             </span>
                         </td>
                         <td>{{ job.jobId }}</td>
-                        <td (click)="openXl(jobRequestsModal,job.jobId)">{{ job.title }}<em class="bi bi-eye-fill mx-2"></em> </td>
+                        <td (click)="openXl(jobRequestsModal,job.jobId)">{{ job.title }}<em
+                                class="bi bi-eye-fill ms-2"></em> {{jobRequestCounts[job.title]?jobRequestCounts[job.title]:0}} </td>
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
                         <td>{{ qualifications.get(job.qualification) }}</td>
                         <td>{{ job.openings }}</td>
@@ -290,7 +292,7 @@
 
                 <li class="page-item" [class.disabled]="!pagerInfo.hasNext">
                     <button class="page-link" (click)="gotoPage(pagerInfo.numPages)">
-                       Last
+                        Last
                     </button>
                 </li>
             </ul>
@@ -387,7 +389,7 @@
     </div>
     <div class="modal-body">
         <app-job-request-list [jobId]="jobId" [scrollingDisabled]="true" [limit]="5"></app-job-request-list>
-        
+
     </div>
     <div class="modal-footer">
         <!-- <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
