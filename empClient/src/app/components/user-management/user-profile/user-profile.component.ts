@@ -94,6 +94,8 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+
+
   getProfilePic(): void {
     if (!this.userDetails.hasProfilePic) {
       (document.getElementById('profilePicture') as HTMLImageElement).src =
@@ -106,8 +108,10 @@ export class UserProfileComponent implements OnInit {
       next: (response: any) => {
         console.log(response);
 
-        (document.getElementById('profilePicture') as HTMLImageElement).src =
-          response;
+      this.userProfilePic=response
+
+      //   (document.getElementById('profilePicture') as HTMLImageElement).src =
+      //     response;
       },
       error(err) {
         console.log(err);
