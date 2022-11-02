@@ -79,6 +79,10 @@ export class LoginGoogleComponent {
     });
   }
 
+
+
+  
+
   googleSignIn() {
     this.service.signIn();
     this.service.userProfileSubject.subscribe((info) => {
