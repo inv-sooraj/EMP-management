@@ -52,13 +52,15 @@ public class OAuth2ServiceImpl implements OAuth2Service {
             throw new BadRequestException("Invalid Request");
         }
 
-        String name = "";
         String email = "";
-        String picture = "";
         if (idTokenData.has("email"))
             email = idTokenData.get("email").toString();
+
+        String name = "";
         if (idTokenData.has("name"))
             name = idTokenData.get("name").toString();
+
+        String picture = "";
         if (idTokenData.has("picture"))
             picture = idTokenData.get("picture").toString();
 
@@ -98,8 +100,21 @@ public class OAuth2ServiceImpl implements OAuth2Service {
         if (idTokenData.has("email"))
             email = idTokenData.get("email").toString();
 
+        String picture = "";
+        if (idTokenData.has("picture"))
+            picture = idTokenData.get("picture").toString();
+
         User user = userRepository.findByEmailAndUserType(email, User.UserType.GOOGLE.value)
                 .orElseThrow(NotFoundException::new);
+
+        if (!user.getProfilePic().equals(picture) && user.getProfilePic().contains("googleusercontent")) {
+            user.setProfilePic(picture);
+            userRepository.save(user);
+        }
+
+        if (user.getStatus() != User.Status.ACTIVE.value) {
+            throw new BadRequestException("Inactive User");
+        }
 
         String id = String.format("%010d", userRepository.save(user).getUserId());
 

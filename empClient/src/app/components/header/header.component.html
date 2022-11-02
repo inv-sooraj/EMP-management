@@ -33,7 +33,7 @@
             <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="background:darkslategrey;">
                 <button class="btn btn-dark text-white" ngbDropdownItem routerLink="/user-profile">Profile</button>
                 <button class="btn btn-dark text-white" ngbDropdownItem (click)="open(changePasswordModal)"
-                    *ngIf="getUserType()!=2">Change
+                    *ngIf="getUserType()!=1">Change
                     Password</button>
                 <button class="btn btn-dark text-white" ngbDropdownItem (click)="deleteUserAccount()">Deactivate
                     Account</button>

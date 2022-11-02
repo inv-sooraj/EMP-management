@@ -23,7 +23,11 @@ export class InterceptorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     let accessToken = this.getAccessToken();
 
-    if (accessToken && !request.url.endsWith('login') && !request.url.endsWith('lastJobs')) {
+    if (
+      accessToken &&
+      !request.url.endsWith('login') &&
+      !request.url.endsWith('lastJobs')
+    ) {
       request = request.clone({
         setHeaders: {
           Authorization: 'Emp ' + accessToken,
@@ -47,6 +51,10 @@ export class InterceptorInterceptor implements HttpInterceptor {
 
   private refreshAccess(request: HttpRequest<any>, next: HttpHandler) {
     return this.service.newToken().pipe(
+      catchError((error) => {
+        this.service.logout();
+        throw error;
+      }),
       switchMap((res: any) => {
         console.log(res);
         localStorage.setItem('accessToken', res.accessToken.value);
