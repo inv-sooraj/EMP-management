@@ -183,7 +183,7 @@
                             </span>
                         </td>
                         <td>{{ job.jobId }}</td>
-                        <td>{{ job.title }}</td>
+                        <td (click)="openXl(jobRequestsModal,job.jobId)">{{ job.title }}<em class="bi bi-eye-fill mx-2"></em> </td>
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
                         <td>{{ qualifications.get(job.qualification) }}</td>
                         <td>{{ job.openings }}</td>
@@ -345,6 +345,24 @@
         <button class="btn btn-outline-primary" (click)="downloadCsv()"> Download
         </button>
 
+    </div>
+</ng-template>
+
+
+
+
+<ng-template #jobRequestsModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"> Job Requests </h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <app-job-request-list [jobId]="jobId" [scrollingDisabled]="true" [limit]="5"></app-job-request-list>
+        
+    </div>
+    <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
+                *ngIf="jobId">Edit</label><label *ngIf="!jobId">Add</label></button> -->
     </div>
 </ng-template>
 

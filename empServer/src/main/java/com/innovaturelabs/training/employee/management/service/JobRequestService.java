@@ -17,7 +17,7 @@ public interface JobRequestService {
 
     Collection<Integer> appliedJobs();
 
-    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc);
+    Pager<JobRequestView> list(Integer page, Integer limit, String sortBy, String search, Boolean desc,Integer jobId);
 
     void jobRequestCsv(HttpServletResponse httpServletResponse);
 
