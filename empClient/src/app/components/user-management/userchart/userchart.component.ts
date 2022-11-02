@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
 import { JobService } from 'src/app/service/job.service';
 import { UserService } from 'src/app/service/user.service';
@@ -12,8 +13,9 @@ import Swal from 'sweetalert2';
 export class UserchartComponent implements OnInit {
   constructor(
     private userService: UserService,
-    private jobService: JobService
-  ) { }
+    private jobService: JobService,
+    private router: Router
+  ) {}
   myChart: any;
 
   userDay: Array<string> = new Array<string>();
@@ -31,11 +33,11 @@ export class UserchartComponent implements OnInit {
   days: number = 7;
 
   ngOnInit(): void {
+    if (parseInt(localStorage.getItem('role') as string) != 2) {
+      this.router.navigateByUrl('login');
+    }
     this.userCounts();
-    
   }
-
-
 
   changeDays() {
     console.log(this.days);
@@ -54,9 +56,7 @@ export class UserchartComponent implements OnInit {
     this.userCounts();
   }
 
-
-
-    // Line Chart Data 1
+  // Line Chart Data 1
   userCounts() {
     while (this.userDay.length) {
       this.userDay.splice(0, 1);
@@ -98,7 +98,6 @@ export class UserchartComponent implements OnInit {
           this.jobCount.push(parseInt(key as string));
         }
         this.getChart();
-
       },
       error: (err: any) => {
         console.log(err);
@@ -177,12 +176,6 @@ export class UserchartComponent implements OnInit {
     });
   }
 
-  
-
-
-
-
-
   // Job Status Pie Chart Data
   getPieData() {
     while (this.pieLabels.length) {
@@ -209,7 +202,7 @@ export class UserchartComponent implements OnInit {
     });
   }
 
-  // Job Status Pie Chart 
+  // Job Status Pie Chart
   getJobPieChart() {
     Chart.register(...registerables);
     const myPieChart1 = new Chart('myPieChart1', {
@@ -240,10 +233,6 @@ export class UserchartComponent implements OnInit {
       },
     });
   }
-
-
-
-
 
   // User Status  Pie Chart Data
   getUserPieData() {
@@ -304,6 +293,4 @@ export class UserchartComponent implements OnInit {
       },
     });
   }
-
-
 }
