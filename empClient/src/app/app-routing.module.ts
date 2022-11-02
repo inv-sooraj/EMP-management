@@ -8,6 +8,7 @@ import { PageErrorComponent } from './components/page-error/page-error.component
 import { TestComponentComponent } from './components/test-component/test-component.component';
 import { AboutComponent } from './components/user-management/about/about.component';
 import { ContactComponent } from './components/user-management/contact/contact.component';
+import { EmployerChartComponent } from './components/user-management/employer-chart/employer-chart.component';
 import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
 
 import { LandingPageComponent } from './components/user-management/landing-page/landing-page.component';
@@ -92,7 +93,16 @@ const routes: Routes = [
     component: UserVerifyComponent,
     canActivate: [LoginGuard],
   },
-  { path: 'userchart', component: UserchartComponent },
+  {
+    path: 'userchart',
+    component: UserchartComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'rqstchart',
+    component: EmployerChartComponent,
+    canActivate: [AuthGuard],
+  },
   { path: 'landingpage', component: LandingPageComponent },
   { path: '404-page', component: PageErrorComponent },
 

@@ -2,6 +2,7 @@
 package com.innovaturelabs.training.employee.management.controller;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -57,6 +58,11 @@ public class JobRequestController {
     @GetMapping("/applied")
     public Collection<Integer> appliedJobs() {
         return jobRequestService.appliedJobs();
+    }
+    
+    @GetMapping("/chart")
+    Map<String, Integer> chart() {
+        return jobRequestService.getRequests();
     }
 
     @GetMapping("/download")

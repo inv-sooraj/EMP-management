@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import com.innovaturelabs.training.employee.management.entity.JobRequest;
+import com.innovaturelabs.training.employee.management.view.RequestChartView;
 
 public interface JobRequestRepository extends Repository<JobRequest, Integer> {
 
@@ -54,4 +55,7 @@ public interface JobRequestRepository extends Repository<JobRequest, Integer> {
         @Query(value = "SELECT jobRequest.job.jobId FROM com.innovaturelabs.training.employee.management.entity.JobRequest jobRequest  WHERE jobRequest.user.userId=?1")
         Collection<Integer> getAppliedJobs(Integer userId);
 
+    
+    @Query(value ="SELECT j.title , count(*) as count FROM job_tbl as j JOIN job_request_tbl as jr WHERE j.job_id=jr.job_id AND j.user_id=?1 group by j.title",nativeQuery = true)
+    Collection<RequestChartView> getRequestsChartValues(Integer userId);
 }
