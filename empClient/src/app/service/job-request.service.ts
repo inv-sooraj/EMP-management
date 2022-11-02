@@ -41,4 +41,8 @@ export class JobRequestService {
       requestBody
     );
   }
+
+  getRequestStatus(): Observable<any> {
+    return this.http.get(this.apiUrl + '/job-request/chart');
+  }
 }
