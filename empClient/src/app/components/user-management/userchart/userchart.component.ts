@@ -58,12 +58,11 @@ export class UserchartComponent implements OnInit {
 
   // Line Chart Data 1
   userCounts() {
-    while (this.userDay.length) {
-      this.userDay.splice(0, 1);
-      this.jobDay.splice(0, 1);
-      this.jobCount.splice(0, 1);
-      this.userCount.splice(0, 1);
-    }
+    this.userDay = [];
+    this.jobDay = [];
+    this.jobCount = [];
+    this.userCount = [];
+
     let queryParams = new HttpParams().append('days', this.days);
     this.userService.getUserCount(queryParams).subscribe({
       next: (res: any) => {
@@ -178,10 +177,9 @@ export class UserchartComponent implements OnInit {
 
   // Job Status Pie Chart Data
   getPieData() {
-    while (this.pieLabels.length) {
-      this.pieLabels.splice(0, 1);
-      this.pieData.splice(0, 1);
-    }
+    this.pieLabels = [];
+    this.pieData = [];
+
     this.jobService.getPieDatas().subscribe({
       next: (res: any) => {
         console.log(res);
@@ -240,6 +238,9 @@ export class UserchartComponent implements OnInit {
       this.userRoles.splice(0, 1);
       this.users.splice(0, 1);
     }
+
+    this.userRoles = [];
+    this.users = [];
 
     this.userService.getUserPieDatas().subscribe({
       next: (res: any) => {
