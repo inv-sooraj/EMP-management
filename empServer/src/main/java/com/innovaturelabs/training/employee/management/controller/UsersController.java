@@ -85,8 +85,7 @@ public class UsersController {
     }
 
     @PutMapping("/details")
-    public UserDetailView updateUserDetails(
-            @RequestBody UserDetailForm form) {
+    public UserDetailView updateUserDetails(@Valid @RequestBody UserDetailForm form) {
         return userService.updateUserDetails(form);
     }
 
@@ -149,15 +148,15 @@ public class UsersController {
             @RequestParam(name = "days") Integer days) {
         return userService.getUserCount(days);
     }
+
     @GetMapping("/pie")
-    public Map<String, Integer> pie(){
+    public Map<String, Integer> pie() {
         return userService.getUserRoles();
     }
-    
 
     @PutMapping("/profile/deleted/{userId}")
     public UserDetailView deleteProfilePic(@PathVariable Integer userId) {
         return userService.deleteProfilePic(userId);
     }
-    
+
 }

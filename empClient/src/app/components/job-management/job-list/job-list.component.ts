@@ -4,6 +4,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/service/auth.service';
+import { JobRequestService } from 'src/app/service/job-request.service';
 import { JobService } from 'src/app/service/job.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class JobListComponent implements OnInit {
 
   constructor(
     private jobService: JobService,
+    private jobRequestService: JobRequestService,
     private modalService: NgbModal,
     private service: AuthService,
     private toastService: ToastrService
@@ -53,6 +55,7 @@ export class JobListComponent implements OnInit {
     this.today = new Date().toISOString().split('T')[0];
 
     this.csvData.endDate.value = this.today;
+    this.jobRequestCount();
   }
 
   numSeq(n: number): Array<number> {
@@ -358,5 +361,20 @@ export class JobListComponent implements OnInit {
     }
 
     this.jobDataList.splice(index, 1, event);
+  }
+
+
+  jobRequestCounts:any
+
+  jobRequestCount() {
+    this.jobRequestService.getRequestStatus().subscribe({
+      next: (res: any) => {
+        console.log(res);
+        this.jobRequestCounts=res
+      },
+      error: (err: any) => {
+        console.log(err);
+      },
+    });
   }
 }

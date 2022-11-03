@@ -78,8 +78,6 @@ export class UserListComponent implements OnInit {
     for (let index = start - 2; index < start + 3; index++) {
       arr.push(index);
     }
-
-    // return Array(n);
     return arr;
   }
 

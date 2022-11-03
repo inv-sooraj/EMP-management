@@ -3,6 +3,8 @@ package com.innovaturelabs.training.employee.management.tasks;
 import java.time.Duration;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,13 @@ public class ScheduledTasks {
     @Autowired
     private UserRepository userRepository;
 
-    @Scheduled(initialDelayString = "PT2S",fixedRateString = "PT5H")
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTasks.class);
+
+    @Scheduled(initialDelayString = "PT2S", fixedRateString = "PT5H")
     @Transactional
     public void print() {
-        System.out.println("Table Cleared : Time => " + new Date());
+
+        LOGGER.info("Table Cleared");
 
         userRepository.deleteByEmailContainingAndCreateDateLessThan("#",
                 Date.from(new Date().toInstant().minus(Duration.ofDays(1))));

@@ -2,6 +2,8 @@
     <app-employer-chart></app-employer-chart>
 
 </div>
+
+
 <div class="container mt-4">
     <div class="col">
         <div class="row">
@@ -135,11 +137,9 @@
                             </span>
                         </th>
 
-                        <th scope="col" (click)="setSort('jobId')">Id <button [disabled]="sortBy!='jobId'"
-                                class="btn btn-sort bi "
-                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
-                        </th>
-                        <th scope="col" (click)="setSort('title')">Title
+
+                        <th  class="px-4" scope="col" (click)="setSort('title')">Title
+
                             <button [disabled]="sortBy!='title'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
                         </th>
@@ -172,7 +172,7 @@
                     </tr>
                 </thead>
 
-                <tbody *ngIf="pagerInfo">
+                <tbody class="align-bottom" *ngIf="pagerInfo">
                     <tr *ngIf="jobDataList.length == 0">
                         <th class="text-center" id="NoRecordsFound" colspan="10">
                             No Records Found
@@ -186,9 +186,27 @@
                                 <label for="checkbox{{ job.jobId }}"></label>
                             </span>
                         </td>
-                        <td>{{ job.jobId }}</td>
-                        <td (click)="openXl(jobRequestsModal,job.jobId)">{{ job.title }}<em
-                                class="bi bi-eye-fill mx-2"></em> </td>
+
+
+                        <td>
+
+                            <button class="btn btn btn-sort m-auto pt-1" (click)="openXl(jobRequestsModal,job.jobId)"
+                                [disabled]="!jobRequestCounts[job.title]">
+                                <em class="bi bi-eye-fill mat-small">
+
+                                    <label class="ms-1">
+
+                                        {{jobRequestCounts[job.title]?jobRequestCounts[job.title]:0}}
+                                    </label>
+                                </em>
+                            </button>
+
+                            {{ job.title }}
+                            <label>
+                            </label>
+                        </td>
+
+
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
                         <td>{{ qualifications.get(job.qualification) }}</td>
                         <td>{{ job.openings }}</td>
@@ -199,7 +217,7 @@
                             </div>
                         </td>
                         <td>{{ job.updateDate|date}}</td>
-                        <td>
+                        <td >
                             <p *ngIf="job.status == 0"><span class="badge bg-warning clr">{{ status.get(job.status)
                                     }}</span></p>
                             <p *ngIf="job.status == 1"><span class="badge bg-success">{{ status.get(job.status)
@@ -292,7 +310,7 @@
 
                 <li class="page-item" [class.disabled]="!pagerInfo.hasNext">
                     <button class="page-link" (click)="gotoPage(pagerInfo.numPages)">
-                       Last
+                        Last
                     </button>
                 </li>
             </ul>
@@ -392,8 +410,6 @@
 
     </div>
     <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
-                *ngIf="jobId">Edit</label><label *ngIf="!jobId">Add</label></button> -->
     </div>
 </ng-template>
 
