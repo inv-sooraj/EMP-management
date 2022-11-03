@@ -135,7 +135,9 @@
                             </span>
                         </th>
 
+
                         <th  class="px-4" scope="col" (click)="setSort('title')">Title
+
                             <button [disabled]="sortBy!='title'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
                         </th>
@@ -182,6 +184,7 @@
                                 <label for="checkbox{{ job.jobId }}"></label>
                             </span>
                         </td>
+
                         <td>
 
                             <button class="btn btn btn-sort m-auto pt-1" (click)="openXl(jobRequestsModal,job.jobId)"
@@ -199,6 +202,7 @@
                             <label>
                             </label>
                         </td>
+
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
                         <td>{{ qualifications.get(job.qualification) }}</td>
                         <td>{{ job.openings }}</td>
@@ -402,8 +406,6 @@
 
     </div>
     <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-outline-dark" (click)="form.formAction();"><label
-                *ngIf="jobId">Edit</label><label *ngIf="!jobId">Add</label></button> -->
     </div>
 </ng-template>
 

@@ -21,7 +21,7 @@ export class JobRequestListComponent implements OnInit {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
 
-  // jobList: any;
+  userId: number = 0;
 
   page: number = 1;
 
@@ -67,8 +67,6 @@ export class JobRequestListComponent implements OnInit {
     for (let index = start - 2; index < start + 3; index++) {
       arr.push(index);
     }
-
-    // return Array(n);
     return arr;
   }
 
