@@ -10,7 +10,7 @@ public class JobRequestView {
     private final int jobRequestId;
 
     private final Integer userId;
-    private final String userName;
+    private final String name;
 
     private final Integer jobId;
     private final String jobTitle;
@@ -25,7 +25,7 @@ public class JobRequestView {
     public JobRequestView(JobRequest jobRequest) {
         this.jobRequestId = jobRequest.getJobRequestId();
         this.userId = jobRequest.getUser().getUserId();
-        this.userName = jobRequest.getUser().getUserName();
+        this.name = jobRequest.getUser().getName();
         this.jobId = jobRequest.getJob().getJobId();
         this.jobTitle = jobRequest.getJob().getTitle();
         this.status = jobRequest.getStatus();
@@ -62,8 +62,8 @@ public class JobRequestView {
         return updateDate;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
     public String getJobTitle() {

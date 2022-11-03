@@ -1,3 +1,4 @@
+
 <div class="search-results" infinite-scroll [infiniteScrollDistance]="scrollDistance"
     [infiniteScrollUpDistance]="scrollUpDistance" [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()">
 
@@ -45,25 +46,11 @@
                                 </span>
                             </th>
 
-                            <th scope="col" (click)="setSort('jobRequestId')">Id
-                                <button [disabled]="sortBy!='jobRequestId'" class="btn btn-sort bi "
-                                    [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
-
-                            </th>
-
-                            <th scope="col" (click)="setSort('jobId')">Job Id
-                                <button [disabled]="sortBy!='jobId'" class="btn btn-sort bi "
-                                    [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
-
-                            </th>
+                           
 
                             <th scope="col">Job Title </th>
 
-                            <th scope="col" (click)="setSort('userId')">User Id
-                                <button [disabled]="sortBy!='userId'" class="btn btn-sort bi "
-                                    [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
-
-                            </th>
+                            
                             <th scope="col">User Name </th>
 
                             <th scope="col" (click)="setSort('remark')">Remark
@@ -88,11 +75,8 @@
                             <td>
 
                             </td>
-                            <td>{{ job.jobRequestId }}</td>
-                            <td>{{ job.jobId }}</td>
                             <td>{{ job.jobTitle }}</td>
-                            <td>{{ job.userId }}</td>
-                            <td>{{ job.userName }}</td>
+                            <td (click)="open(userDetailsModule);userId=job.userId">{{ job.name }}<em class="bi bi-eye-fill mx-2"></em></td>
                             <td>{{ job.remark }}</td>
 
                             <td>
@@ -214,8 +198,13 @@
     <!-- Spinner -->
     <div *ngIf="showSpinner" class="loading">Loading&#8230;</div>
 
-
-
-
-
 </div>
+<ng-template #userDetailsModule let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">User Details</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <app-user-detail [userId]="userId"></app-user-detail>
+    </div>
+</ng-template>
