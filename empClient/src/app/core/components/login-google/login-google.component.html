@@ -1,3 +1,14 @@
+
+<ngx-ui-loader 
+fgsType="rectangle-bounce"
+fgsColor="#4169E1"
+text="Please Wait.."
+[hasProgressBar]="true"
+[pbThickness]="3"
+textColor="#F8F8FF">
+</ngx-ui-loader>
+<div ngxUiLoaderBlurred (blur)="3" >
+
 <div class="banner" >
     <div class="wrapper fadeInDown zero-raduis" *ngIf="formVisible">
         <div id="formContent">
@@ -68,3 +79,4 @@
         </div>
     </div>
 </div>
+
