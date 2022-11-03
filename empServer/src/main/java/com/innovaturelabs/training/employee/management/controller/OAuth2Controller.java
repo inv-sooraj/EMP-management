@@ -1,4 +1,3 @@
-
 package com.innovaturelabs.training.employee.management.controller;
 
 import javax.validation.Valid;
@@ -28,7 +27,7 @@ public class OAuth2Controller {
     }
 
     @PostMapping("/register")
-    public LoginView register(@Valid @RequestBody OAuth2RegisterForm form ) {
+    public LoginView register(@Valid @RequestBody OAuth2RegisterForm form) {
         return oAuth2Service.addUser(form);
     }
 

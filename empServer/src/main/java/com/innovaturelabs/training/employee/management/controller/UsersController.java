@@ -135,7 +135,7 @@ public class UsersController {
     }
 
     @PutMapping("/change-password")
-    public UserView changePassword(@RequestBody ChangePasswordForm form) {
+    public UserView changePassword(@Valid @RequestBody ChangePasswordForm form) {
         return userService.changePassword(form);
     }
 

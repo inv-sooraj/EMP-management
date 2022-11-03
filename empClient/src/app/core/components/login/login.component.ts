@@ -15,6 +15,13 @@ import { OAuthGoogleService } from '../../service/oauthgoogle.service';
 export class LoginComponent implements OnInit {
   // flag: boolean = false;
 
+  // Undo when password need eye view...........
+  // passwordType: string = 'password';
+
+  // toggleType() {
+  //   this.passwordType = this.passwordType == 'password' ? 'text' : 'password';
+  // }
+
   constructor(
     private router: Router,
     private service: AuthService,
