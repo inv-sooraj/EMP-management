@@ -133,7 +133,10 @@
 
 
 
-                      
+                        <th scope="col" (click)="setSort('userId')">Id
+                            <button [disabled]="sortBy!='userId'" class="btn btn-sort bi "
+                                [ngClass]="sortDesc ? 'bi-sort-numeric-up':'bi-sort-numeric-down'"></button>
+                        </th>
 
                         <th scope="col" (click)="setSort('name')">Name
                             <button [disabled]="sortBy!='name'" class="btn btn-sort bi "
@@ -184,6 +187,7 @@
                                 <label for="checkbox{{ user.userId }}"></label>
                             </span>
                         </td>
+                        <td>{{ user.userId }}</td>
                         <td (click)="open(userDetailsModule);userId=user.userId">{{ user.name }}</td>
                         <td>{{ user.userName }}</td>
                         <td>{{ user.email }}</td>
