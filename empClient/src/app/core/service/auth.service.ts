@@ -45,6 +45,7 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('name');
     localStorage.removeItem('role');
+    sessionStorage.clear()
     this.router.navigate(['login']);
   }
 

@@ -245,7 +245,7 @@ public class UserServiceImpl implements UserService {
         } catch (InvalidTokenException e) {
             throw invalidToken(e);
         } catch (TokenExpiredException e) {
-            throw new BadRequestException("Token expired", e);
+            throw new BadRequestException("Token expired");
         }
 
         int userId;
@@ -258,7 +258,7 @@ public class UserServiceImpl implements UserService {
         String password = status.data.substring(10);
 
         User user = userRepository.findByUserIdAndPassword(userId, password)
-                .orElse(userRepository
+                .orElseGet(() -> userRepository
                         .findByUserIdAndUserType(userId, User.UserType.GOOGLE.value)
                         .orElseThrow(UserServiceImpl::badRequestException));
 

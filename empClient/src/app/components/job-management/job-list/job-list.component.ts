@@ -56,7 +56,28 @@ export class JobListComponent implements OnInit {
   }
 
   numSeq(n: number): Array<number> {
-    return Array(n);
+    let arr = new Array<number>();
+
+    if (this.pagerInfo.numPages <= 5) {
+      for (let index = 1; index <= this.pagerInfo.numPages; index++) {
+        arr.push(index);
+      }
+      return arr;
+    }
+
+    let start;
+    if (this.pagerInfo.currentPage > this.pagerInfo.numPages - 2) {
+      start = this.pagerInfo.numPages - 2;
+    } else {
+      start = this.pagerInfo.currentPage < 4 ? 3 : this.pagerInfo.currentPage;
+    }
+
+    for (let index = start - 2; index < start + 3; index++) {
+      arr.push(index);
+    }
+
+    // return Array(n);
+    return arr;
   }
 
   prevPage() {
