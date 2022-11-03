@@ -70,10 +70,10 @@ import { NgxUiLoaderHttpModule, NgxUiLoaderModule } from 'ngx-ui-loader';
     UserDetailComponent,
     HomepagejobviewComponent,
     LoginGoogleComponent,
-     CardsComponent,
-     ContactComponent,
-     AboutComponent,
-     EmployerChartComponent,
+    CardsComponent,
+    ContactComponent,
+    AboutComponent,
+    EmployerChartComponent,
   ],
 
   imports: [
