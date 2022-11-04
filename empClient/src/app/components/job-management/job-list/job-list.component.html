@@ -286,6 +286,13 @@
         <div>
             <ul class="pagination mb-5">
 
+                <li class="page-item">
+
+                    <label class=" text-white me-2 d-inline" style="font-size: 15px;"> Go to page</label>
+                    <input class="page-link me-3 d-inline" style="width: 60px;" type="number" (change)="setPage($event)"
+                        min="1" [max]="pagerInfo.numPages">
+                </li>
+
                 <li class="page-item" [class.disabled]="!pagerInfo.hasPrev">
                     <button class="page-link" (click)="gotoPage(1)">
                         First

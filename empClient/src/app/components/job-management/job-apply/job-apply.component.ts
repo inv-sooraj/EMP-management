@@ -80,6 +80,27 @@ export class JobApplyComponent implements OnInit {
     this.listJobs();
   }
 
+  setPage(event: any): void {
+    if (!event.target.value) return;
+
+    let page: number = parseInt(event.target.value);
+
+    if (
+      this.page == page ||
+      (this.page == this.pagerInfo.numPages &&
+        page > this.pagerInfo.numPages) ||
+      (this.page == 1 && page < 1)
+    )
+      return;
+
+    if (page < 1) this.page = 1;
+    else if (page > this.pagerInfo.numPages)
+      this.page = this.pagerInfo.numPages;
+    else this.page = page;
+
+    this.listJobs();
+  }
+
   setSort(sortBy: string) {
     this.jobDataList = [];
 

@@ -97,6 +97,27 @@ export class UserListComponent implements OnInit {
     this.listUsers();
   }
 
+  setPage(event: any): void {
+    if (!event.target.value) return;
+
+    let page: number = parseInt(event.target.value);
+
+    if (
+      this.page == page ||
+      (this.page == this.pagerInfo.numPages &&
+        page > this.pagerInfo.numPages) ||
+      (this.page == 1 && page < 1)
+    )
+      return;
+
+    if (page < 1) this.page = 1;
+    else if (page > this.pagerInfo.numPages)
+      this.page = this.pagerInfo.numPages;
+    else this.page = page;
+
+    this.listUsers();
+  }
+
   setSort(sortBy: string) {
     this.userDataList = [];
 
@@ -352,26 +373,5 @@ export class UserListComponent implements OnInit {
 
   onUp() {
     console.log('Up');
-  }
-
-  setPage(event: any): void {
-    if (!event.target.value) return;
-
-    let page: number = parseInt(event.target.value);
-
-    if (
-      this.page == page ||
-      (this.page == this.pagerInfo.numPages &&
-        page > this.pagerInfo.numPages) ||
-      (this.page == 1 && page < 1)
-    )
-      return;
-
-    if (page < 1) this.page = 1;
-    else if (page > this.pagerInfo.numPages)
-      this.page = this.pagerInfo.numPages;
-    else this.page = page;
-
-    this.listUsers();
   }
 }
