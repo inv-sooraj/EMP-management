@@ -1,4 +1,3 @@
-
 <div class="search-results" infinite-scroll [infiniteScrollDistance]="scrollDistance"
     [infiniteScrollUpDistance]="scrollUpDistance" [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()">
 
@@ -46,12 +45,12 @@
                                 </span>
                             </th>
 
-                           
+
 
                             <th scope="col">Job Title </th>
 
-                            
-                            <th scope="col">User Name </th>
+
+                            <th scope="col" *ngIf="role" >User Name </th>
 
                             <th scope="col" (click)="setSort('remark')">Remark
                                 <button [disabled]="sortBy!='remark'" class="btn btn-sort bi "
@@ -76,7 +75,8 @@
 
                             </td>
                             <td>{{ job.jobTitle }}</td>
-                            <td (click)="open(userDetailsModule);userId=job.userId">{{ job.name }}<em class="bi bi-eye-fill mx-2"></em></td>
+                            <td *ngIf="role" (click)="open(userDetailsModule);userId=job.userId">{{ job.name }}<em
+                                    class="bi bi-eye-fill mx-2"></em></td>
                             <td>{{ job.remark }}</td>
 
                             <td>
@@ -107,7 +107,7 @@
 
 
                         </tr>
-                        <tr *ngIf="!pagerInfo.hasNext && jobRequestDataList.length != 0">
+                        <tr *ngIf="pagerInfo &&!pagerInfo.hasNext && jobRequestDataList.length != 0">
                             <th class="text-center" id="NoRecordsFound" colspan="10">
                                 End of Records
                             </th>
@@ -197,6 +197,7 @@
 
     <!-- Spinner -->
     <div *ngIf="showSpinner" class="loading">Loading&#8230;</div>
+
 
 </div>
 <ng-template #userDetailsModule let-modal>

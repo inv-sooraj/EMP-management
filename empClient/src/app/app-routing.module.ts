@@ -8,13 +8,8 @@ import { PageErrorComponent } from './components/page-error/page-error.component
 import { TestComponentComponent } from './components/test-component/test-component.component';
 import { AboutComponent } from './components/user-management/about/about.component';
 import { ContactComponent } from './components/user-management/contact/contact.component';
-import { EmployerChartComponent } from './components/user-management/employer-chart/employer-chart.component';
-import { HomepagejobviewComponent } from './components/user-management/homepagejobview/homepagejobview.component';
-
 import { LandingPageComponent } from './components/user-management/landing-page/landing-page.component';
-
 import { UserDetailComponent } from './components/user-management/user-detail/user-detail.component';
-
 import { UserEditComponent } from './components/user-management/user-edit/user-edit.component';
 import { UserListComponent } from './components/user-management/user-list/user-list.component';
 import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';

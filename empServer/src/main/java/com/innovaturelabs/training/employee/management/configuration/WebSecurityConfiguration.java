@@ -68,7 +68,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // .antMatchers(PUT, "/users/delete/**").hasAnyRole(ADMIN)
                 .antMatchers(PUT, "/users/download").hasAnyRole(ADMIN)
                 // .antMatchers(GET, "/job/**").hasRole(ADMIN)
-                .antMatchers(OPTIONS, "/**").permitAll()
+                .antMatchers(OPTIONS, "/**").anonymous()
                 .anyRequest().authenticated();
     }
 
