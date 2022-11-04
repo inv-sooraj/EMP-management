@@ -87,12 +87,34 @@ export class UserListComponent implements OnInit {
   }
 
   gotoPage(page: number) {
+    if (this.page == page) return;
     this.page = page;
     this.listUsers();
   }
 
   nextPage() {
     this.page += 1;
+    this.listUsers();
+  }
+
+  setPage(event: any): void {
+    if (!event.target.value) return;
+
+    let page: number = parseInt(event.target.value);
+
+    if (
+      this.page == page ||
+      (this.page == this.pagerInfo.numPages &&
+        page > this.pagerInfo.numPages) ||
+      (this.page == 1 && page < 1)
+    )
+      return;
+
+    if (page < 1) this.page = 1;
+    else if (page > this.pagerInfo.numPages)
+      this.page = this.pagerInfo.numPages;
+    else this.page = page;
+
     this.listUsers();
   }
 
@@ -114,16 +136,7 @@ export class UserListComponent implements OnInit {
 
   resetList() {
     this.userDataList = [];
-
-    console.log(this.limit);
     this.page = 1;
-    this.listUsers();
-  }
-
-  setSearch() {
-    this.page = 1;
-    this.userDataList = [];
-    console.log(this.search);
     this.listUsers();
   }
 
@@ -359,6 +372,6 @@ export class UserListComponent implements OnInit {
   }
 
   onUp() {
-    console.log('Hellooo');
+    console.log('Up');
   }
 }
