@@ -16,11 +16,27 @@
 
                 <div class="col-2">
                     Show
-                    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="resetList()">
-                        <option selected="selected" [ngValue]="0">All</option>
-                        <option [ngValue]="4">4</option>
-                        <option [ngValue]="5">5</option>
-                    </select>
+                    <div ngbDropdown #limitDropDown="ngbDropdown" class="d-inline-block">
+                        <button type="button" class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle>
+                            {{ limit?limit:"All"}}
+                        </button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1 m-auto">
+                            <button ngbDropdownItem (click)="limit=0;resetList()">All</button>
+                            <button ngbDropdownItem (click)="limit=4;resetList()">4</button>
+                            <button ngbDropdownItem (click)="limit=5;resetList()">5</button>
+                            <hr>
+
+                            <div class="d-flex">
+
+                                <label class="mx-3 d-block">
+                                    Enter Limit
+                                </label>
+                                <input (change)="resetList()" class="form-control-plaintext mx-3 my-0 d-inline d-block"
+                                    style="width: 50px;" type="number" [(ngModel)]="limit" uplaceholder="Enter Limit"
+                                    id="limitfield">
+                            </div>
+                        </div>
+                    </div>
                     entries
                 </div>
 
@@ -104,7 +120,7 @@
         <div class="hint-text text-white">
             Showing &nbsp;
             <strong>{{ pagerInfo.itemStart }} </strong> to <strong> {{ pagerInfo.itemEnd }} </strong> out of
-            <strong>{{ pagerInfo.numItems }}</strong> &nbsp; entries
+            <strong>{{ pagerInfo.count }}</strong> &nbsp; entries
         </div>
 
         <div>
