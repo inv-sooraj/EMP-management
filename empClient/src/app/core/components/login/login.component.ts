@@ -65,7 +65,6 @@ export class LoginComponent implements OnInit {
         //   sessionStorage.setItem('userName', this.loginForm.controls['username'].value);
         //   sessionStorage.setItem('password', this.loginForm.get('password')?.value);
         // }
-        this.service.startTimer();
 
         if (response.role == 2) this.router.navigate(['userchart']);
         else if (response.role == 1) this.router.navigate(['job-list']);

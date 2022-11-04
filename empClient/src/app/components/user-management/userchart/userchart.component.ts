@@ -218,6 +218,12 @@ export class UserchartComponent implements OnInit {
       },
       options: {
         plugins: {
+          // legend:{display:false},
+          tooltip:{callbacks: {
+            label: function(tooltipItem) {
+                   return tooltipItem.label;
+            }
+         }},
           title: {
             display: true,
             text: 'Job Status',

@@ -28,18 +28,7 @@ export class AuthService {
     return this.http.post(environment.apiUrl + '/users', body);
   }
 
-  startTimer() {
-    let t = setInterval(() => {
-      if (this.timer <= 0) {
-        console.log('expired');
-
-        clearInterval(t);
-      } else {
-        this.timer--;
-      }
-    }, 1000);
-    this.timer = 20;
-  }
+  
 
   logout(): void {
     localStorage.removeItem('accessToken');
