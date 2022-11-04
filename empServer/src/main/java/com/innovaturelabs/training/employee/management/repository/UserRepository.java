@@ -1,4 +1,3 @@
-
 package com.innovaturelabs.training.employee.management.repository;
 
 import java.util.Collection;

@@ -1,9 +1,10 @@
 
 package com.innovaturelabs.training.employee.management.security.util;
 
-import com.innovaturelabs.training.employee.management.security.AccessTokenUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.innovaturelabs.training.employee.management.security.AccessTokenUserDetails;
 
 public final class SecurityUtil {
 

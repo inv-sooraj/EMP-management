@@ -252,21 +252,6 @@ public class JobServiceImpl implements JobService {
 
         for (Integer jobId : jobIds) {
 
-            // if (SecurityUtil.isAdmin() || (SecurityUtil.isEmployer()
-            // && (status == Job.Status.DELETED.value || status ==
-            // Job.Status.COMPLETED.value))) {
-
-            // jobRepository.findByJobId(jobId).ifPresent(j -> {
-
-            // if (status.byteValue() != j.getStatus()) {
-            // j.setStatus(status);
-            // j.setUpdateDate(new Date());
-            // jobRepository.save(j);
-            // }
-            // });
-
-            // }
-
             jobViews.add(this.updateStatus(jobId, status));
 
         }

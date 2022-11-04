@@ -1,7 +1,4 @@
-
 package com.innovaturelabs.training.employee.management.security.util;
-
-
 public class InvalidTokenException extends IllegalArgumentException {
 
     public InvalidTokenException(String s) {

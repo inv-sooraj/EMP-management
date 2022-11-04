@@ -1,6 +1,8 @@
 <div *ngIf="role==1">
     <app-employer-chart></app-employer-chart>
+
 </div>
+
 
 <div class="container mt-4">
     <div class="col">
@@ -201,6 +203,7 @@
                             </span>
                         </td>
 
+
                         <td>
 
                             <button class="btn btn btn-sort m-auto pt-1" (click)="openXl(jobRequestsModal,job.jobId)"
@@ -218,6 +221,7 @@
                             <label>
                             </label>
                         </td>
+
 
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
                         <td>{{ qualifications.get(job.qualification) }}</td>
