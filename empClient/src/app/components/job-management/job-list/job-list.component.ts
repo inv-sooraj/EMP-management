@@ -50,7 +50,7 @@ export class JobListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobs();
-    this.service.checkExpired();
+    // this.service.checkExpired();
 
     this.today = new Date().toISOString().split('T')[0];
 
