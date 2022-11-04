@@ -47,6 +47,8 @@ public class JobController {
 
         page = page <= 0 ? 1 : page;
 
+        limit = limit <= 0 ? 1 : limit;
+
         return jobService.list(page, limit, sortBy, desc, search, data, apply);
     }
 

@@ -47,19 +47,21 @@ public class JobRequestController {
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
             @RequestParam(name = "desc", defaultValue = "false") Boolean desc,
             @RequestParam(name = "sortBy", defaultValue = "job_request_id") String sortBy,
-            @RequestParam(name = "search", defaultValue = "") String search ,
-                @RequestParam(name = "jobId", defaultValue = "0") Integer jobId) {
+            @RequestParam(name = "search", defaultValue = "") String search,
+            @RequestParam(name = "jobId", defaultValue = "0") Integer jobId) {
 
         page = page <= 0 ? 1 : page;
 
-        return jobRequestService.list(page, limit, sortBy, search, desc,jobId);
+        limit = limit <= 0 ? 1 : limit;
+
+        return jobRequestService.list(page, limit, sortBy, search, desc, jobId);
     }
 
     @GetMapping("/applied")
     public Collection<Integer> appliedJobs() {
         return jobRequestService.appliedJobs();
     }
-    
+
     @GetMapping("/chart")
     Map<String, Integer> chart() {
         return jobRequestService.getRequests();

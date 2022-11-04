@@ -67,15 +67,35 @@
                 </div>
             </div>
 
+
+
             <div class="row">
 
                 <div class="col-3">
                     Show
-                    <select class="form-select w-auto d-inline" [(ngModel)]="limit" (change)="resetList()">
-                        <option selected="selected" [ngValue]="0">All</option>
-                        <option [ngValue]="4">4</option>
-                        <option [ngValue]="5">5</option>
-                    </select>
+
+                    <div ngbDropdown #limitDropDown="ngbDropdown" class="d-inline-block">
+                        <button type="button" class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle>
+                            {{ limit?limit:"All"}}
+                        </button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1 m-auto">
+                            <button ngbDropdownItem (click)="limit=0;resetList()">All</button>
+                            <button ngbDropdownItem (click)="limit=4;resetList()">4</button>
+                            <button ngbDropdownItem (click)="limit=5;resetList()">5</button>
+                            <hr>
+
+                            <div class="d-flex">
+
+                                <label class="mx-3 d-block">
+                                    Enter Limit
+                                </label>
+                                <input (change)="resetList()" class="form-control-plaintext mx-3 my-0 d-inline d-block"
+                                    style="width: 50px;" type="number" [(ngModel)]="limit" uplaceholder="Enter Limit"
+                                    id="limitfield">
+                            </div>
+                        </div>
+                    </div>
+
                     entries
                 </div>
 
@@ -114,7 +134,7 @@
 
                 <div class="col-3 text-end">
                     <input placeholder="search" class="form-control w-auto d-inline align-self-end" type="text"
-                        id="search" [(ngModel)]="search" (keyup)="setSearch()" />
+                        id="search" [(ngModel)]="search" (keyup)="resetList()" />
                 </div>
 
             </div>
@@ -240,11 +260,18 @@
         <div class="hint-text text-white">
             Showing
             <strong>{{ pagerInfo.itemStart }} </strong> to <strong> {{ pagerInfo.itemEnd }} </strong> out of
-            <strong>{{ pagerInfo.numItems }}</strong> entries
+            <strong>{{ pagerInfo.count }}</strong> entries
         </div>
 
         <div>
             <ul class="pagination mb-5">
+
+                <li class="page-item">
+
+                    <label class=" text-white me-2 d-inline" style="font-size: 15px;"> Go to page</label>
+                    <input class="page-link me-3 d-inline" style="width: 60px;" type="number" (change)="setPage($event)"
+                        min="1" [max]="pagerInfo.numPages">
+                </li>
 
                 <li class="page-item" [class.disabled]="!pagerInfo.hasPrev">
                     <button class="page-link" (click)="gotoPage(1)">
@@ -282,10 +309,11 @@
 
                 <li class="page-item" [class.disabled]="!pagerInfo.hasNext">
                     <button class="page-link" (click)="gotoPage(pagerInfo.numPages)">
-                       Last
+                        Last
                     </button>
                 </li>
             </ul>
+
         </div>
     </div>
 </div>
