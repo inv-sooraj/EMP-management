@@ -70,6 +70,7 @@ export class JobApplyComponent implements OnInit {
   }
 
   gotoPage(page: number) {
+    if (this.page == page) return;
     this.page = page;
     this.listJobs();
   }
@@ -97,17 +98,7 @@ export class JobApplyComponent implements OnInit {
 
   resetList() {
     this.jobDataList = [];
-
-    console.log(this.limit);
     this.page = 1;
-    this.listJobs();
-  }
-
-  setSearch() {
-    this.page = 1;
-
-    this.jobDataList = [];
-    console.log(this.search);
     this.listJobs();
   }
 

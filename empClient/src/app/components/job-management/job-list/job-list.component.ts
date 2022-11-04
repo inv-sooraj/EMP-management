@@ -55,7 +55,6 @@ export class JobListComponent implements OnInit {
     this.today = new Date().toISOString().split('T')[0];
 
     this.csvData.endDate.value = this.today;
-    this.jobRequestCount();
   }
 
   numSeq(n: number): Array<number> {
@@ -89,6 +88,7 @@ export class JobListComponent implements OnInit {
   }
 
   gotoPage(page: number) {
+    if (this.page == page) return;
     this.page = page;
     this.listJobs();
   }
@@ -116,16 +116,7 @@ export class JobListComponent implements OnInit {
 
   resetList() {
     this.jobDataList = [];
-
-    console.log(this.limit);
     this.page = 1;
-    this.listJobs();
-  }
-
-  setSearch() {
-    this.page = 1;
-    this.jobDataList = [];
-    console.log(this.search);
     this.listJobs();
   }
 
@@ -158,6 +149,9 @@ export class JobListComponent implements OnInit {
       },
       error: (err: any) => {
         console.error(err);
+      },
+      complete: () => {
+        this.jobRequestCount();
       },
     });
   }
@@ -361,16 +355,17 @@ export class JobListComponent implements OnInit {
     }
 
     this.jobDataList.splice(index, 1, event);
+
+    this.jobRequestCount();
   }
 
-
-  jobRequestCounts:any
+  jobRequestCounts: any = {};
 
   jobRequestCount() {
     this.jobRequestService.getRequestStatus().subscribe({
       next: (res: any) => {
         console.log(res);
-        this.jobRequestCounts=res
+        this.jobRequestCounts = res;
       },
       error: (err: any) => {
         console.log(err);

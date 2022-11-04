@@ -42,7 +42,6 @@ export class JobRequestListComponent implements OnInit {
   @Input() jobId: number = 0;
   @Input() scrollingDisabled: boolean = false;
 
-
   ngOnInit(): void {
     this.listJobRequests();
   }
@@ -76,6 +75,7 @@ export class JobRequestListComponent implements OnInit {
   }
 
   gotoPage(page: number) {
+    if (this.page == page) return;
     this.page = page;
     this.listJobRequests();
   }
@@ -103,18 +103,10 @@ export class JobRequestListComponent implements OnInit {
 
   resetList() {
     this.jobRequestDataList = [];
-
-    console.log(this.limit);
     this.page = 1;
     this.listJobRequests();
   }
 
-  setSearch() {
-    this.page = 1;
-    this.jobRequestDataList = [];
-    console.log(this.search);
-    this.listJobRequests();
-  }
   pagerInfo: any;
 
   jobRequestDataList: Array<any> = [];
