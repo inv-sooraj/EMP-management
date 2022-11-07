@@ -50,12 +50,11 @@ export class JobListComponent implements OnInit {
 
   ngOnInit(): void {
     this.listJobs();
-    this.service.checkExpired();
+    // this.service.checkExpired();
 
     this.today = new Date().toISOString().split('T')[0];
 
     this.csvData.endDate.value = this.today;
-    this.jobRequestCount();
   }
 
   numSeq(n: number): Array<number> {
@@ -89,12 +88,34 @@ export class JobListComponent implements OnInit {
   }
 
   gotoPage(page: number) {
+    if (this.page == page) return;
     this.page = page;
     this.listJobs();
   }
 
   nextPage() {
     this.page += 1;
+    this.listJobs();
+  }
+
+  setPage(event: any): void {
+    if (!event.target.value) return;
+
+    let page: number = parseInt(event.target.value);
+
+    if (
+      this.page == page ||
+      (this.page == this.pagerInfo.numPages &&
+        page > this.pagerInfo.numPages) ||
+      (this.page == 1 && page < 1)
+    )
+      return;
+
+    if (page < 1) this.page = 1;
+    else if (page > this.pagerInfo.numPages)
+      this.page = this.pagerInfo.numPages;
+    else this.page = page;
+
     this.listJobs();
   }
 
@@ -116,16 +137,7 @@ export class JobListComponent implements OnInit {
 
   resetList() {
     this.jobDataList = [];
-
-    console.log(this.limit);
     this.page = 1;
-    this.listJobs();
-  }
-
-  setSearch() {
-    this.page = 1;
-    this.jobDataList = [];
-    console.log(this.search);
     this.listJobs();
   }
 
@@ -158,6 +170,9 @@ export class JobListComponent implements OnInit {
       },
       error: (err: any) => {
         console.error(err);
+      },
+      complete: () => {
+        this.jobRequestCount();
       },
     });
   }
@@ -361,16 +376,17 @@ export class JobListComponent implements OnInit {
     }
 
     this.jobDataList.splice(index, 1, event);
+
+    this.jobRequestCount();
   }
 
-
-  jobRequestCounts:any
+  jobRequestCounts: any = {};
 
   jobRequestCount() {
     this.jobRequestService.getRequestStatus().subscribe({
       next: (res: any) => {
         console.log(res);
-        this.jobRequestCounts=res
+        this.jobRequestCounts = res;
       },
       error: (err: any) => {
         console.log(err);

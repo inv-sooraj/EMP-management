@@ -75,6 +75,9 @@ public class UsersController {
             @RequestParam(name = "search", defaultValue = "") String search) {
 
         page = page <= 0 ? 1 : page;
+
+        limit = limit <= 0 ? 1 : limit;
+
         return userService.list(page, limit, sortBy, search, status, desc, role);
     }
 

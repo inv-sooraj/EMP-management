@@ -654,6 +654,32 @@ public class UserServiceImpl implements UserService {
             }
             today = today.minusDays(1);
         }
+        
+        
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(new Date());
+//        System.out.println(new Date());
+//        cal.set(Calendar.DAY_OF_MONTH, 1); 
+//        int myMonth=cal.get(Calendar.MONTH);
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern(datePattern);
+//
+//        while (myMonth==cal.get(Calendar.MONTH)) {
+//          System.out.println(cal.getTime());
+//          DateTime today = new DateTime(cal.getTime());
+//          
+//          for (ChartView chart : chartViewvalues) {
+//              if (formatter.parseLocalDate(today.toString(datePattern))
+//                      .isEqual(formatter.parseLocalDate(chart.getDate()))) {
+//                  datawithdate.put(chart.getDate(), chart.getCount());
+//
+//              } else {
+//                  datawithdate.putIfAbsent(today.toString(datePattern), 0);
+//              }
+//          }
+//          
+//          cal.add(Calendar.DAY_OF_MONTH, 1);
+//        }
+
 
         return new TreeMap<>(datawithdate);
 
