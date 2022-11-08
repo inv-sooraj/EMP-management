@@ -22,7 +22,8 @@
                     <div class="col-2">
                         Show
                         <div ngbDropdown #limitDropDown="ngbDropdown" class="d-inline-block">
-                            <button type="button" class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle>
+                            <button type="button" class="btn btn-outline-secondary" id="dropdownBasic1"
+                                ngbDropdownToggle>
                                 {{ limit?limit:"All"}}
                             </button>
                             <div ngbDropdownMenu aria-labelledby="dropdownBasic1 m-auto">
@@ -30,15 +31,15 @@
                                 <button ngbDropdownItem (click)="limit=4;resetList()">4</button>
                                 <button ngbDropdownItem (click)="limit=5;resetList()">5</button>
                                 <hr>
-    
+
                                 <div class="d-flex">
-    
+
                                     <label class="mx-3 d-block">
                                         Enter Limit
                                     </label>
-                                    <input (change)="resetList()" class="form-control-plaintext mx-3 my-0 d-inline d-block"
-                                        style="width: 50px;" type="number" [(ngModel)]="limit" uplaceholder="Enter Limit"
-                                        id="limitfield">
+                                    <input (change)="resetList()"
+                                        class="form-control-plaintext mx-3 my-0 d-inline d-block" style="width: 50px;"
+                                        type="number" [(ngModel)]="limit" uplaceholder="Enter Limit" id="limitfield">
                                 </div>
                             </div>
                         </div>
@@ -66,7 +67,7 @@
                             <th scope="col">Job Title </th>
 
 
-                            <th scope="col" *ngIf="role" >User Name </th>
+                            <th scope="col" *ngIf="role">User Name </th>
 
                             <th scope="col" (click)="setSort('remark')">Remark
                                 <button [disabled]="sortBy!='remark'" class="btn btn-sort bi "
@@ -140,7 +141,15 @@
                 <strong>{{ pagerInfo.count }}</strong> &nbsp; entries
             </div>
 
-            <div>
+            <div class="pagination mb-5">
+
+                <ul class="page-item">
+
+                    <label class=" text-white me-2 d-inline" style="font-size: 15px;"> Go to page</label>
+                    <input class="page-link me-3 d-inline" style="width: 60px;" type="number" (change)="setPage($event)"
+                        min="1" [max]="pagerInfo.numPages">
+                </ul>
+                <!--                 
                 <ul class="pagination mb-5">
 
                     <li class="page-item">
@@ -190,7 +199,13 @@
                             Last
                         </button>
                     </li>
-                </ul>
+                </ul> -->
+
+
+                <ngb-pagination [collectionSize]="pagerInfo.count" [(page)]="page" [pageSize]="pagerInfo.limit"
+                    [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="listJobRequests()">
+                </ngb-pagination>
+
             </div>
         </div>
     </div>

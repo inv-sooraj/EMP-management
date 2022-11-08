@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="table-responsive">
 
@@ -50,7 +49,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        
+
                         <th scope="col" (click)="setSort('title')">Title
                             <button [disabled]="sortBy!='title'" class="btn btn-sort bi "
                                 [ngClass]="sortDesc ? 'bi-sort-alpha-up':'bi-sort-alpha-down'"></button>
@@ -85,7 +84,7 @@
                     </tr>
                     <tr *ngFor="let job of jobDataList">
 
-                        
+
                         <td>{{ job.title }}</td>
                         <td style="overflow-wrap: break-word; max-width: 200px;">{{ job.description }}</td>
                         <td>{{ qualifications.get(job.qualification) }}</td>
@@ -123,15 +122,18 @@
             <strong>{{ pagerInfo.count }}</strong> &nbsp; entries
         </div>
 
-        <div>
+        <div class="pagination mb-5">
+
+            <ul class="page-item">
+                <label class=" text-white me-2 d-inline" style="font-size: 15px;"> Go to page</label>
+                <input class="page-link me-3 d-inline" style="width: 60px;" type="number" (change)="setPage($event)"
+                    min="1" [max]="pagerInfo.numPages">
+            </ul>
+
+            <!-- 
             <ul class="pagination mb-5">
 
-                <li class="page-item">
-
-                    <label class=" text-white me-2 d-inline" style="font-size: 15px;"> Go to page</label>
-                    <input class="page-link me-3 d-inline" style="width: 60px;" type="number" (change)="setPage($event)"
-                        min="1" [max]="pagerInfo.numPages">
-                </li>
+                
 
                 <li class="page-item" [class.disabled]="!pagerInfo.hasPrev">
                     <button class="page-link" (click)="gotoPage(1)">
@@ -172,7 +174,10 @@
                        Last
                     </button>
                 </li>
-            </ul>
+            </ul> -->
+
+            <ngb-pagination [collectionSize]="pagerInfo.count" [(page)]="page" [pageSize]="pagerInfo.limit"
+                [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="listJobs()"></ngb-pagination>
         </div>
     </div>
 </div>
