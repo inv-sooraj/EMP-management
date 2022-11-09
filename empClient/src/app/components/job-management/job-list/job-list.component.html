@@ -56,7 +56,7 @@
 
                         <button placement="bottom" ngbTooltip="Complete selected jobs from table"
                             (click)="changeJobsStatus(2)" class="btn btn-secondary" [disabled]="!checkedJobIds.size">
-                            <em class="bi-c-circle"></em>
+                            <em class="bi bi-bag-check-fill"></em>
                             &nbsp;Completed
                         </button>
 
@@ -109,7 +109,7 @@
                                     Enter Limit
                                 </label>
                                 <input (change)="resetList()" class="form-control-plaintext mx-3 my-0 d-inline d-block"
-                                    style="width: 50px;" type="number" [(ngModel)]="limit" uplaceholder="Enter Limit"
+                                    style="width: 50px;" type="number"  [max]="pagerInfo.count" [min]="0" [(ngModel)]="limit" placeholder="Limit"
                                     id="limitfield">
                             </div>
                         </div>

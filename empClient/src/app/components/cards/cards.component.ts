@@ -18,7 +18,7 @@ export class CardsComponent implements OnInit {
 
   jobDataList: Array<any> = [];
 
-  pagerInfo: any;
+  pagerInfo: any = {};
 
   page: number = 1;
 

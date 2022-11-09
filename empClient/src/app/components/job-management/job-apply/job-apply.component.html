@@ -25,13 +25,13 @@
                             <button ngbDropdownItem (click)="limit=5;resetList()">5</button>
                             <hr>
 
-                            <div class="d-flex">
+                            <div class="d-flex"z>
 
                                 <label class="mx-3 d-block">
                                     Enter Limit
                                 </label>
                                 <input (change)="resetList()" class="form-control-plaintext mx-3 my-0 d-inline d-block"
-                                    style="width: 50px;" type="number" [(ngModel)]="limit" uplaceholder="Enter Limit"
+                                    style="width: 50px;" type="number"  [max]="pagerInfo.count" [min]="0" [(ngModel)]="limit" placeholder="Limit"
                                     id="limitfield">
                             </div>
                         </div>

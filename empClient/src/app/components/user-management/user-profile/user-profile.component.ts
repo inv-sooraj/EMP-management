@@ -106,9 +106,11 @@ export class UserProfileComponent implements OnInit {
     let queryParams = new HttpParams().append('userId', 0);
     this.userService.getProfile(queryParams).subscribe({
       next: (response: any) => {
-        console.log(response);
+        // console.log(response);
 
-      this.userProfilePic=response
+      this.userProfilePic=response.replace("=s96-c","=s480-c")
+
+      // this.userProfilePic.replace("=s96-c","=s500-c")
 
       //   (document.getElementById('profilePicture') as HTMLImageElement).src =
       //     response;
