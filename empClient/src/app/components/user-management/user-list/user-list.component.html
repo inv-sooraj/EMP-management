@@ -209,7 +209,7 @@
                         </td>
                         <td>{{ user.userId }}</td>
                         <td (click)="open(userDetailsModule);userId=user.userId">
-                            {{ user.name }} 
+                            {{ user.name }}
                             <em class="bi bi-eye-fill mat-small mx-2"></em>
                         </td>
                         <td>{{ user.userName }}</td>
@@ -265,16 +265,19 @@
             <strong>{{ pagerInfo.itemStart }} </strong> to <strong> {{ pagerInfo.itemEnd }} </strong> out of
             <strong>{{ pagerInfo.count }}</strong> entries
         </div>
+        <div class="pagination mb-5">
 
-        <div>
+            <ul class="page-item">
+
+                <label class=" text-white me-2 d-inline" style="font-size: 15px;"> Go to page</label>
+                <input class="page-link me-3 d-inline" style="width: 60px;" type="number" (change)="setPage($event)"
+                    min="1" [max]="pagerInfo.numPages">
+            </ul>
+
+            <!-- 
             <ul class="pagination mb-5">
 
-                <li class="page-item">
-
-                    <label class=" text-white me-2 d-inline" style="font-size: 15px;"> Go to page</label>
-                    <input class="page-link me-3 d-inline" style="width: 60px;" type="number" (change)="setPage($event)"
-                        min="1" [max]="pagerInfo.numPages">
-                </li>
+                
 
                 <li class="page-item" [class.disabled]="!pagerInfo.hasPrev">
                     <button class="page-link" (click)="gotoPage(1)">
@@ -304,8 +307,6 @@
                     </button>
                 </li>
 
-
-
                 <li class="page-item" [class.disabled]="!pagerInfo.hasNext">
                     <button class="page-link" (click)="nextPage()"><em class="bi bi-caret-right-fill"></em></button>
                 </li>
@@ -315,7 +316,10 @@
                         Last
                     </button>
                 </li>
-            </ul>
+            </ul> -->
+
+            <ngb-pagination [collectionSize]="pagerInfo.count" [(page)]="page" [pageSize]="pagerInfo.limit"
+                [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="listUsers()"></ngb-pagination>
 
         </div>
     </div>
