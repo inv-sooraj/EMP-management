@@ -45,7 +45,7 @@ export class UserListComponent implements OnInit {
 
   sortBy: string = 'userId';
 
-  limit: number = 5;
+  limit: number = 0;
 
   search: string = '';
 

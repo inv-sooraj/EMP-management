@@ -39,7 +39,7 @@
                                     </label>
                                     <input (change)="resetList()"
                                         class="form-control-plaintext mx-3 my-0 d-inline d-block" style="width: 50px;"
-                                        type="number" [(ngModel)]="limit" uplaceholder="Enter Limit" id="limitfield">
+                                        type="number"  [max]="pagerInfo.count" [min]="0" [(ngModel)]="limit" placeholder="Limit" id="limitfield">
                                 </div>
                             </div>
                         </div>
