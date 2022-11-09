@@ -9,7 +9,7 @@ import { UserService } from 'src/app/service/user.service';
 })
 export class UserDetailComponent implements OnInit {
   @Input() userId: number = 0;
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
   userDetail: any;
   ngOnInit(): void {
     this.getDetail();
@@ -44,7 +44,7 @@ export class UserDetailComponent implements OnInit {
         console.log(response);
 
         (document.getElementById('profilePicture') as HTMLImageElement).src =
-          response;
+          response.replace("=s96-c", "=s480-c");
       },
       error(err) {
         console.log(err);

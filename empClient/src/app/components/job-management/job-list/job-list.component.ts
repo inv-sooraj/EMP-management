@@ -26,7 +26,7 @@ export class JobListComponent implements OnInit {
     this.role = parseInt(localStorage.getItem('role') as string);
   }
 
-  pagerInfo: any;
+  pagerInfo: any = {};
 
   jobDataList: Array<any> = [];
 
