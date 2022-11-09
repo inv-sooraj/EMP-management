@@ -5,7 +5,7 @@
 
         <div class="container-fluid">
 
-            <div class="row" style="width: 100%;">
+            <div class="row m-auto" style="width: 100%;">
                 <div class="col-xl-12 order-xl-1">
                     <div class="card card-profile shadow">
                         <div class="row justify-content-center">
@@ -215,10 +215,10 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <app-user-edit (completedEvent)="getProfile()" #userEdit [patchValues]="userDetails"></app-user-edit>
+        <app-user-edit (completedEvent)="getProfile();modal.close('Save click')" #userEdit [patchValues]="userDetails"></app-user-edit>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark"
-            (click)="userEdit.editUser();modal.close('Save click')">Save</button>
+            (click)="userEdit.editUser()">Save</button>
     </div>
 </ng-template>
