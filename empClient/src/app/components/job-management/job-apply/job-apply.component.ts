@@ -16,7 +16,7 @@ export class JobApplyComponent implements OnInit {
     private toastService: ToastrService
   ) {}
 
-  pagerInfo: any;
+  pagerInfo: any = {};
 
   jobDataList: Array<any> = [];
 

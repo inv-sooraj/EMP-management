@@ -128,7 +128,7 @@ export class JobRequestListComponent implements OnInit {
     this.listJobRequests();
   }
 
-  pagerInfo: any;
+  pagerInfo: any = {};
 
   jobRequestDataList: Array<any> = [];
 
