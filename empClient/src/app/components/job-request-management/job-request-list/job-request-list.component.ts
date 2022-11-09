@@ -46,44 +46,44 @@ export class JobRequestListComponent implements OnInit {
     this.listJobRequests();
   }
 
-  numSeq(n: number): Array<number> {
-    let arr = new Array<number>();
+  // numSeq(n: number): Array<number> {
+  //   let arr = new Array<number>();
 
-    if (this.pagerInfo.numPages <= 5) {
-      for (let index = 1; index <= this.pagerInfo.numPages; index++) {
-        arr.push(index);
-      }
-      return arr;
-    }
+  //   if (this.pagerInfo.numPages <= 5) {
+  //     for (let index = 1; index <= this.pagerInfo.numPages; index++) {
+  //       arr.push(index);
+  //     }
+  //     return arr;
+  //   }
 
-    let start;
-    if (this.pagerInfo.currentPage > this.pagerInfo.numPages - 2) {
-      start = this.pagerInfo.numPages - 2;
-    } else {
-      start = this.pagerInfo.currentPage < 4 ? 3 : this.pagerInfo.currentPage;
-    }
+  //   let start;
+  //   if (this.pagerInfo.currentPage > this.pagerInfo.numPages - 2) {
+  //     start = this.pagerInfo.numPages - 2;
+  //   } else {
+  //     start = this.pagerInfo.currentPage < 4 ? 3 : this.pagerInfo.currentPage;
+  //   }
 
-    for (let index = start - 2; index < start + 3; index++) {
-      arr.push(index);
-    }
-    return arr;
-  }
+  //   for (let index = start - 2; index < start + 3; index++) {
+  //     arr.push(index);
+  //   }
+  //   return arr;
+  // }
 
-  prevPage() {
-    this.page -= 1;
-    this.listJobRequests();
-  }
+  // prevPage() {
+  //   this.page -= 1;
+  //   this.listJobRequests();
+  // }
 
-  gotoPage(page: number) {
-    if (this.page == page) return;
-    this.page = page;
-    this.listJobRequests();
-  }
+  // gotoPage(page: number) {
+  //   if (this.page == page) return;
+  //   this.page = page;
+  //   this.listJobRequests();
+  // }
 
-  nextPage() {
-    this.page += 1;
-    this.listJobRequests();
-  }
+  // nextPage() {
+  //   this.page += 1;
+  //   this.listJobRequests();
+  // }
 
   setPage(event: any): void {
     if (!event.target.value) return;
