@@ -106,7 +106,7 @@ export class UserProfileComponent implements OnInit {
     let queryParams = new HttpParams().append('userId', 0);
     this.userService.getProfile(queryParams).subscribe({
       next: (response: any) => {
-        console.log(response);
+        // console.log(response);
 
       this.userProfilePic=response
 
